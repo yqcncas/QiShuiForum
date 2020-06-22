@@ -4,78 +4,115 @@
 		<!-- 头 -->
 		<view class="index-header">
 			<view class="index-header-top">
-				<view class="index-header-top-left" @click="handleCity">温州市</view>
-				<view class="index-header-top-center">
+				<view class="index-header-top-left" @click="handleCity">{{city ? city : '未选择' }}</view>
+				<view class="index-header-top-center" @click="goToSearch">
 					<view class="index-header-top-center-search">
-						<image src="../../static/logo.png" mode=""></image>
+						<image src="../../static/image/ych/index/3.png" mode=""></image>
 					</view>
 				</view>
 				<view class="index-header-top-rihgt">
-					<image src="../../static/logo.png" mode=""></image>
+					<image src="../../static/image/ych/index/2.png" mode=""></image>
 				</view>
 			</view>
 			<view class="index-header-bottom">
-				<scroll-view scroll-x="true" >
-					<view class="index-header-bottom-ul">
-						<view class="index-header-bottom-li" :class="{navActive: navIndex == index}" v-for="(item, index) in headerNav" :key = "index">{{item}}</view>
+				<scroll-view scroll-x="true" :scroll-into-view="tochildView" scroll-with-animation>
+					<view class="index-header-bottom-ul" v-if="headerNav.length > 1">
+						<view class="index-header-bottom-li" :id="item.childId" @click="handleHeaderNavTabIndex(index)" :class="{navActive: navIndex == index}" v-for="(item, index) in headerNav" :key = "index">{{item.plateName}}</view>
 					</view>
 				</scroll-view>
-				<view class="addli">
-					<image src="../../static/logo.png" mode=""></image>
+				<view class="addli" @click.stop="goToIndexTabCongig">
+					<image src="../../static/image/ych/index/1.png" mode=""></image>
 				</view>
 			</view>
 		</view>
 		<!-- 轮播 -->
-		<view class="index-banner">
-			<view class="index-banner-wrapper">
-				<swiper :indicator-dots="true" :autoplay="true" :interval="5000" :duration="1000" class="index-swiper" circular>
-					<swiper-item class="index-swiper-item">
-						<view class="swiper-item">
-							<image src="http://t8.baidu.com/it/u=2247852322,986532796&fm=79&app=86&f=JPEG?w=1280&h=853" mode=""></image>
+		<swiper style="height: calc(100vh);" :current="navIndex" @change="swiperChange">
+			<swiper-item  v-for="(swiperItem, i) in headerNav" :key = "i">
+				<scroll-view scroll-y="true" style="height: calc(100vh)">
+					
+						<view class="index-banner">
+							<view class="index-banner-wrapper">
+								<swiper :indicator-dots="true" :autoplay="true" :interval="5000" :duration="1000" class="index-swiper" circular>
+									<swiper-item class="index-swiper-item">
+										<view class="swiper-item">
+											<image src="http://t8.baidu.com/it/u=2247852322,986532796&fm=79&app=86&f=JPEG?w=1280&h=853" mode=""></image>
+										</view>
+									</swiper-item>
+									<swiper-item class="index-swiper-item">
+										<view class="swiper-item">
+											<image src="http://t8.baidu.com/it/u=1484500186,1503043093&fm=79&app=86&f=JPEG?w=1280&h=853" mode=""></image>
+										</view>
+									</swiper-item>
+								</swiper>
+							</view>
 						</view>
-					</swiper-item>
-					<swiper-item class="index-swiper-item">
-						<view class="swiper-item">
-							<image src="http://t8.baidu.com/it/u=1484500186,1503043093&fm=79&app=86&f=JPEG?w=1280&h=853" mode=""></image>
+					<view class="first-page" v-if="navIndex == 0">
+						<!-- 中部导航 -->
+						<view class="index-main-nav">
+							<view class="index-main-nav-top">
+								<view class="index-main-nav-top-item" v-for="(item, index) in indexMainNavTop" :key = "index" @click="goToTopPage(index)">
+									<image :src="item.platePic" mode="aspectFill"></image>
+									<view class="index-main-nav-top-item-text">{{item.plateName}}</view>
+								</view>
+							</view>
+							<view class="index-main-nav-bottom" v-if="indexMainNavTop.length">
+								<view class="index-main-nav-top-item" v-for="(item, index) in indexMainNavBottom" :key = "index">
+									<image :src="item.platePic" mode="aspectFill"></image>
+									<view class="index-main-nav-top-item-text">{{item.plateName}}</view>
+								</view>
+							</view>
 						</view>
-					</swiper-item>
-				</swiper>
-			</view>
-		</view>
+						<!-- 灰线 -->
+						<view class="line-7"></view>
+						<!-- 在讨论 -->
+						<view class="index-talk" @click="goToTopic">
+							<view class="index-talk-top">
+								<image src="../../static/image/ych/index/16.png" mode=""></image>
+								<text>大家都在讨论</text>
+							</view>
+							<view class="index-talk-bottom">
+								<text class="index-talk-bottom-item" v-for="(item, index) in talkArr" :key = "index">#{{item}}#</text>
+							</view>
+						</view>
+						<view class="line-3"></view>
+						<view class="index-weather">
+							<image src="../../static/logo.png" mode=""></image>
+							<view class="index-weather-main">温州乐清 多云 20～25度 舒适 适合穿着短袖衬衫长裤</view>
+						</view>
+						<view class="line-3"></view>
+						
+					</view> 
+					
+					<view class="fangchan-page">
+						<view class="fangchan-banner" v-if="currentTabIndexId == 1">
+							<image src="../../static/image/ych/index/fangchan1.png" mode="aspectFill" @click="goToHotHouse"></image>
+							<image src="../../static/image/ych/index/fangchan2.png" mode="aspectFill" @click="goToHouseConsult(0)"></image>
+							<image src="../../static/image/ych/index/fangchan3.png" mode="aspectFill" @click="goToHouseProperty"></image>
+						</view>
+						
+						<view class="car-banner" v-if="currentTabIndexId == 2">
+							<image src="../../static/image/ych/index/car2.png" mode="aspectFill" @click = "goToHotCar"></image>
+							<image src="../../static/image/ych/index/car1.png" mode="aspectFill" @click = "goToHouseConsult(1)"></image>
+						</view>
+						
+						<view class="show-box" v-if="navIndex != 0">
+							<view class="line-7" ></view>
+							<Stick></Stick>
+							<view class="line-3"></view>
+							<NavButton :navleft="'最新发布'" :navright="'精华帖'" :navIndex = "tabIndex" @handleNavIndex = "handleNavTabIndex"></NavButton>
+							<view class="line-3"></view>
+						</view>
+					</view>
+					 <Fab @trigger = "trigger"></Fab>
+					<ArticleMain @ArticleMainClick = "ArticleMainClick"  :ArticleList = "ArticleList"></ArticleMain>
+					
+				</scroll-view>
+			</swiper-item>
+		</swiper>
 		
-		<!-- 中部导航 -->
-		<view class="index-main-nav">
-			<view class="index-main-nav-top">
-				<view class="index-main-nav-top-item" v-for="(item, index) in indexMainNavTop" :key = "index">
-					<image src="../../static/logo.png" mode=""></image>
-					<view class="index-main-nav-top-item-text">{{item}}</view>
-				</view>
-			</view>
-			<view class="index-main-nav-bottom">
-				<view class="index-main-nav-top-item" v-for="(item, index) in indexMainNavTop" :key = "index">
-					<image src="../../static/logo.png" mode=""></image>
-					<view class="index-main-nav-top-item-text">{{item}}</view>
-				</view>
-			</view>
-		</view>
-		<!-- 灰线 -->
-		<view class="line-7"></view>
-		<!-- 在讨论 -->
-		<view class="index-talk">
-			<view class="index-talk-top">
-				<image src="../../static/logo.png" mode=""></image>
-				<text>大家都在讨论</text>
-			</view>
-			<view class="index-talk-bottom">
-				<text class="index-talk-bottom-item" v-for="(item, index) in talkArr" :key = "index">#{{item}}#</text>
-			</view>
-		</view>
-		<view class="line-3"></view>
-		<view class="index-weather">
-			<image src="../../static/logo.png" mode=""></image>
-			<view class="index-weather-main">温州乐清 多云 20～25度 舒适 适合穿着短袖衬衫长裤</view>
-		</view>
-		<view class="line-3"></view>
+	   
+		
+		
 		
 		 <simple-address ref="simpleAddress" :pickerValueDefault="cityPickerValueDefault" @onConfirm="onConfirm" themeColor='#007AFF'></simple-address>
 	</view>
@@ -83,35 +120,285 @@
 
 <script>
 	import simpleAddress from '@/components/simple-address/simple-address.vue';
+	import ArticleMain from '../../components/ArticleMain/ArticleMain.vue'
+	import uniFab from '@/components/uni-fab/uni-fab.vue';
+	import baseURL from '../../config/index.js'
 	export default {
 		onLoad() {
-			
+			// 获取当前城市
+			this.initMyCity()
+			// 对版块进行处理
+			if (uni.getStorageSync("token")) {
+				this.initMyInfo()
+			} else {
+				this.initTabConfig()
+			}
 		},
 		data() {
 			return {
+				city: '',
 				// 选择城市
 				cityPickerValueDefault: [0, 0, 1],
 				pickerText: '',
 				// 头部导航
-				headerNav: ['推荐', '找工作', '房产','推荐', '找工作', '房产','推荐', '找工作', '房产','推荐', '找工作', '房产','推荐', '找工作', '房产'],
+				headerNav: [{plateName: '推荐',childId: 'child99', id: 'tuijian'}],
+				fancyArrId: [], // 头部导航ID
+				tochildView: '',
+				currentTabIndexId: 0,
 				navIndex: 0, // 导航index
-				indexMainNavTop: ['房产','房产','房产','房产'], // 中部导航顶部
-				indexMainNavBottom: ['房产','房产','房产','房产'], // 中部导航底部
-				talkArr: ['推荐', '找工作', '房产']
+				pageNum: 0,
+				pageSize: 10,
+				hasFlag: true,
+				activeId: '', // 底部切换记录id
+				typeInIndex: [],
+				ArticleList: [],
+				indexMainNavTop: [], // 中部导航顶部
+				indexMainNavBottom: [{platePic: '../../static/image/ych/index/8.png' , plateName: '商城'}, {platePic: '../../static/image/ych/index/9.png' , plateName: '广场'}], // 中部导航底部
+				
+				talkArr: ['推荐', '找工作', '房产'],
+				tabIndex: 0, // 底部Tab
+			
 			}
 		},
 		components: {
-		        simpleAddress
+		        simpleAddress,
+				ArticleMain,
+				uniFab
 		},
 		methods: {
+			// 获取当前位置
+			initMyCity () {
+				uni.getLocation({
+				    type: 'wgs84',
+					geocode: true,
+				    success: (res) => {
+				        // console.log(res)
+						this.city = res.address.city
+				    }
+				});
+			},
+			// 切换头部导航
+			handleHeaderNavTabIndex (index) {
+				this.navIndex = index
+				this.tochildView = index == 0 ? this.headerNav[index].childId : this.headerNav[index - 1].childId
+				this.pageNum = 0
+				this.pageSize = 10
+				this.hasFlag = true
+				this.currentTabIndexId = this.headerNav[index].id
+				this.ArticleList = []
+				this.initArtivleList(index, this.headerNav[index].id, '', 0)
+				
+			},
+			swiperChange (e) {
+				
+				this.handleHeaderNavTabIndex(e.detail.current)
+			},
+			// 文章              // 下标   id  推荐数组 type 1 首次进 0 点击
+			async initArtivleList (index, id, arr, type) {
+			
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				this.activeId = id
+				
+				if (id == 'tuijian') {
+					console.log('123')
+					console.log(arr)
+					// type 1 才有 arr 
+					if (type == 1) {
+						this.typeInIndex = arr
+					}
+					
+					let res = await this.$fetch(this.$api.artivle_list, {typeIn: this.typeInIndex, pageNum: this.pageNum, pageSize: 10}, 'POST', 'FORM')
+					
+					res.rows.forEach(item => {
+						item.content = JSON.parse(item.content)
+						item.pics = JSON.parse(item.pics)
+					})
+					this.ArticleList = [...this.ArticleList, ...res.rows]
+					
+					this.hasFlag = this.pageNum * 10 < res.total
+				} else if (id == 'guangchang') {
+					let res = await this.$fetch(this.$api.artivle_list, {pageNum: this.pageNum, pageSize: 10}, 'POST', 'FORM')
+					
+					res.rows.forEach(item => {
+						item.content = JSON.parse(item.content)
+						item.pics = JSON.parse(item.pics)
+					})
+					this.ArticleList = [...this.ArticleList, ...res.rows]
+			
+					this.hasFlag = this.pageNum * 10 < res.total
+					
+				} else {
+					
+					let res = await this.$fetch(this.$api.artivle_list, {type: id, pageNum: this.pageNum, pageSize: 10}, 'POST', 'FORM')
+				
+					res.rows.forEach(item => {
+						item.content = JSON.parse(item.content)
+						item.pics = JSON.parse(item.pics)
+					})
+					this.ArticleList = [...this.ArticleList, ...res.rows]
+					
+					this.hasFlag = this.pageNum * 10 < res.total
+				}
+			},
+			// 个人信息 获取版块用
+			async initMyInfo () {
+				let res = await this.$fetch(this.$api.getCurrentUser, {}, 'GET', 'FORM')
+				// console.log(res)
+				this.fancyArrId = res.data.user.recommendPlate.split(',')
+				// console.log(fancyArrId)
+				this.initTabConfig()
+			},
+			
+			// 获取Tabbar配置
+			async initTabConfig () {
+				let res = await this.$fetch(this.$api.getAllPlate, {}, 'POST', 'FORM')
+				
+			
+				// res.data.forEach(item => {
+				// 	item.platePic = baseURL + item.platePic
+				// })
+				console.log(res)
+				this.indexMainNavTop  = res.data.slice(0, 4)
+				this.indexMainNavBottom.push(...res.data.slice(5, 7))
+				// console.log(res.data.slice(5, 7))
+				res.data.forEach((item, index) => {
+					if (item.isDefault == 1) {
+						this.headerNav.push(item)
+					}
+					// console.log(this.fancyArrId)
+					if (this.fancyArrId.length) {
+						this.fancyArrId.forEach((it, i) => {
+							if (item.id == it) {
+								this.headerNav.push(item)
+							}
+						}) 
+					}
+				})
+				// console.log(this.headerNav.slice(1, this.headerNav.length))
+				let tuijian = this.headerNav.slice(1, this.headerNav.length)
+				// 获取文章
+				let tuijianArr  = []
+				tuijian.forEach(item => {
+					tuijianArr.push(item.id)
+				})
+				this.initArtivleList(0, 'tuijian', tuijianArr, 1)
+				this.headerNav.push(({plateName: '广场', id: 'guangchang'}))
+				this.headerNav.push(({plateName: '', id: 'kong'}))
+				this.headerNav.forEach(item => {
+					item.childId = 'child' + item.id
+				})
+				
+			},
+			// 文章点击
+			ArticleMainClick (index) {
+				console.log(index)
+				uni.navigateTo({
+					url: './ArticleDetail'
+				})
+			},
 			// 选择城市
 			handleCity () {
 				this.$refs.simpleAddress.open();
 			},
 			// 选择城市点击确定
 			onConfirm(e) {
-				this.pickerText = JSON.stringify(e);
+				this.pickerText = e;
 				console.log(this.pickerText)
+				this.city = this.pickerText.labelArr[1]
+			},
+			// 去搜索
+			goToSearch () {
+				uni.navigateTo({
+					url: '../Search/Search'
+				})
+			},
+			// 去tab添加
+			goToIndexTabCongig () {
+				uni.navigateTo({
+					url: '../IndexTabConfig/IndexTabConfig'
+				})
+			},
+			// 去发布
+			trigger(index) {
+				if (index == 0) {
+					uni.navigateTo({
+						url: './Publish?type=' + 0
+					})
+				} else if (index == 1) {
+					uni.navigateTo({
+						url: './Publish?type=' + 1
+					})
+				} else {
+					uni.navigateTo({
+						url: './Publish?type=' + 2
+					})
+				}
+			},
+			// 中部导航跳转
+			goToTopPage (index) {
+				uni.navigateTo({
+					url: '../Login/Login'
+				})
+			},
+			// 去话题
+			goToTopic () {
+				uni.navigateTo({
+					url: './Topic'
+				})
+			},
+			// 底部导航切换
+			async handleNavTabIndex (index) {
+				console.log(index)
+				// this.tabIndex = index
+				this.pageNum = 0
+				this.hasFlag = true
+				this.ArticleList = []
+				if (index == 0) {
+					let res = await this.$fetch(this.$api.artivle_list, {type: this.activeId, pageNum: this.pageNum, pageSize: 10}, 'POST', 'FORM')
+									
+					res.rows.forEach(item => {
+						item.content = JSON.parse(item.content)
+						item.pics = JSON.parse(item.pics)
+					})
+					this.ArticleList = [...this.ArticleList, ...res.rows]
+					
+					this.hasFlag = this.pageNum * 10 < res.total
+				} else {
+					let res = await this.$fetch(this.$api.artivle_list, {isCreamFlag:1, type: this.activeId, pageNum: this.pageNum, pageSize: 10}, 'POST', 'FORM')
+									
+					res.rows.forEach(item => {
+						item.content = JSON.parse(item.content)
+						item.pics = JSON.parse(item.pics)
+					})
+					this.ArticleList = [...this.ArticleList, ...res.rows]
+					
+					this.hasFlag = this.pageNum * 10 < res.total
+				}
+			},
+			// 去找租房
+			goToHouseProperty () {
+				uni.navigateTo({
+					url: '../HouseProperty/HouseProperty?title=' + '找租房'
+				})
+			},
+			// 去热卖楼盘
+			goToHotHouse () {
+				uni.navigateTo({
+					url: '../HotHouse/HotHouse'
+				})
+			},
+			// 去房产咨询
+			goToHouseConsult (index) {
+				uni.navigateTo({
+					url: '../HouseProperty/HouseConsult?type=' + index
+				})
+			},
+			// 去热卖车款
+			goToHotCar () {
+				uni.navigateTo({
+					url: '../HotHouse/HotCar'
+				})
 			}
 		}
 	}
@@ -126,7 +413,8 @@
 			width: 100%;
 			padding-top: var(--status-bar-height);
 			position: fixed;
-			z-index: 999;
+			z-index: 9;
+			padding-bottom:10rpx;
 			background-color: #fff;
 			.index-header-top{
 				width: 100%;
@@ -195,7 +483,6 @@
 						letter-spacing: -0.39px;
 						position: relative;
 						text-align: center;
-					
 						&::after{
 							content: '';
 							width: 0;
@@ -259,6 +546,7 @@
 				
 			}
 		}
+		
 		.index-main-nav{
 			padding: 22rpx 64rpx 22rpx 58rpx;
 			box-sizing: border-box;
@@ -351,5 +639,44 @@
 				white-space: nowrap;
 			}
 		}
+		
+		.fangchan-page{
+			.fangchan-banner{
+				width: 100%;
+				height: 152rpx;
+				display: flex;
+				align-items: center;
+				justify-content: space-around;
+				image{
+					width: 220rpx;
+					height: 106rpx;
+				}
+			}
+			.car-banner{
+				width: 100%;
+				height: 152rpx;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 0 32rpx;
+				box-sizing: border-box;
+				image{
+					width: 332rpx;
+					height: 106rpx;
+					&:nth-child(2){
+						// margin-left: 22rpx;
+					}
+				}
+			}
+		}
+		
+	}
+</style>
+<style>
+	.uni-fab__circle{
+		transform: scale(0.6);
+	}
+	.uni-fab{
+		transform: scale(0.9);
 	}
 </style>

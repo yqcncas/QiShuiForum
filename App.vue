@@ -16,19 +16,19 @@
 	/* 注意要写在第一行，同时给style标签加入lang="scss"属性 */
 	@import "uview-ui/index.scss";
 	
-	page::after {
-		content: "";
-		position: fixed;
-		top: 0;
-		/*  #ifdef H5 */
-		top: 44px;
-		/*  #endif  */
-		left: 0;
-		box-shadow: inset 0 4upx 8upx 0 rgb(244, 244, 244);
-		z-index: 9;
-		width: 750upx;
-		height: 8upx;
-	}
+	// page::after {
+	// 	content: "";
+	// 	position: fixed;
+	// 	top: 0;
+	// 	/*  #ifdef H5 */
+	// 	top: 44px;
+	// 	/*  #endif  */
+	// 	left: 0;
+	// 	box-shadow: inset 0 4upx 8upx 0 rgb(244, 244, 244);
+	// 	z-index: 9;
+	// 	width: 750upx;
+	// 	height: 8upx;
+	// }
 	page{
 		width: 100%;
 		// height: 100%;

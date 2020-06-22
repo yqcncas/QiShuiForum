@@ -24,6 +24,16 @@ Vue.prototype.$dayjs = dayjs // 放入原型中
 
 import Status from './components/Status/Status.vue'
 Vue.component('Status', Status)
+import Stick from './components/Stick/Stick.vue'
+Vue.component('Stick', Stick)
+import ArticleMain from './components/ArticleMain/ArticleMain.vue'
+Vue.component('ArticleMain', ArticleMain)
+import NavButton from './components/NavButton/NavButton.vue'
+Vue.component('NavButton', NavButton)
+import Fab from './components/Fab/Fab.vue'
+Vue.component('Fab', Fab)
+import uniLoadMore from './components/uni-load-more/uni-load-more.vue'
+Vue.component('uniLoadMore',uniLoadMore);
 
 const app = new Vue({
     ...App

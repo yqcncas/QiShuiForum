@@ -8,9 +8,377 @@
 			"style": {
 				"navigationBarTitleText": "",
 				"app-plus":{
-					"titleNView": false,
-					"bounce": "none",
-					"scrollIndicator": "none"
+					"titleNView": false
+				}
+			}
+		},
+		{
+			"path": "pages/Invitation/Invitation",
+			"style": {
+				"navigationBarTitleText": "帖子"
+			}
+		},
+		{
+			"path": "pages/Find/Find",
+			"style": {
+				"navigationBarTitleText": "发现"
+			}
+		},
+		{
+			"path": "pages/Market/Market",
+			"style": {
+				"navigationBarTitleText": "积分商城"
+			}
+		},
+		{
+			"path": "pages/My/My",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/Search/Search",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus":{
+					"titleNView": false
+				}
+			}
+		},
+		{
+			"path": "pages/IndexTabConfig/IndexTabConfig",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus":{
+					"titleNView": false
+				}
+			}
+		},
+		{
+			"path": "pages/Login/Login",
+			"style": {
+				"navigationBarTitleText": "用户登录"
+			}
+		},
+		
+		{
+			"path": "pages/Login/PhoneLogin",
+			"style": {
+				"navigationBarTitleText": "用户登录"
+			}
+		},
+		{
+			"path": "pages/Login/ForgetPassWord",
+			"style": {
+				"navigationBarTitleText": "忘记密码"
+			}
+		},
+		{
+			"path": "pages/My/MyCheerBag",
+			"style": {
+				"navigationBarTitleText": "加油包充值"
+			}
+		},
+		{
+			"path": "pages/My/MyCollect",
+			"style": {
+				"navigationBarTitleText": "我的收藏"
+			}
+		},
+		{
+			"path": "pages/Market/JiFenMarket",
+			"style": {
+				"navigationBarTitleText": "积分商城"
+			}
+		},
+		{
+			"path": "pages/Market/JiFenMarket",
+			"style": {
+				"navigationBarTitleText": "积分商城"
+			}
+		},
+		{
+			"path": "pages/HotHouse/HotHouse",
+			"style": {
+				"navigationBarTitleText": "热卖楼盘"
+			}
+		},
+		{
+			"path": "pages/HotHouse/HotCar",
+			"style": {
+				"navigationBarTitleText": "热卖车款"
+			}
+		},
+		{
+			"path": "pages/My/MyInfo",
+			"style": {
+				"navigationBarTitleText": "个人资料"
+			}
+		},
+		{
+			"path": "pages/Find/historyFind",
+			"style": {
+				"navigationBarTitleText": "活动"
+			}
+		},
+		{
+			"path": "pages/Find/FindDetail",
+			"style": {
+				"navigationBarTitleText": "活动详情",
+				"app-plus":{
+					"titleNView":{
+						"buttons": [
+							{"type": "share"}
+						]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/Find/Apply",
+			"style": {
+				"navigationBarTitleText": "填写表单"
+			}
+		},
+		{
+			"path": "pages/My/shareMoney",
+			"style": {
+				"navigationBarTitleText": "分享赚钱",
+				"app-plus":{
+					"titleNView":{
+						"buttons": [
+							{"type": "share"}
+						]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/Withdraw/Withdraw",
+			"style": {
+				"navigationBarTitleText": "提现"
+			}
+		},
+		{
+			"path": "pages/Advertising/PublishAdvertising",
+			"style": {
+				"navigationBarTitleText": "发布广告"
+			}
+		},
+		{
+			"path": "pages/index/Topic",
+			"style": {
+				"navigationBarTitleText": "话题"
+			}
+		},
+		{
+			"path": "pages/Login/Register",
+			"style": {
+				"navigationBarTitleText": "注册"
+			}
+		},
+		{
+			"path": "pages/Message/Message",
+			"style": {
+				"navigationBarTitleText": "消息"
+			}
+		},
+		{
+			"path": "pages/Message/Comment",
+			"style": {
+				"navigationBarTitleText": "评论管理"
+			}
+		},
+		{
+			"path": "pages/Sign/Sign",
+			"style": {
+				"navigationBarTitleText": "签到"
+			}
+		},
+		{
+			"path": "pages/index/TopicDetail",
+			"style": {
+				"navigationBarTitleText": "话题"
+			}
+		},
+		{
+			"path": "pages/index/ArticleDetail",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/My/UserHomePage",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index/ArticleComment",
+			"style": {
+				"navigationBarTitleText": "评论详情"
+			}
+		},
+		{
+			"path": "pages/HouseProperty/HouseProperty",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/HouseProperty/House",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/HouseProperty/HouseDetail",
+			"style": {
+				"navigationBarTitleText": "详情"
+			}
+		},
+		{
+			"path": "pages/ShopDetail/ShopDetail",
+			"style": {
+				"navigationBarTitleText": "商品详情"
+			}
+		},
+		{
+			"path": "pages/My/MyOrder",
+			"style": {
+				"navigationBarTitleText": "我的订单"
+			}
+		},
+		{
+			"path": "pages/My/Merchant",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/My/MyOrderDetail",
+			"style": {
+				"navigationBarTitleText": "订单详情"
+			}
+		},
+		{
+			"path": "pages/RichText/RichText",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/TopArticles/TopArticles",
+			"style": {
+				"navigationBarTitleText": "置顶购买"
+			}
+		},
+		{
+			"path": "pages/Pay/Pay",
+			"style": {
+				"navigationBarTitleText": "支付"
+			}
+		},
+		{
+			"path": "pages/Chat/Chat",
+			"style": {
+				"navigationBarTitleText": "私信",
+				"app-plus":{
+					"softinputMode": "adjustResize"
+				}
+			}
+		},
+		{
+			"path": "pages/MyWallet/Recharge",
+			"style": {
+				"navigationBarTitleText": "充值"
+			}
+		},
+		{
+			"path": "pages/MyWallet/Particulars",
+			"style": {
+				"navigationBarTitleText": "明细"
+			}
+		},
+		{
+			"path": "pages/HouseProperty/HouseConsult",
+			"style": {
+				"navigationBarTitleText": "咨询"
+			}
+		},
+		{
+			"path": "pages/My/SettledEnterprise",
+			"style": {
+				"navigationBarTitleText": "商家入驻"
+			}
+		},
+		{
+			"path": "pages/index/Publish",
+			"style": {
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/My/Setting",
+			"style": {
+				"navigationBarTitleText": "设置"
+			}
+		},
+		{
+			"path": "pages/Login/ChangePwd",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
+		},
+		{
+			"path": "pages/My/MessagePush",
+			"style": {
+				"navigationBarTitleText": "消息推送"
+			}
+		},
+		{
+			"path": "pages/My/FootPrint",
+			"style": {
+				"navigationBarTitleText": "浏览足迹"
+			}
+		},
+		{
+			"path": "pages/My/Advertising",
+			"style": {
+				"navigationBarTitleText": "我的广告"
+			}
+		},
+		{
+			"path": "pages/My/Drafts",
+			"style": {
+				"navigationBarTitleText": "草稿箱",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [
+							{
+								"type": "none",
+								"text": "清空",
+								"fontSize": "14px"
+							}
+						]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/MyWallet/MyWallet",
+			"style": {
+				"navigationBarTitleText": "我的钱包",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [
+							{
+								"type": "none",
+								"text": "充值",
+								"fontSize": "14px"
+							}
+						]
+					}
 				}
 			}
 		}
@@ -19,6 +387,42 @@
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+			"bounce": "none",
+			"scrollIndicator": "none"
+		}
+	},
+	"tabBar": {
+	    "borderStyle": "white",
+	    "color": "#4D4D4D",
+	    "selectedColor": "#FF682D",
+	    "backgroundColor": "#ffffff",
+	    "list": [{
+	        "pagePath": "pages/index/index",
+	        "iconPath": "static/image/tabbar/1.png",
+	        "selectedIconPath": "static/image/tabbar/1-active.png",
+	        "text": "首页"
+	    }, {
+	        "pagePath": "pages/Invitation/Invitation",
+	        "iconPath": "static/image/tabbar/2.png",
+	        "selectedIconPath": "static/image/tabbar/2-active.png",
+	        "text": "帖子"
+	    }, {
+	        "pagePath": "pages/Find/Find",
+	        "iconPath": "static/image/tabbar/3.png",
+	        "selectedIconPath": "static/image/tabbar/3-active.png",
+	        "text": "发现"
+	    }, {
+	        "pagePath": "pages/Market/Market",
+	        "iconPath": "static/image/tabbar/4.png",
+	        "selectedIconPath": "static/image/tabbar/4-active.png",
+	        "text": "积分商城"
+	    }, {
+	        "pagePath": "pages/My/My",
+	        "iconPath": "static/image/tabbar/5.png",
+	        "selectedIconPath": "static/image/tabbar/5-active.png",
+	        "text": "我的"
+	    }]
 	}
 }

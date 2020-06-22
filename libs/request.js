@@ -12,7 +12,7 @@ let baseUrl = baseURL
  */
 export default (url, data, method = 'POST', contentType = 'json', headers = {}) => {
 	// 判断url地址第一个字符是否含 '/', 有则截取掉
-	console.log(url)
+	// console.log(url)
 	if (url.slice(0, 1) === '/') url = url.slice(1)
 	// 删除data对象空属性
 	for (let i in data) {
@@ -41,28 +41,29 @@ export default (url, data, method = 'POST', contentType = 'json', headers = {}) 
 			method: method,
 			header: headers,
 			success: function(res) {
-				console.log(res)
+				// console.log(res)
 				if (parseInt(res.statusCode) === 200) {
-				
-					if(res.data.code == 401 || res.data.code == 500){
-						var pages = getCurrentPages();
-						if (pages[0].route == 'pages/my/my') {
-							uni.setStorageSync('showLogin', true)
-						} else {
-							uni.showToast({
-								icon: 'none',
-								title: res.data.msg
+					
+					if(res.data.code == 401){
+						uni.showToast({
+							icon: 'none',
+							title: res.data.msg
+						})
+						setTimeout(() => {
+							uni.redirectTo({
+								url:'/pages/Login/Login'
 							})
-							
-							setTimeout(() => {
-								uni.switchTab({
-								    url: '/pages/my/my'
-								})
-							}, 1500)
-						}
+						}, 1500)
+						
+					}else if (res.data.code == 500) {
+						uni.showToast({
+							icon: 'none',
+							title: res.data.msg
+						})
 					}else{
 						resolve(res.data)
 					}
+					
 				} else if (parseInt(res.statusCode) === 401) {
 					// 请求401时	
 					throw Error(`请求接口${baseUrl}${url},请求所传参数${JSON.stringify(data)};后端返回401`);
