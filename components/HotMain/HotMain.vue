@@ -1,8 +1,8 @@
 <template>
 	<view class="hotMain">
-		<view class="hotMain-item" v-for="(item, index) in 20" :key = "index" @click="handleHotItem(index)">
-			<image src="../../static/logo.png" mode="aspectFill"></image>
-			<view class="hotMain-item-bottom">亚夏·金辰府</view>
+		<view class="hotMain-item" v-for="(item, index) in HotMainArr" :key = "index" @click="handleHotItem(item.id)">
+			<image :src="item.titlePic" mode="aspectFill"></image>
+			<view class="hotMain-item-bottom">{{item.title}}</view>
 		</view>
 	
 	</view>
@@ -15,11 +15,16 @@
 				type: String,
 				required: true,
 				default: '热卖楼盘'
+			},
+			HotMainArr: {
+				type: Array,
+				default: () => [],
+				required: true
 			}
 		},
 		methods: {
-			handleHotItem (index) {
-				this.$emit("handleHotItem", index)
+			handleHotItem (id) {
+				this.$emit("handleHotItem", id)
 			}
 		}
 	}
@@ -58,7 +63,7 @@
 				padding-left: 16rpx;
 				box-sizing: border-box;
 				font-family: PingFangSC-Medium;
-				font-size: 12px;
+				font-size: 10px;
 				color: #282828;
 				letter-spacing: -0.09px;
 				text-align: justify;

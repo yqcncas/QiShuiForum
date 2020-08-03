@@ -21,6 +21,11 @@ dayjs.locale('zh-cn') // 引入中文
 dayjs.extend(relativeTime)
 Vue.prototype.$dayjs = dayjs // 放入原型中
 
+import MescrollBody from "@/components/mescroll-uni/mescroll-body.vue"
+import MescrollUni from "@/components/mescroll-uni/mescroll-uni.vue"
+Vue.component('mescroll-body', MescrollBody)
+Vue.component('mescroll-uni', MescrollUni)	
+
 
 import Status from './components/Status/Status.vue'
 Vue.component('Status', Status)
@@ -34,6 +39,8 @@ import Fab from './components/Fab/Fab.vue'
 Vue.component('Fab', Fab)
 import uniLoadMore from './components/uni-load-more/uni-load-more.vue'
 Vue.component('uniLoadMore',uniLoadMore);
+import shareBox from './components/ShareBox/ShareBox.vue'
+Vue.component('shareBox', shareBox)
 
 const app = new Vue({
     ...App

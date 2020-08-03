@@ -11,13 +11,13 @@
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: calc(100vh - 98rpx);" @scrolltolower = "lower">
 						<view class="market-list-main">
-							<view class="market-list-item" v-for="(item, index) in 5" :key = "index">
-								<image src="../../static/logo.png" mode="aspectFill"></image>
+							<view class="market-list-item" v-for="(item, index) in shopList" :key = "index" @click="goToShopDetail(item.goods.goodsType, item.goods.id)"> 
+								<image :src="item.goods.goodsPic" mode="aspectFill"></image>
 								<view class="market-list-item-bottom">
-									<view class="market-list-item-bottom-top">正品iPhone Xs Max</view>
+									<view class="market-list-item-bottom-top">{{item.goods.goodsName}}</view>
 									<view class="market-list-item-bottom-footer">
 										<view class="market-list-item-bottom-footer-left">
-											<view class="market-list-item-bottom-footer-left-top">3000元 + 200积分</view>
+											<view class="market-list-item-bottom-footer-left-top">{{item.goods.price}}元 + {{item.goods.goodsIntegral}}积分</view>
 										</view>
 										<view class="market-list-item-bottom-footer-right">兑换</view>
 									</view>
@@ -30,21 +30,18 @@
 				</swiper-item>
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: calc(100vh - 98rpx);" @scrolltolower = "lower">
-						<view class="tiezi-item" v-for="(item, index) in 10" :key = "index">
+						<view class="tiezi-item" v-for="(item, index) in tzList" :key = "index" @click="goToArtDetail(item.article.id, item.article.userId)">
 							<view class="tiezi-item-header">
-								<image src="../../static/logo.png" mode="aspectFill"></image>
+								<image :src="item.article.avatar ? item.article.avatar : '../../static/image/ych/avatar.png'" mode="aspectFill"></image>
 								<view class="tiezi-item-header-right">
-									<view class="tiezi-item-header-right-top">黑胡椒</view>
-									<view class="tiezi-item-header-right-bottom">2020年05月28日 00:07</view>
+									<view class="tiezi-item-header-right-top">{{item.article.userName}}</view>
+									<view class="tiezi-item-header-right-bottom">{{item.createTime}}</view>
 								</view>
 							</view>
-							<view class="tiezi-item-center">2020年旅游业该何去何从</view>
+							<view class="tiezi-item-center">{{item.article.content[0].content}}</view>
 							<view class="tiezi-item-image-box">
-								
-								<image src="../../static/logo.png" mode="aspectFill"></image>
-								<image src="../../static/logo.png" mode="aspectFill"></image>
-								<image src="../../static/logo.png" mode="aspectFill"></image>
-								<image src="../../static/logo.png" mode="aspectFill"></image>
+								<image :src="contentImg" mode="aspectFill" v-for="(contentImg, i) in item.article.content[0].pic" :key = "i" v-if="item.article.isVideo == 0"></image>
+								<video :src="item.article.content[0].pic[0]" controls v-if="item.article.isVideo == 1" style="width: 100%;"></video>
 								
 							</view>
 							<view class="share-box">
@@ -54,14 +51,15 @@
 								</view>
 								<view class="share-right">
 									<image src="../../static/image/ych/my/6.png" mode=""></image>
-									<view class="share-left-text">评论(3)</view>
+									<view class="share-left-text">评论({{item.article.evaluateNum}})</view>
 								</view>
 							</view>
 							<!-- <view class="line-3" v-if="index != 10"></view> -->
+							
 						</view>
+						<uniLoadMore bgColor="#fff" :status="tZhasFlag ? 'loading' : 'noMore'" ></uniLoadMore>
 						
 						
-						<uniLoadMore bgColor="#fff" :status="hasFlag ? 'loading' : 'noMore'" ></uniLoadMore>
 					</scroll-view>
 				</swiper-item>
 			</swiper>
@@ -73,25 +71,83 @@
 
 <script>
 	export default {
+		onLoad() {
+			
+			this.initMyCollect()
+			this.initMyTieZi()
+		},
 		data () {
 			return {
 				tabIndex: 0,
-				hasFlag: true
+				hasFlag: true,
+				pageNum: 0,
+				pageSize: 10,
+				shopList: [],
+				
+				tZhasFlag: true,
+				tZpageNum: 0,
+				tZpageSize: 10,
+				tzList: []
 			}
 		},
+		
 		methods: {
 			//　点击
 			handleTabIndex (index) {
 				this.tabIndex = index
 			},
+			goToShopDetail (index, id) {
+				if (index == 1) {
+					index == 0
+				} else {
+					index == 1
+				}
+				uni.navigateTo({
+					url: '../ShopDetail/ShopDetail?type=' + index + '&id=' + id
+				})
+			},
 			// 下拉
 			lower () {
-				console.log('下拉刷新')
+				if (this.tabIndex == 0) {
+					this.initMyCollect()
+				} else {
+					this.initMyTieZi()
+				}
 			},
 			// 滑动
 			swiperChange (e) {
 				this.handleTabIndex(e.detail.current)
+			},
+			async initMyCollect () {
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.my_collection_list, {pageNum: this.pageNum, pageSize: this.pageSize, type: 0}, "POST", 'FORM')
+				// console.log(res)
+				this.shopList = [...this.shopList, ...res.rows]
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+			},
+			async initMyTieZi () {
+				if (!this.tZhasFlag) return
+				this.tZpageNum = ++this.tZpageNum
+				let res = await this.$fetch(this.$api.my_collection_list, {pageNum: this.tZpageNum, pageSize: this.tZpageSize, type: 1}, "POST", 'FORM')
+				// console.log(res)
+				res.rows.forEach(item => {
+					if (item.article.content) {
+						item.article.content = JSON.parse(item.article.content)
+					}
+					// item.article.pics = JSON.parse(item.article.pics)
+				})
+				this.tzList = [...this.tzList, ...res.rows]
+				console.log(this.tzList)
+				this.tZhasFlag = this.tZpageNum * this.tZpageSize < res.total
+			},
+			goToArtDetail (id, userId) {
+				
+				uni.navigateTo({
+					url: '../index/ArticleDetail?id=' + id + '&userId=' + userId
+				})
 			}
+			
 		}
 	}
 </script>
@@ -178,7 +234,7 @@
 						box-sizing: border-box;
 						.market-list-item-bottom-top{
 							font-family: PingFangSC-Medium;
-							font-size: 12px;
+							font-size: 10px;
 							color: #545454;
 							letter-spacing: -0.09px;
 							text-align: justify;

@@ -1,0 +1,80 @@
+<template>
+	<div class="start" :style="{width: screenWidth + 'px', height:screenHeight + 'px' }">
+		<image :src="starImg" mode="aspectFill" :style="{width: screenWidth + 'px', height:screenHeight + 'px' }"></image>
+		<text class="clickTo" @click="goToIndex">点击跳转{{countDown}}</text>
+	</div>
+</template>
+
+<script>
+	export default {
+		onLoad() {
+			plus.navigator.setFullscreen(true); 
+			if (uni.getStorageSync('startImg')) {
+				this.starImg = uni.getStorageSync('startImg')
+			}
+			// 获取系统信息
+			this.initSystemInfo()
+			// 倒计时
+			this.handleCountDown()
+		},
+		data () {
+			return {
+				screenWidth: 0,
+				screenHeight: 0,
+				countDown: 5,
+				starImg: ''
+			}
+		},
+		methods: {
+			// 获取系统信息
+			initSystemInfo () {
+				uni.getSystemInfo({
+				    success: (res) => {
+						this.screenWidth = res.screenWidth
+						this.screenHeight = res.screenHeight	
+				    }
+				})
+				
+			},
+			// 倒计时
+			handleCountDown () {
+				let timer = setInterval(() => {
+					this.countDown--
+					if (this.countDown <= 0) {
+						this.countDown = " "
+						clearInterval(timer)
+						
+						this.goToIndex()
+					}
+				}, 1000)
+			},
+			// 跳转
+			goToIndex () {
+				plus.navigator.setFullscreen(false); 
+				uni.switchTab({
+					url: '../index/index'
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+.start{
+	width: 650rpx;
+	height: 100%;
+
+}
+
+.clickTo{
+	position: fixed;
+	right: 40rpx;
+	top: 90rpx;
+	color: #FFFFFF;
+	border-width: 2rpx;
+	border-style: solid;
+	border-color: #FFFFFF;
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 30rpx;	font-size: 14px;	padding-top: 5rpx;	padding-bottom: 5rpx;	padding-left: 25rpx;	padding-right: 25rpx;
+}
+</style>

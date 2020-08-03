@@ -12,31 +12,42 @@
 		</view>
 		
 		<view class="my-order">
-			<view class="my-order-item" v-for="(item, index) in 10" :key = "index">
+			<view class="my-order-item" v-for="(item, index) in WalletList" :key = "index">
 				<view class="my-order-item-left">
-					<image src="../../static/logo.png" mode="aspectFill"></image>
+					<image :src="item.goodsPic" mode="aspectFill"></image>
 				</view>
 				<view class="my-order-item-right">
 					<view class="my-order-item-right-top">
-						<view class="my-order-item-right-top-left">正品iPhone Xs Max</view>
-						<view class="my-order-item-right-top-right active">待使用</view>
+						<view class="my-order-item-right-top-left">{{item.goodsName}}</view>
+						<view class="my-order-item-right-top-right active">已核销</view>
 					</view>
-					<view class="my-order-item-right-center">积分兑换</view>
+					<view class="my-order-item-right-center">{{item.goodsType == 0 ? '限时抢购' : '积分兑换' }}</view>
 					<view class="my-order-item-right-bottom">
-						<view class="my-order-item-right-bottom-left">有效期至：2020-08-03</view>
+						<view class="my-order-item-right-bottom-left">有效期至：{{item.endTime}}</view>
 						<!-- <view class="my-order-item-right-bottom-right">核销</view> -->
 					</view>
 				</view>
 			</view>
 			
 		</view>
-		
+		<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
 		
 	</view>
 </template>
 
 <script>
 	export default {
+		onLoad() {
+			this.initWalletList()
+		},
+		data () {
+			return {
+				hasFlag: true,
+				pageNum: 0,
+				pageSize: 10,
+				WalletList: []
+			}
+		},
 		methods: {
 			goBack () {
 				uni.navigateBack({
@@ -44,8 +55,28 @@
 				})
 			},
 			saoyisao () {
-				console.log('扫一下')
+				uni.scanCode({
+				    onlyFromCamera: true,
+				    success:  async (res) => {
+						// console.log(res)
+				  //       console.log('条码类型：' + res.scanType);
+				  //       console.log('条码内容：' + res.result);
+						let msg = await this.$fetch(this.$api.write_off_goods, {code: res.result}, "POST", 'FORM')
+						console.log(msg)
+				    }
+				});
+			},
+			async initWalletList() {
+				if (!this.hasFlag) return 
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.my_write_off_order, {pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
+				console.log(res)
+				this.WalletList = [...this.WalletList, ...res.rows]
+				this.hasFlag = this.pageNum * this.pageSize < res.total
 			}
+		},
+		onReachBottom() {
+			this.initWalletList()
 		}
 	}
 </script>
@@ -136,7 +167,7 @@
 							font-family: PingFangSC-Medium;
 							font-size: 16px;
 							color: #545454;
-							letter-spacing: -0.12px;
+							letter-spacing: -0.10px;
 						}
 						.my-order-item-right-top-right{
 							font-family: PingFangSC-Medium;
@@ -154,7 +185,7 @@
 					.my-order-item-right-center{
 						display: inline-block;
 						font-family: PingFangSC-Medium;
-						font-size: 12px;
+						font-size: 10px;
 						color: #FF7B30;
 						letter-spacing: 0.04px;
 						padding: 0 6rpx;
@@ -170,7 +201,7 @@
 						align-items: center;
 						.my-order-item-right-bottom-left{
 							font-family: PingFangSC-Regular;
-							font-size: 12px;
+							font-size: 10px;
 							color: #292929;
 							letter-spacing: 0.04px;
 						}

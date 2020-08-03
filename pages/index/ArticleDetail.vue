@@ -7,37 +7,43 @@
 			</view>
 			
 			<view class="ArticleDetail-title-center">正文</view>
-			<image src="../../static/image/ych/index/19.png" mode="aspectFill" class="like"></image>
-			<!-- <image src="../../static/image/ych/index/21.png" mode="aspectFill" class="more"></image> -->
+			<view class="like-img-box" v-if="ArtDetail.createTime" @click="collectionArt(ArtDetail)">
+				<image src="../../static/image/ych/index/19.png" mode="aspectFill" class="like" v-if="showFollow && !ArtDetail.params.collection" ></image>
+				<image src="../../static/image/ych/index/20.png" mode="aspectFill" class="like" v-if="showFollow && ArtDetail.params.collection"></image>
+			</view>
 		</view>
 		<view class="ArticleDetail-center">
 			<view class="ArticleDetail-center-top">
-				<view class="ArticleDetail-center-top-left">
-					<image src="../../static/logo.png" mode="aspectFill"></image>
+				<view class="ArticleDetail-center-top-left" @click="goToMyHomePage(userInfo.userId)">
+					<image :src="userInfo.avatar ? userInfo.avatar : '../../static/image/ych/avatar.png'" mode="aspectFill"></image>
 					<view class="userInfo">
 						<view class="userInfo-top">
-							<view class="userInfo-top-name">黑胡椒</view>
-							<view class="userInfo-top-level">Lv.1</view>
-							<view class="userInfo-top-bozhu">房产板块版主</view>
+							<view class="userInfo-top-name">{{userInfo.userName}}</view>
+							<view class="userInfo-top-level">Lv.{{userInfo.level}}</view>
+							<view class="userInfo-top-bozhu" v-if="userInfo.plateName">{{userInfo.plateName}}板块版主</view>
 						</view>
-						<view class="userInfo-bottom">2020年05月28日 00:07</view>
+						<view class="userInfo-bottom">{{ArtDetail.createTime}}</view>
 					</view>
 				</view>
-				<view class="ArticleDetail-center-top-right">
-					<image src="../../static/image/ych/index/22.png" mode=""></image>
-					<view class="ArticleDetail-center-top-right-text">关注</view>
+				<view class="ArticleDetail-center-top-right" v-if="showFollow && ArtDetail.createTime" :style="{borderColor: ArtDetail.params.follow ? '#c8c9cc' : '#FF7B30' }" @click="followUser(ArtDetail.params)">
+					<image src="../../static/image/ych/index/22.png" mode="" v-if="!ArtDetail.params.follow"></image>
+					<view class="ArticleDetail-center-top-right-text" :style="{color: ArtDetail.params.follow ? '#c8c9cc' : '#FF7B30' }">{{ArtDetail.params.follow ? '已关注' : '关注'}}</view>
+				
 				</view>
 			</view>
-			<view class="ArticleDetail-center-main">
-				<view class="ArticleDetail-center-main-title">2020年旅游业该何去何从</view>
-				<view class="ArticleDetail-center-main-center">2020年旅游业该何去何从</view>
-				<view class="ArticleDetail-center-main-img-box">
+			<view class="ArticleDetail-center-main" v-for="(item, index ) in ArtDetail.content" :key = "index">
+				<view class="ArticleDetail-center-main-title" v-if="index == 0">{{ArtDetail.title}}</view>
+				<view class="ArticleDetail-center-main-center">{{item.content}}</view>
+				<view class="ArticleDetail-center-main-img-box" v-if="ArtDetail.isVideo == 0">
+					<image :src="imgItem" mode="aspectFill" v-for="(imgItem, i) in item.pic" :key = "i" @click = "showImgBig(imgItem, item.pic)"></image>
+					<!-- <image src="../../static/logo.png" mode="aspectFill"></image>
 					<image src="../../static/logo.png" mode="aspectFill"></image>
-					<image src="../../static/logo.png" mode="aspectFill"></image>
-					<image src="../../static/logo.png" mode="aspectFill"></image>
-					<image src="../../static/logo.png" mode="aspectFill"></image>
+					<image src="../../static/logo.png" mode="aspectFill"></image> -->
 				</view>
-				<view class="ArticleDetail-center-main-footer">8.8w阅读量</view>
+				<view class="ArticleDetail-center-main-img-box" v-if="ArtDetail.isVideo == 1">
+					<video :src="item.pic[0]" controls style="width: 100%;"></video>
+				</view>
+				<view class="ArticleDetail-center-main-footer" v-if="index == ArtDetail.content.length - 1" >{{ArtDetail.browseNum}}阅读量</view>
 			</view>
 		</view>
 		<view class="ArticleDetail-footer">
@@ -46,45 +52,46 @@
 				<view class="ArticleDetail-footer-top-item" :class="{active:tabIndex == 1}" @click="handleTabIndex(1)">热门评论</view>
 			</view>
 			<view class="ArticleDetail-footer-main">
-				<view class="ArticleDetail-footer-main-item" v-for="(item, index) in 4" :key = "index" @click="goToArticleComment">
+				<view class="ArticleDetail-footer-main-item" v-for="(item, index) in ArtDetailComment" :key = "item.id" @click="goToArticleComment(item)">
 					<view class="ArticleDetail-footer-main-item-user">
 						<view class="ArticleDetail-center-top">
 							<view class="ArticleDetail-center-top-left">
-								<image src="../../static/logo.png" mode="aspectFill"></image>
+								<image :src="item.avatar ? item.avatar :'../../static/image/ych/avatar.png'" mode="aspectFill"></image>
 								<view class="userInfo">
 									<view class="userInfo-top">
-										<view class="userInfo-top-name">黑胡椒</view>
-										<view class="userInfo-top-level">Lv.1</view>
-										<view class="userInfo-top-bozhu">房产板块版主</view>
+										<view class="userInfo-top-name">{{item.userName}}</view>
+										<view class="userInfo-top-level">Lv.{{item.level}}</view>
+										<view class="userInfo-top-bozhu" v-if="item.plateName">{{item.plateName}}板块版主</view>
 									</view>
-									<view class="userInfo-bottom">2020年05月28日 00:07</view>
+									<view class="userInfo-bottom">{{item.createTime}}</view>
 								</view>
 							</view>
 						</view>
 						<view class="ArticleDetail-footer-main-center">
-							置顶沙发置顶沙发感谢分享置顶沙发置顶沙发感谢分享置顶沙发置顶沙发感谢分享置顶沙发置顶沙发感谢分享
+							{{item.content}}
 						</view>
-						<view class="ArticleDetail-footer-main-footer">
-							<view class="ArticleDetail-footer-main-footer-item">白胡椒：楼主说的好</view>
-							<view class="ArticleDetail-footer-main-footer-item">白胡椒：楼主说的好</view>
-							<view class="ArticleDetail-footer-main-footer-item-button">共10条回复></view>
+						<view class="ArticleDetail-footer-main-footer" v-if="item.params.length">
+							<view class="ArticleDetail-footer-main-footer-item" v-for="(comment, i) in item.params" :key = "i">{{comment.userName}}: {{comment.content}}</view>
+							<!-- <view class="ArticleDetail-footer-main-footer-item">白胡椒：楼主说的好</view> -->
+							<view class="ArticleDetail-footer-main-footer-item-button" v-if="item.replyCount > 2">共{{item.replyCount}}条回复></view>
 						</view>
-						<view class="chat-img">
+						<!-- <view class="chat-img" @click.stop="handleInputFocus(item.params[index].articleId, item.params[index].articleId.id, 1)"> -->
+						<view class="chat-img" @click.stop="handleInputFocus(item, index)">
 							<image src="../../static/image/ych/index/23.png" mode=""></image>
+							<view>回复</view>
 						</view>
 					</view>
-					<view class="ArticleDetail-footer-main-item-advertising" v-if="index == 3">
+					
+					<view class="ArticleDetail-footer-main-item-advertising" v-if="index == 5" @click.stop="goToRichText">
 						<view class="ArticleDetail-footer-main-item-advertising-top">
-							<view class="ArticleDetail-footer-main-item-advertising-top-left">胡记核桃</view>
+							<view class="ArticleDetail-footer-main-item-advertising-top-left">{{guangGaoInfo.advert.title}}</view>
 							<view class="ArticleDetail-footer-main-item-advertising-top-right">广告</view>
 						</view>
 						<view class="ArticleDetail-footer-main-item-advertising-center">
-							<image src="../../static/logo.png" mode="aspectFill"></image>
-							<image src="../../static/logo.png" mode="aspectFill"></image>
-							<image src="../../static/logo.png" mode="aspectFill"></image>
-							<image src="../../static/logo.png" mode="aspectFill"></image>
+							<image :src="gGPic" mode="aspectFill" v-for="(gGPic, i) in guangGaoInfo.advert.pics" :key = "i" ></image>
+					
 						</view>
-						<view class="ArticleDetail-footer-main-item-advertising-footer">来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！</view>
+						<view class="ArticleDetail-footer-main-item-advertising-footer">{{guangGaoInfo.advert.content}}</view>
 						
 					</view>
 					
@@ -96,36 +103,89 @@
 		</view>
 		<view class="ArticleDetail-submit">
 			<view class="ArticleDetail-submit-left">
-				<image src="../../static/logo.png" mode=""></image>
+				<image :src="myAvatar ? myAvatar : '../../static/image/ych/avatar.png'" mode=""></image>
 			</view>
 			<view class="ArticleDetail-submit-center">
-				<input type="text" placeholder="我来说两句" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A9A9A9;" />
+				<input adjust-position type="text" :focus = "focusFlag" @focus="changeSendButton" @blur="changeSendButtonF" v-model="sendMsg" cursor-spacing = "30" placeholder="我来说两句" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A9A9A9;" />
 			</view>
-			<view class="ArticleDetail-submit-right-chat">
-				<image src="../../static/image/ych/index/23.png" mode="aspectFill"></image>
-				<view class="ArticleDetail-submit-right-chat-number">222</view>
-			</view>
-			<view class="ArticleDetail-submit-right-share">
-				<image src="../../static/image/ych/my/23.png" mode=""></image>
-			</view>
+			<!-- {{ArtDetail.params.evaluatesList}} -->
+				<view class="ArticleDetail-submit-right-chat" v-if="!SendButtonFlag">
+					<image src="../../static/image/ych/index/23.png" mode="aspectFill"></image>
+					<view class="ArticleDetail-submit-right-chat-number" v-if="evaListTotal">{{evaListTotal}}</view>
+				</view>
+				<view class="ArticleDetail-submit-right-share"  v-if="!SendButtonFlag">
+					<image src="../../static/image/ych/my/23.png" mode="" @click.stop="handleShareFlag"></image>
+				</view>
+				<view class="sendButton" @touchend.prevent.stop="sendMsgFn"  v-if="SendButtonFlag" :style="{color: sendMsg.trim() == '' ? '#c8c9cc' : '#ff9900' }">发送</view>
 		</view>
+		
+		<shareBox :showShareBoxFlag = "showShareBoxFlag" @changeShowBoxFLag = "changeShowBoxFLag" @shareWx = "shareWx"  @shareFre = "shareFre"></shareBox>
 	</view>
 </template>
 
 <script>
 	export default {
+		onLoad(options) {
+			this.ArtId = options.id
+			this.userId = options.userId
+			if (options.TopArtType) {
+				this.TopArtType = options.TopArtType // 判断是普通点进 还是话题进 1话题
+			}
+			if (options.index != undefined) {
+				console.log('12313')
+				this.TopArtIndex = options.index
+			}
+			let userId = uni.getStorageSync('userId')
+			if (userId == this.userId) {
+				this.showFollow = false
+			}
+			if (uni.getStorageSync('userAvatar')) {
+				this.myAvatar = uni.getStorageSync('userAvatar')
+			}
+			// 获取发帖人
+			this.initUserInfo()
+			//　获取评价
+			this.initArtDetail(),
+			// 获取广告
+			this.initAdvertising()
+			
+		},
 		data () {
 			return {
 				tabIndex: 0,
 				footTop: 0,
-				stickFlag: false
+				stickFlag: false,
+				myAvatar: '',
+				ArtId: 0,
+				userId: 0,
+				ArtDetail: {},
+				userInfo: {},
+				ArtDetailComment: [],
+				hasFlag: true,
+				pageNum: 0,
+				pageSize: 10,
+				sendMsg: '',
+				SendButtonFlag: false,
+				focusFlag: false,
+				type: 0 ,// 0 默认发送  1楼中楼
+				currentArticleId: '', // 评价楼中楼
+				currentEvaluateId: '', // 评价楼中楼
+				currentIndex: 0, // 楼中楼id,
+				showFollow: true,
+				TopArtType: '',
+				TopArtIndex: 0,
+				sendCount: 0,
+				guangGaoInfo: {},
+				showShareBoxFlag: false,
+				evaListTotal: 0
+				
 			}
 		},
 		onReady() {
 			const query = uni.createSelectorQuery().in(this);
 			query.select('.ArticleDetail-footer-top').boundingClientRect(data => {
-			  console.log("得到布局位置信息" + JSON.stringify(data));
-			  console.log("节点离页面顶部的距离为" + data.top);
+			  // console.log("得到布局位置信息" + JSON.stringify(data));
+			  // console.log("节点离页面顶部的距离为" + data.top);
 			  this.footTop = data.top
 			  
 			}).exec();
@@ -138,19 +198,286 @@
 				this.stickFlag = false
 			}
 		},
+		onReachBottom () {
+			this.initArtDetail()
+		},
 		methods: {
+			// 分享
+			handleShareFlag () {
+				this.showShareBoxFlag = true
+			},
+			//更改分享显示
+			changeShowBoxFLag (newV) {
+				console.log(newV)
+				this.showShareBoxFlag = newV
+			},
+			// 微信分享
+			shareWx () {
+				
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSceneSession",
+				    type: 0,
+				    href: "https://www.baidu.com/",
+				    title: "汽水论坛分享",
+				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
+					imageUrl: '../../static/qslogo.png',
+					success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
+				this.showShareBoxFlag = false
+			},
+			shareFre () {
+				
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSenceTimeline",
+				    type: 0,
+					href: "https://www.baidu.com/",
+					title: "汽水论坛分享",
+					summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
+				    imageUrl: '../../static/qslogo.png',
+					success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
+				this.showShareBoxFlag = false
+			},
+			// 广告
+			async initAdvertising () {
+				let res = await this.$fetch(this.$api.get_now_evaluate_advert, {}, "GET", 'FORM')
+
+				let index = this.$u.random(0, res.data.length -1)
+				this.guangGaoInfo = res.data[index]
+				this.guangGaoInfo.advert.newContent = this.guangGaoInfo.advert.content
+				this.guangGaoInfo.advert.content = this.filterHTMLTag(this.guangGaoInfo.advert.content)
+				this.guangGaoInfo.advert.pics = JSON.parse(this.guangGaoInfo.advert.pics)
+				this.updateguangG()
+				
+			},
+			async updateguangG () {
+				let res = await this.$fetch(this.$api.upd_evaluate_advert_display_num, {id: this.guangGaoInfo.id}, 'POST', 'FORM')
+				console.log(res)
+			},
+			filterHTMLTag (msg) {
+			    var msg = msg.replace(/<\/?[^>]*>/g, ''); //去除HTML Tag
+			    msg = msg.replace(/[|]*\n/, '') //去除行尾空格
+			    msg = msg.replace(/&npsp;/ig, ''); //去掉npsp
+				msg = msg.replace(/[ ]|[&nbsp;]/g, '')
+			    return msg;
+			},
+			// 广告点击
+			async goToRichText () {
+				console.log('123123')
+				let res = await this.$fetch(this.$api.upd_advert_hits, {id: this.guangGaoInfo.id}, 'POST', 'FORM')
+				uni.navigateTo({
+					url: '../RichText/RichText?RichMain=' + this.guangGaoInfo.advert.newContent + '&title=' + this.guangGaoInfo.advert.title + '&pics=' + JSON.stringify(this.guangGaoInfo.advert.pics)
+				})
+			},
+			// 底部切换
 			handleTabIndex (index) {
 				this.tabIndex = index
+				this.hasFlag = true
+				this.pageNum = 0
+				this.ArtDetailComment = []
+				this.initArtDetail()
+			},
+			changeSendButton () {
+				this.SendButtonFlag = true
+			},
+			changeSendButtonF () {
+				this.SendButtonFlag = false
+				this.type = 0
+				this.focusFlag = false
 			},
 			goBack () {
 				uni.navigateBack({
 					delta: 1
 				})
 			},
-			goToArticleComment () {
+			goToArticleComment (item) {
 				uni.navigateTo({
-					url: './ArticleComment'
+					url: './ArticleComment?commentInfo=' + JSON.stringify(item)
 				})
+			},
+			// 预览
+			showImgBig (img, imgList) {
+				uni.previewImage({
+					current: img,
+					urls: imgList
+				})
+			},
+			// 关注
+			async followUser (item) {
+				let res = await this.$fetch(this.$api.follow, {toUserId: this.userId}, 'POST', 'FORM')
+				console.log(res)
+				uni.showToast({
+					icon: 'none',
+					title: res.msg
+				})
+				if (res.code == 0) {
+					if (item.follow == 0) {
+						item.follow = 1
+					} else {
+						item.follow = 0
+					}
+				} 
+				
+			},
+			// 去个人主页
+			goToMyHomePage (id) {
+				uni.navigateTo({
+					url:'../My/UserHomePage?type='+ 2 + '&userId=' + id
+				})
+			},
+			// 收藏
+			async collectionArt (item) {
+				let res = await this.$fetch(this.$api.collection, {relationId: item.id, type: 1}, "POST", 'FORM')
+				console.log(res)
+				uni.showToast({
+					icon: 'none',
+					title: res.msg
+				})
+				if (res.code == 0) {
+					if (item.params.collection == 0) {
+						item.params.collection = 1
+					} else {
+						item.params.collection = 0
+					}
+				}
+				
+			},
+			// 发帖内容数据
+			async initArtDetail () {
+				if (!this.hasFlag) return 
+				this.pageNum = ++this.pageNum
+				let userId = uni.getStorageSync('userId')
+				let res = await this.$fetch(this.$api.artivle_detail_by_id, {id: this.ArtId, pageNum: this.pageNum, pageSize: 10, type: this.tabIndex, userId: userId}, "POST", 'FORM')
+				console.log(res)
+				res.data.content = JSON.parse(res.data.content)
+				this.ArtDetail = res.data
+				this.evaListTotal = this.ArtDetail.params.evaluatesList.total
+				// console.log(this.ArtDetail.params.evaluatesList.total)
+			
+				this.ArtDetailComment = [...this.ArtDetailComment, ...res.data.params.evaluatesList.rows]
+				console.log(this.ArtDetailComment)
+				this.ArtDetailComment.forEach(async (item) => {
+					if (item.replyCount > 0) {
+						let msg = await this.$fetch(this.$api.reply_list, {evaluatesId: item.id, pageNum: 1, pageSize: 2}, 'POST', 'FORM')
+						console.log(msg)
+						item.params = msg.rows
+					} else {
+						item.params = []
+					}
+				})
+				this.hasFlag = this.pageNum * 10 < res.data.params.evaluatesList.total 
+				 
+			},
+			// 发帖人数据
+			async initUserInfo () {
+				let res = await this.$fetch(this.$api.get_user_by_id, {userId: this.userId}, "POST", "FORM")
+				console.log(res)
+				this.userInfo = res.data
+			},
+			// 点击评论图片
+			handleInputFocus (item, index) {
+				console.log(index)
+				this.currentIndex = index
+				this.focusFlag = false
+				setTimeout(() => {
+					this.focusFlag = true
+				}, 300)
+				this.SendButtonFlag = true
+				this.type = 1
+				console.log(this.type)
+				console.log(item)
+				this.currentArticleId = item.articleId
+				this.currentEvaluateId = item.id
+			},
+			// 发送
+			async sendMsgFn () {
+				console.log(this.ArtDetailComment)
+				if (this.sendMsg.trim() == '') {
+					return uni.showToast({
+						icon: 'none',
+						title: '发送内容不能为空'
+					})
+				}
+				let res 
+				uni.showLoading({
+					title: '加载中'
+				})
+				if (this.type == 1) {
+					res = await this.$fetch(this.$api.evaluate, {articleId: this.currentArticleId, content: this.sendMsg, evaluateId: this.currentEvaluateId, pushUserId: ''}, 'POST', 'FORM')
+				} else {
+					res = await this.$fetch(this.$api.evaluate, {articleId: this.ArtId, content: this.sendMsg, pushUserId: ''}, 'POST', 'FORM')
+				}
+				uni.hideLoading()
+				uni.showToast({
+					icon: 'none',
+					title: res.msg
+				})
+				if (res.code == 0) {
+					if (this.TopArtType != '') {
+						this.sendCount = ++this.sendCount
+						uni.setStorageSync('sendSuccessIndex', {
+							sendIndex: this.TopArtIndex,
+							sendCount: this.sendCount
+						})
+					}
+					
+					if (this.type == 1) {
+						this.ArtDetailComment[this.currentIndex].params.unshift({
+							content: this.sendMsg,
+							userName: uni.getStorageSync('userName')
+						})
+						this.ArtDetailComment[this.currentIndex].params = this.ArtDetailComment[this.currentIndex].params.splice(0, 2)
+						this.ArtDetailComment[this.currentIndex].replyCount += 1 
+						this.sendMsg = ""
+					} else {
+						if (this.tabIndex == 0) {
+							let nowDayTimer = this.$dayjs().format('YYYY-MM-DD HH:mm:ss')
+							console.log(nowDayTimer)
+							this.ArtDetailComment.unshift({
+								articleId: this.ArtId,
+								content: this.sendMsg,
+								userId: this.userId,
+								avatar: uni.getStorageSync('userAvatar'),
+								pushUserId: '', 
+								userName: uni.getStorageSync('userName') ? uni.getStorageSync('userName'): '汽水用户',
+								level: uni.getStorageSync('userLevel') ? uni.getStorageSync('userLevel') : 1,
+								plateName: uni.getStorageSync('plateName'),
+								params: [],
+								createTime: nowDayTimer
+							})
+							this.sendMsg = ''
+						} else {
+							this.sendMsg = ''
+							// this.ArtDetailComment.push({
+							// 	articleId: this.ArtId,
+							// 	content: this.sendMsg,
+							// 	userId: this.userId,
+							// 	avatar: uni.getStorageSync('userAvatar'),
+							// 	pushUserId: '', 
+							// 	userName: uni.getStorageSync('userName'),
+							// 	level: uni.getStorageSync('userLevel'),
+							// 	plateName: uni.getStorageSync('plateName'),
+							// 	params: []
+							// })
+							// this.sendMsg = ''
+						}
+						
+					}
+				}
+				
+				
 			}
  		}
 	}
@@ -173,10 +500,10 @@
 				&::after{
 					position: absolute;
 					content: '';
-					left: -20rpx;
-					top: -20rpx;
-					right: -20rpx;
-					bottom: -20rpx;
+					left: -30rpx;
+					top: -30rpx;
+					right: -30rpx;
+					bottom: -30rpx;
 				}
 				.back{
 					width: 18rpx;
@@ -233,7 +560,7 @@
 							}
 							.userInfo-top-level{
 								font-family: PingFangSC-Medium;
-								font-size: 10px;
+								font-size: 12px;
 								color: #FF7B30;
 								letter-spacing: -0.24px;
 								background: #FFFFFF;
@@ -256,7 +583,7 @@
 						}
 						.userInfo-bottom{
 							font-family: PingFangSC-Regular;
-							font-size: 10px;
+							font-size: 12px;
 							color: #686868;
 							letter-spacing: -0.24px;
 						}
@@ -299,7 +626,7 @@
 				}
 				.ArticleDetail-center-main-center{
 					font-family: PingFangSC-Regular;
-					font-size: 14px;
+					font-size: 16px;
 					color: #141414;
 					letter-spacing: -0.34px;
 				}
@@ -330,7 +657,7 @@
 				}
 				.ArticleDetail-center-main-footer{
 					font-family: PingFangSC-Regular;
-					font-size: 10px;
+					font-size: 12px;
 					color: #686868;
 					letter-spacing: -0.24px;
 					text-align: end;
@@ -409,6 +736,8 @@
 						image{
 							width: 92rpx;
 							height: 92rpx;
+							// width: 72rpx;
+							// height: 72rpx;
 							border-radius: 50%;
 						}
 						.userInfo{
@@ -427,7 +756,7 @@
 								}
 								.userInfo-top-level{
 									font-family: PingFangSC-Medium;
-									font-size: 10px;
+									font-size: 12px;
 									color: #FF7B30;
 									letter-spacing: -0.24px;
 									background: #FFFFFF;
@@ -450,7 +779,7 @@
 							}
 							.userInfo-bottom{
 								font-family: PingFangSC-Regular;
-								font-size: 10px;
+								font-size: 12px;
 								color: #686868;
 								letter-spacing: -0.24px;
 							}
@@ -538,6 +867,7 @@
 						box-sizing: border-box;
 					}
 				}
+			
 			}
 			.chat-img{
 				text-align: end;
@@ -545,10 +875,13 @@
 				padding-top: 20rpx;
 				padding-bottom: 20rpx;
 				box-sizing: border-box;
+				display: flex;
+				justify-content: flex-end;
+				align-items: center;
 				image{
 					width: 32rpx;
 					height: 32rpx;
-					
+					margin-right: 12rpx;
 				}
 			}
 		}	
@@ -564,6 +897,7 @@
 			position: fixed;
 			bottom: 0;
 			background-color: #fff;
+			z-index: 99;
 			.ArticleDetail-submit-left{
 				image{
 					width: 68rpx;
@@ -597,10 +931,10 @@
 					// width: 26rpx;
 					// height: 18rpx;
 					position: absolute;
-					right: -13rpx;
+					right: -4rpx;
 					top: -20rpx;
 					font-family: PingFangSC-Regular;
-					font-size: 10px;
+					font-size: 12px;
 					color: #FFFFFF;
 					letter-spacing: -0.17px;
 					background: #FF1414;
@@ -615,6 +949,14 @@
 					height: 42rpx;
 				}
 			}
+		}
+		.sendButton{
+			// flex: 1;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			
 		}
 	}
 </style>

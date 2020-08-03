@@ -3,7 +3,7 @@
 		<view class="market-header">
 			<view class="market-header-left">
 				<image src="../../static/image/ych/Market/1.png" mode=""></image>
-				<view class="market-header-left-text">当前积分：888</view>
+				<view class="market-header-left-text">当前积分：{{myJf}}</view>
 			</view>
 			<view class="market-header-right" @click="goToRichText">
 				<image src="../../static/image/ych/Market/2.png" mode=""></image>
@@ -33,14 +33,14 @@
 				</view>
 			</view>
 			<view class="market-list-main">
-				<view class="market-list-item" v-for="(item, index) in 5" :key = "index" @click="goToShopDetail">
-					<image src="../../static/logo.png" mode="aspectFill"></image>
+				<view class="market-list-item" v-for="(item, index) in marketList" :key = "index"  @click="goToShopDetail(item.id)">
+					<image :src="item.goodsPic" mode="aspectFill"></image>
 					<view class="market-list-item-bottom">
-						<view class="market-list-item-bottom-top">正品iPhone Xs Max</view>
+						<view class="market-list-item-bottom-top">{{item.goodsName}}</view>
 						<view class="market-list-item-bottom-footer">
 							<view class="market-list-item-bottom-footer-left">
-								<view class="market-list-item-bottom-footer-left-top">3000元 + 200积分</view>
-								<view class="market-list-item-bottom-footer-left-bottom">5000元</view>
+								<view class="market-list-item-bottom-footer-left-top">{{item.price}}元 <span>+ {{item.goodsIntegral ? item.goodsIntegral: 0}}积分</span></view>
+								<view class="market-list-item-bottom-footer-left-bottom">{{item.originalPrice}}元</view>
 							</view>
 							<view class="market-list-item-bottom-footer-right">抢购</view>
 						</view>
@@ -54,10 +54,17 @@
 <script>
 
 	export default {
-		
+		onLoad(){
+			this.initMyInfo()
+			this.initMarketList()
+		},
 		data() {
 			return {
-				
+				pageNum: 0,
+				pageSize: 10,
+				hasFlag: true,
+				marketList: [],
+				myJf: 0
 			}
 		},
 		methods: {
@@ -68,9 +75,9 @@
 				})
 			},
 			// 去商品详情
-			goToShopDetail () {
+			goToShopDetail (id) {
 				uni.navigateTo({
-					url: '../ShopDetail/ShopDetail?type=' + 1
+					url: '../ShopDetail/ShopDetail?type=' + 1 + '&id=' + id
 				})
 			},
 			// 去我的订单
@@ -82,9 +89,26 @@
 			// 去富文本
 			goToRichText () {
 				uni.navigateTo({
-					url: '../RichText/RichText'
+					url: '../RichText/RichText?id=' + 15
 				})
-			}
+			},
+			//	数据
+			async initMarketList () {
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.goods_list, {boutiqueFlag: 1, goodsStatus: 1, pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
+				console.log(res)
+				this.marketList = [...this.marketList, ...res.rows]
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+			},
+			async initMyInfo () {
+				let res = await this.$fetch(this.$api.getCurrentUser, {}, 'GET', 'FORM')
+				console.log(res)
+				this.myJf = res.data.integral
+			},
+		},
+		onReachBottom() {
+			this.initMarketList()
 		}
 	}
 </script>
@@ -129,7 +153,7 @@
 				}
 				view{
 					font-family: PingFangSC-Regular;
-					font-size: 12px;
+					font-size: 10px;
 					color: #959595;
 					letter-spacing: -0.29px;
 					text-align: justify;
@@ -204,7 +228,7 @@
 					align-items: center;
 					.market-list-top-right-text{
 						font-family: PingFangSC-Medium;
-						font-size: 12px;
+						font-size: 10px;
 						color: #545454;
 						letter-spacing: -0.29px;
 						text-align: justify;
@@ -243,12 +267,12 @@
 					.market-list-item-bottom{
 						background-color: #fff;
 						width: 334rpx;
-						// height: 126rpx;
+						height: 126rpx;
 						padding: 8rpx 18rpx 20rpx 19rpx;
 						box-sizing: border-box;
 						.market-list-item-bottom-top{
 							font-family: PingFangSC-Medium;
-							font-size: 12px;
+							font-size: 10px;
 							color: #545454;
 							letter-spacing: -0.09px;
 							text-align: justify;
@@ -270,7 +294,7 @@
 									text-align: justify;
 									display: -webkit-box;    
 									-webkit-box-orient: vertical;    
-									-webkit-line-clamp: 2;    //控制行数
+									-webkit-line-clamp: 1;    //控制行数
 									overflow: hidden;
 								}
 								.market-list-item-bottom-footer-left-bottom{

@@ -2,55 +2,52 @@
 	<view class="MyCheerBag">
 		<view class="MyCheerBag-header">
 			<view class="MyCheerBag-header-left">
-				<image src="../../static/logo.png" mode=""></image>
+				<image :src="userInfo.avatar" mode=""></image>
 			</view>
 			<view class="MyCheerBag-header-right">
 				<view class="MyCheerBag-header-right-top">
-					<view class="MyCheerBag-header-right-top-username">王大锤</view>
-					<image src="../../static/image/ych/my/1.png" mode="aspectFill"></image>
-					<!-- <image src="../../static/image/ych/my/2.png" mode="aspectFill"></image> -->
-					<view class="MyCheerBag-header-right-top-level">Lv.1</view>
+					<view class="MyCheerBag-header-right-top-username">{{userInfo.name}}</view>
+					<image src="../../static/image/ych/my/1.png" mode="aspectFill" v-if="userInfo.sex == 0"></image>
+					<image src="../../static/image/ych/my/2.png" mode="aspectFill" v-if="userInfo.sex == 1"></image>
+					<view class="MyCheerBag-header-right-top-level">Lv.{{userInfo.level}}</view>
 				</view>
-				<view class="MyCheerBag-header-right-bottom">18888888888</view>
+				<view class="MyCheerBag-header-right-bottom">{{userInfo.phonenumber}}</view>
 			</view>
 		</view>
 		<view class="line-7"></view>
 		<view class="MyCheerBag-residue">
 			<view class="MyCheerBag-residue-left">加油包剩余数量</view>
-			<view class="MyCheerBag-residue-right">10条</view>
+			<view class="MyCheerBag-residue-right">{{userInfo.surplusPosts}}条</view>
 		</view>
 		<view class="line-7"></view>
 		<view class="MyCheerBag-buy">
 			<view class="MyCheerBag-buy-top">选择购买数量</view>
 			<view class="MyCheerBag-buy-center">
-				<view class="MyCheerBag-buy-center-item" @click="handleCurrentIndex(index)" :class="{active: currengIndex == index}" v-for="(item ,index) in 8" :key = "index">
-					<view class="MyCheerBag-buy-center-item-top">10条</view>
-					<view class="MyCheerBag-buy-center-item-top">¥50</view>
+				<view class="MyCheerBag-buy-center-item" @click="handleCurrentIndex(index)" :class="{active: currengIndex == index}" v-for="(item ,index) in CheerBagList" :key = "index">
+					<view class="MyCheerBag-buy-center-item-top">{{item.totalNum}}条</view>
+					<view class="MyCheerBag-buy-center-item-top">¥{{item.totalAmount}}</view>
 				</view>
 			</view>
 		</view>
 		<view class="else-number">
 			<view class="else-number-top">其他数量</view>
 			<view class="else-number-bottom">
-				<input type="number" placeholder="输入购买数量" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #BEBEBE;" />
+				<input type="number" @input="changeInput" v-model="buyNum" placeholder="输入购买数量" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #BEBEBE;" />
 			</view>
 		</view>
 		<view class="line-3"></view>
 		<view class="pay-money-box">
 			<view class="pay-text">需要支付金额</view>
-			<view class="pay-money">88元</view>
+			<view class="pay-money">{{payPrice}}元</view>
 		</view>
-		<view class="submit-pay" @click="handleShowPopFLag">立即购买</view>
+		<view class="submit-pay" @click="goToPayMoney">立即购买</view>
 		
-		<u-popup v-model="showPayPopFlag" mode="bottom" border-radius="14">
+<!-- 		<u-popup v-model="showPayPopFlag" mode="bottom" border-radius="14">
 				<view class="popupPay-header">
 					<view class="popupPay-header-left">请选择支付方式</view>
-					<!-- <view class="popupPay-header-right">¥{{ orderComputed.payAmount ? orderComputed.payAmount : 0 }}</view> -->
+	
 				</view>
-			<!-- 	<view class="popupPay-middle">
-					<view class="popupPay-middle-left">支付剩余时间</view>
-					<view class="popupPay-middle-right">{{ minutes }}:{{ seconds }}</view>
-				</view> -->
+
 				<view class="popupPay-item" v-for="(popPay, index) in payInfo" :key="index" @tap="handleCircle(index)">
 					<view class="circle">
 						<view class="n-circle" v-show="circleShowFlag == index"></view>
@@ -58,20 +55,41 @@
 					<image :src="popPay.image" mode="aspectFill"></image>
 					<view class="pay-way">
 						{{ popPay.text }}
-						<!-- <view class="pay-way-sectext" v-if="popPay.sectext">{{ popPay.sectext }}</view> -->
 					</view>
 				</view>
 				<view class="popupPay-button" @click="payMoney">确认支付</view>
-		</u-popup>
+		</u-popup> -->
 		
 	</view>
 </template>
 
 <script>
 	export default {
+		onLoad(options) {
+			if (options.avatar) {
+				this.userInfo.avatar = options.avatar
+			}
+			this.userInfo.name = options.name
+			this.userInfo.sex = options.sex
+			this.userInfo.level = options.level
+			this.userInfo.phonenumber = options.phonenumber
+			this.userInfo.surplusPosts = options.surplusPosts
+			
+			this.initProperty()
+			this.initCheerBag()
+			
+		},
 		data () {
 			return {
-				currengIndex: 0,
+				userInfo: {
+					avatar: '../../static/image/ych/avatar.png',
+					name: '',
+					sex: 0,
+					level: 1,
+					phonenumber: '',
+					surplusPosts: 0
+				},
+				currengIndex: -1,
 				showPayPopFlag: false,
 				payInfo: [
 					{
@@ -85,13 +103,32 @@
 						sectext: ''
 					}
 				],
-				circleShowFlag: 0
+				circleShowFlag: 0,
+				buyNum: '',
+				pricePer: 1,
+				CheerBagList: [],
+				payPrice: 0,
+				CheerBagId: ''
 			}
 		},
 		methods: {
+			// 获取系统配置
+			async initProperty () {
+				let res = await this.$fetch(this.$api.get_property_by_type, {type: 1}, "POST", 'FORM')
+				console.log(res)
+				this.pricePer = res.data.price_per_post
+			},
+			async initCheerBag () {
+				let res = await this.$fetch(this.$api.refueling_bag_list, {}, 'GET', 'FORM')
+				console.log(res)
+				this.CheerBagList = res.data
+			},
 			// 选择充值内容
 			handleCurrentIndex (index) {
 				this.currengIndex = index
+				this.buyNum = ''
+				this.payPrice = this.CheerBagList[index].totalAmount
+				this.CheerBagId = this.CheerBagList[index].id
 			},
 			// 立即购买
 			handleShowPopFLag () {
@@ -101,12 +138,25 @@
 			handleCircle　(index) {
 				this.circleShowFlag = index
 			},
-			payMoney () {
-				if (this.circleShowFlag == 0) {
-					console.log('支付宝支付')
-				} else {
-					console.log('微信支付')
-				}
+			// input输入
+			changeInput (e) {
+				console.log(e)
+				this.currengIndex = -1
+				this.CheerBagId = ''
+				this.payPrice = e.detail.value * this.pricePer
+			},
+			// payMoney () {
+			// 	if (this.circleShowFlag == 0) {
+			// 		console.log('支付宝支付')
+			// 	} else {
+			// 		console.log('微信支付')
+			// 	}
+			// },
+			goToPayMoney () {
+				
+				uni.navigateTo({
+					url: '../Pay/Pay?id=' + this.CheerBagId + '&num=' + this.buyNum + '&type=' + 3 + '&price=' + this.payPrice
+				})
 			}
 		}
 	}
@@ -165,7 +215,7 @@
 				}
 				.MyCheerBag-header-right-bottom{
 					font-family: PingFangSC-Regular;
-					font-size: 12px;
+					font-size: 10px;
 					color: #141414;
 					letter-spacing: -0.29px;
 				}

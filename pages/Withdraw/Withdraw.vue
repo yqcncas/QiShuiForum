@@ -18,7 +18,7 @@
 				</view>
 				<view class="can-Withdraw-bottom">
 					<view class="can-Withdraw-bottom-left">可提现金额</view>
-					<input disabled="true" type="number"  placeholder="1000" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;letter-spacing: -0.34px;" />
+					<input disabled="true" type="number"  :placeholder="canMoney" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;letter-spacing: -0.34px;" />
 				</view>
 			</view>
 		</view>
@@ -28,11 +28,15 @@
 
 <script>
 	export default {
+		onLoad(options) {
+			this.canMoney = options.money
+		},
 		data () {
 			return {
 				userAccount: '',
 				userName: '',
-				withdrawMoney: ''
+				withdrawMoney: '',
+				canMoney: ''
 			}
 		},
 		methods: {
@@ -61,12 +65,40 @@
 						title: '请填写正确金额'
 					})
 				}
+				if (Number(this.withdrawMoney) > Number(this.canMoney)) {
+					return uni.showToast({
+						icon: 'none',
+						title: '超出可提取上限'
+					})
+				}
 				if (!this.$u.test.chinese(this.userName)) {
 					return uni.showToast({
 						icon: 'none',
 						title: '真实姓名必须为汉字'
 					})
 				}
+				
+				uni.showModal({
+				    title: '提示',
+				    content: '是否确认提现',
+				    success:  async(res) => {
+				        if (res.confirm) {
+				            let msg = await this.$fetch(this.$api.add_draw_apply, {account: this.userAccount, amount: this.withdrawMoney, userName: this.userName}, 'POST', 'FORM')
+							uni.showToast({
+								icon: 'none',
+								title: msg.msg
+							})
+							setTimeout(() => {
+								uni.navigateBack({
+									delta: 1
+								})
+							}, 500)
+						
+				        } else if (res.cancel) {
+				            console.log('用户点击取消');
+				        }
+				    }
+				});
 			}
 		}
 	}

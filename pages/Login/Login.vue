@@ -16,19 +16,44 @@
 		<view class="else-login">
 			<view class="else-login-top">使用第三方登录</view>
 			<view class="else-login-bottom">
-				<image src="../../static/image/ych/Login/1.png" mode=""></image>
-				<image src="../../static/image/ych/Login/2.png" mode=""></image>
+				<image src="../../static/image/ych/Login/1.png" mode="aspectFill"></image>
+				<image src="../../static/image/ych/Login/2.png" mode="aspectFill" @click="wxLogin"></image>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	const dcRichAlert = uni.requireNativePlugin('ZWM-BJXMapView');
 	export default {
+		onLoad () {
+			if (uni.getStorageSync('setStorageSync')) {
+				this.phone = uni.getStorageSync('setStorageSync')
+			}
+			this.cid = plus.push.getClientInfo().clientid
+			console.log(this.cid)
+			this.timer = setInterval(() => {
+				if (uni.getStorageSync('elseLogin')) {
+					
+					uni.removeStorageSync('elseLogin')
+					clearInterval(this.timer)
+					this.timer = null
+					setTimeout(() => {
+						uni.navigateTo({
+							url: './Register?openId=' + this.openId + "&loginType=" + 1
+						})
+					}, 500)
+			
+				}
+			}, 1000)
+		},
 		data () {
 			return {
 				phone: '',
-				password: ''
+				password: '',
+				cid: '',
+				timer: null,
+				openId: ''
 			}
 		},
 		methods: {
@@ -71,12 +96,67 @@
 					title: res.msg
 				})
 				if (res.code == 0) {
+					
 					uni.setStorageSync('token', res.data.token)
 					uni.setStorageSync('userId', res.data.userId)
-					uni.switchTab({
-						url: '../index/index'
-					})
+					uni.setStorageSync('loginUserAccount', this.phone)
+					let msg = await this.$fetch(this.$api.upd_user, {cid: this.cid}, "post", 'form')
+					// console.log(msg)
+					let result = await this.$fetch(this.$api.im_register, {token: res.data.token}, "POST", 'FORM')
+					
+					let ImMsg =  JSON.parse(result.msg)
+					
+					let imUserName = ImMsg[0].username
+				
+					
+					dcRichAlert.logIn({username: imUserName,password: imUserName}, result => {console.log(result)});
+					// dcRichAlert.logIn({username: 'bbbb',password: 'bbbb'}, result => {console.log(result)});
+					
+					
+					setTimeout(() => {
+						uni.switchTab({
+							url: '../index/index'
+						})
+					}, 500)
+					
 				}
+			},
+			wxLogin () {
+				uni.login({
+				  provider: 'weixin',
+				  success:  async (loginRes) => {
+				    // console.log();
+					this.openId =  loginRes.authResult.openid
+					let res = await this.$fetch(this.$api.login, {loginName: loginRes.authResult.openid, loginType: 1}, "POST", 'FORM')
+					console.log(res)
+					
+					if (res.code == 0) {
+						uni.showToast({
+							icon: 'none',
+							title: res.msg
+						})
+						uni.setStorageSync('token', res.data.token)
+						uni.setStorageSync('userId', res.data.userId)
+		
+						let msg = await this.$fetch(this.$api.upd_user, {cid: this.cid}, "post", 'form')
+						
+						let result = await this.$fetch(this.$api.im_register, {token: res.data.token}, "POST", 'FORM')
+						
+						let ImMsg =  JSON.parse(result.msg)
+						
+						let imUserName = ImMsg[0].username
+													
+						dcRichAlert.logIn({username: imUserName,password: imUserName}, result => {console.log(result)});
+						
+						setTimeout(() => {
+							uni.switchTab({
+								url: '../index/index'
+							})
+						}, 500)
+					}
+					
+				  }
+				});
 			}
 		}
 	}
@@ -112,11 +192,13 @@
 		}
 		.phone-login{
 			font-family: PingFangSC-Regular;
-			font-size: 12px;
+			font-size: 10px;
 			color: #2C2C2C;
 			letter-spacing: 0.04px;
-			padding-top: 42rpx;
-			padding-bottom: 96rpx;
+			// padding-top: 42rpx;
+			// padding-bottom: 96rpx;
+			margin-top: 42rpx;
+			margin-bottom: 96rpx;
 			box-sizing: border-box;
 		}
 		.login-button{
@@ -141,16 +223,20 @@
 			box-sizing: border-box;
 			view{
 				font-family: PingFangSC-Regular;
-				font-size: 12px;
+				font-size: 10px;
 				color: #2C2C2C;
 				letter-spacing: 0.04px;
 			}
 		}
 		.else-login{
 			width: 100%;
+			position: fixed;
+			bottom: 30rpx;
+			left: 50%;
+			transform: translateX(-50%);
 			.else-login-top{
 				font-family: PingFangSC-Regular;
-				font-size: 12px;
+				font-size: 10px;
 				color: #2C2C2C;
 				letter-spacing: 0.04px;
 				text-align: center;

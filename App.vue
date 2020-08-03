@@ -1,18 +1,150 @@
 <script>
+	const dcRichAlert = uni.requireNativePlugin('ZWM-BJXMapView');
 	export default {
-		onLaunch: function() {
+		data () {
+			return {
+				provider: []
+			}
+		},
+		onLaunch: function(){
+			this.initPosition()
+			this.initMyCity()
+			
+			 dcRichAlert.JmessageManagerInit({
+				appKey:'67438bad79ab28487215a722'
+				},
+				result => {
+					console.log(result)
+				});
+				
+				
+			
 			console.log('App Launch')
+			this.$fetch(this.$api.getadvertlist, {type: 0}, 'POST', 'FORM').then((res) => {
+				console.log(res)
+				uni.setStorageSync('startImg', res.data[0].titlePic)
+			})
+			
+			
+			uni.getProvider({
+			service: "push",
+			success: (e) => {
+				console.log("success", e);
+				this.provider = e.provider;
+				this.openPush()
+			},
+			fail: (e) => {
+				console.log("获取推送通道失败", e);
+			}
+			});
+			// 监听系统通知栏
+			// #ifdef APP-PLUS
+			plus.push.addEventListener('click',function(msg){
+				console.log(msg)
+			//处理点击消息的业务逻辑代码  
+			let platform =  uni.getSystemInfoSync().platform
+			if(platform == 'android'){
+				uni.switchTab({
+					url:'./pages/index/index'
+				})
+			}else{
+				var payload;
+				if (msg.type == "click") { //APP离线点击包含click属性，这时payload是JSON对象  
+					payload = msg.payload;  
+				} else { //APP在线，收到消息不会包含type属性,这时的payload是JSON字符串，需要转为JSON对象  
+					payload = JSON.parse(msg.payload);  
+				} 
+				if(payload != null || payload != undefined){
+					uni.switchTab({
+						url:'./pages/index/index'
+					})
+				}
+			}
+			},false)
+			//监听接收透传消息事件  
+			plus.push.addEventListener('receive', function(msg){  
+			//处理透传消息的业务逻辑代码 
+			 console.log("(receive):" + JSON.stringify(msg)); 
+			// plus.nativeUI.confirm(JSON.stringify(msg))
+			let platform =  uni.getSystemInfoSync().platform
+			//安卓处理
+			if(platform == 'android'){
+				// plus.nativeUI.confirm('安卓')
+				var payload = JSON.parse(msg.payload)
+				var messageTitle = payload.title;  
+				var messageContent = payload.titleText; 
+				plus.push.createMessage(messageContent,msg.payload,{title:messageTitle})
+			}else{
+				//ios处理
+				// plus.nativeUI.confirm('ios')
+				var payload = msg.payload;
+				if(msg.aps == null && msg.type == "receive"){
+					var messageTitle = payload.title;  
+					var messageContent = payload.titleText;  
+					//创建本地消息,发送的本地消息也会被receive方法接收到，但没有type属性，且aps是null  
+					plus.push.createMessage(messageContent, JSON.stringify(payload), {title: messageTitle});
+				}
+			}
+			}, false);
+			// #endif
+			
+			
+			
 		},
 		onShow: function() {
 			console.log('App Show')
 		},
 		onHide: function() {
 			console.log('App Hide')
+		},
+		methods: {
+			openPush() {
+				uni.subscribePush({
+					provider: this.provider[0],
+					success: (e) => {
+						console.log(e);
+					}
+				})
+			},
+			initPosition(){
+				if(plus.os.name == "Android"){
+					var context = plus.android.importClass("android.content.Context");
+					var locationManager=plus.android.importClass("android.location.LocationManager");
+					var main=plus.android.runtimeMainActivity();
+					var mainSvr=main.getSystemService(context.LOCATION_SERVICE);
+					var gpsProvider = mainSvr.isProviderEnabled(locationManager.GPS_PROVIDER);//检查是否开启了GPS
+					if(!gpsProvider) {
+						var message = "为了获取您的精准位置，请开启GPS设备。";
+						var title = "GPS未启用";
+						var alertCB = function () {
+						var Intent = plus.android.importClass("android.content.Intent");
+						var mIntent = new Intent('android.settings.LOCATION_SOURCE_SETTINGS');
+						main.startActivity(mIntent);//打开GPS设置
+						}
+					plus.nativeUI.alert( message, alertCB, title);
+					}
+				}
+			},
+			initMyCity () {
+				uni.getLocation({
+				    type: 'gcj02',
+					geocode: true,
+				    success: (res) => {
+						console.log(res)
+						// let location = res.longitude + ',' + res.latitude
+						uni.setStorageSync('city', res.address.city)
+						uni.setStorageSync('cityCode', res.address.cityCode)
+						
+				    }
+				});
+			}
 		}
 	}
 </script>
 
 <style lang="scss">
+	/* #ifndef APP-PLUS-NVUE */
+	
 	/* 注意要写在第一行，同时给style标签加入lang="scss"属性 */
 	@import "uview-ui/index.scss";
 	
@@ -60,6 +192,17 @@
 		background: #FFFFFF;
 	}
 	
+	.tieziSwiper .wx-swiper-dot,
+	.tieziSwiper .a-swiper-dot,
+	.tieziSwiper .uni-swiper-dot {
+		background: #3C3C3C;
+	}
+	.tieziSwiper .wx-swiper-dot.wx-swiper-dot-active,
+	.tieziSwiper .a-swiper-dot.a-swiper-dot-active,
+	.tieziSwiper .uni-swiper-dot.uni-swiper-dot-active {
+		background: rgb(0, 122, 255)
+	}
+	
 	.line-7{
 		width: 100%;
 		height: 14rpx;
@@ -70,5 +213,6 @@
 		height: 6rpx;
 		background: #F4F4F4;
 	}
+	/* #endif */
 </style>
 

@@ -1,16 +1,16 @@
 <template>
 	<view class="HouseDetail">
 		<view class="HouseDetail-header">
-			<image src="../../static/logo.png" mode="aspectFill"></image>
+			<image :src="HouseDetailHeader.titlePic" mode="aspectFill"></image>
 		</view>
-		<view class="HouseDetail-center">
+		<view class="HouseDetail-center" @click="goToRichText">
 			<view class="HouseDetail-center-bg" :style="{backgroundImage: type == 1 ? `url(../../static/image/ych/Market/4.png)` : `url(../../static/image/ych/Market/5.png)`}">
-				<view class="HouseDetail-center-bg-title">万科·海上都会</view>
-				<view class="HouseDetail-center-bg-main">宁波万科海上都会（住宅备案名：海映星洲小区北区、海映星洲小区南区）楼盘</view>
+				<view class="HouseDetail-center-bg-title">{{HouseDetailHeader.title}}</view>
+				<view class="HouseDetail-center-bg-main">{{HouseDetailHeader.brief}}</view>
 			</view>
 		</view>
 		<view class="line-3"></view>
-		<ArticleMain @ArticleMainClick = "ArticleMainClick"></ArticleMain>
+		<ArticleMain @ArticleMainClick = "ArticleMainClick" :ArticleList = "ArticleMainList" :inType = "'HouseDetail'"></ArticleMain>
 	</view>
 </template>
 
@@ -18,17 +18,56 @@
 	export default {
 		onLoad(options) {
 			this.type = options.type
+			this.id = options.id
+			this.initHouseDetail()
+			this.initHouserBottom()
 		},
 		data () {
 			return {
 				type: 0, // 0车 1房
+				id: 0,
+				pageNum: 0,
+				pageSize: 10,
+				hasFlag: true,
+				HouseDetailHeader: {},
+				ArticleMainList: []
 			}
 		},
 		methods: {
-			ArticleMainClick (index) {
+			ArticleMainClick (index, userId, item) {
 				console.log(index)
+				console.log(item)
+				// uni.navigateTo({
+				// 	url: '../index/ArticleDetail'
+				// })
 				uni.navigateTo({
-					url: '../index/ArticleDetail'
+					url: '../RichText/RichText?RichMain=' + item.content + '&title=' + item.title
+				})
+			},
+			// 头部数据
+			async initHouseDetail () {
+				let res = await this.$fetch(this.$api.hot_detail, {id: this.id}, 'POST', 'FORM')
+				console.log(res)
+				this.HouseDetailHeader = res.data
+			},
+			//　列表数据
+			async initHouserBottom () {
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.hot_special, {id: this.id, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+				console.log(res)
+				res.rows.forEach(item => {
+					item.pics = item.titlePic.split(',')
+					item.isVideo = 0
+				})
+				this.ArticleMainList = [...this.ArticleMainList, ...res.rows]
+				
+				this.hasFlag = this.pageNum * this.pageSize < res.rows
+			},
+			// 去富文本
+			goToRichText () {
+				uni.navigateTo({
+					url: '../RichText/RichText?RichMain=' + this.HouseDetailHeader.content + '&title=' +  this.HouseDetailHeader.title
 				})
 			}
 		}
@@ -66,7 +105,7 @@
 				}
 				.HouseDetail-center-bg-main{
 					font-family: PingFangSC-Regular;
-					font-size: 12px;
+					font-size: 10px;
 					color: #141414;
 					padding: 0 30rpx;
 					// padding-bottom: 18rpx;

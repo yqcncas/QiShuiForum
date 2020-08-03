@@ -1,46 +1,93 @@
 <template>
 	<view class="FindDetail">
 		<view class="FindDetail-header">
-			<view class="FindDetail-header-top">活动名称</view>
-			<view class="FindDetail-header-bottom">活动时间：2020.02.02-2020.06.02</view>
+			<view class="FindDetail-header-top">{{detailInfo.name}}</view>
+			<view class="FindDetail-header-bottom">活动时间：{{detailInfo.createTime}}-{{detailInfo.endTime}}</view>
 		</view>
 		<view class="FindDetail-main">
-			<image src="../../static/logo.png" mode="aspectFill"></image>
+			<image :src="detailInfo.titlePic" mode="aspectFill"></image>
 		</view>
 		<view class="FindDetail-center">
 			<scroll-view scroll-y="true" style="height: 700rpx;">
-				<view class="FindDetail-center-text">来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				
-				来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！
-				
+				<view class="FindDetail-center-text">
+					<jyf-parser :html="detailInfo.content" ref="article"></jyf-parser>
 				</view>
+				
 			</scroll-view>
 		</view>
-		<view class="join-button" @click="goToApply">立即参加</view>
+		<view class="join-button" @click="goToApply" :class="{noImg: isActiveing != 0}">{{isActiveing == 0 ? '立即参加' : isActiveing == 1 ? '已过期' : '暂未开始'}}</view>
 	</view>
 </template>
 
 <script>
+	import jyfParser from "@/components/jyf-parser/jyf-parser";
 	export default {
+		onLoad(options) {
+			console.log(options)
+			this.id = options.id
+			this.initFindDeatil()
+			
+		},
+		components:{
+			jyfParser
+		},
 		onNavigationBarButtonTap () {
 			console.log('分享按钮')
+			
+		},
+		data () {
+			return {
+				id: '',
+				detailInfo: {},
+				isActiveing: 0  // 0正在 1过期 2未开始
+			}
 		},
 		methods: {
-			goToApply () {
-				uni.navigateTo({
-					url: './Apply'
-				})
+			async goToApply () {
+				if (this.isActiveing == 0) {
+					let res = await this.$fetch(this.$api.activity_apply, {id: this.id}, 'POST', 'FORM')
+					console.log(res)
+					console.log(this.detailInfo.otherUrl)
+					uni.navigateTo({
+						url: '../WebViewPage/WebViewPage?goUrl=' + this.detailInfo.otherUrl
+					})
+					
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: '活动暂未开始或已过期'
+					})
+				} 
+				// uni.navigateTo({ 
+				// 	url: './Apply'
+				// })
+			},
+			async initFindDeatil () {
+				let res = await this.$fetch(this.$api.activity_detail, {id: this.id}, 'POST', 'FORM')
+				console.log(res)
+				this.detailInfo = res.data
+				
+				var date1 = this.$dayjs().unix()
+				var date2 = this.$dayjs(this.detailInfo.startTime).unix()
+				var date3 = this.$dayjs(this.detailInfo.endTime).unix()
+				console.log(date1, date2, date3)
+					
+				// console.log(date1.diff(date2)) // 20214000000 默认单位是毫秒
+			
+				// this.isActiveing = date1.diff(date2)
+				console.log(date1 - date2)
+				console.log(date3 - date1)
+				// console.log(date3 - data1)
+				if (date1 - date2 >= 0 && date3 - date1 >= 0) {
+					this.isActiveing = 0
+				} else if (date3 - date1 < 0) {
+					this.isActiveing = 1
+				} else if (date1 - date2 < 0) {
+					this.isActiveing = 2
+				}
+				
+				
+				
 			}
 		}
 	}
@@ -104,6 +151,10 @@
 			margin: 0 auto;
 			margin-top: 30rpx;
 			box-sizing: border-box;
+			&.noImg{
+				background-image: none;
+				background-color: #c8c9cc;
+			}
 		}
 	}
 </style>

@@ -2,25 +2,42 @@
 	<view class="ArticleMain ">
 		<view class="ArticleMain-info">
 			<!-- 数据展示 -->
-			<view class="ArticleMain-info-item" v-for="(item, index) in ArticleList" :key = "index" @click="ArticleMainClick(index)">
+			<view class="ArticleMain-info-item" v-for="(item, index) in ArticleList" :key = "index" @click="ArticleMainClick(item.id,　item.userId, item)">
 				<!-- 第一条 -->
-				<view class="ArticleMain-info-item-first" v-if="item.pics.length == 1">
+				<view class="ArticleMain-info-item-first" v-if="item.pics.length <= 1 && !item.type">
 					<view class="ArticleMain-info-item-first-left">
 						<view class="ArticleMain-info-item-first-left-top u-skeleton-rect">{{item.title}}</view>
-						<view class="ArticleMain-info-item-first-left-bottom">
+						<view class="ArticleMain-info-item-first-left-bottom" :style="{paddingTop: item.pics.length <= 0 ? '36rpx' : '58rpx'}">
 							<view class="ArticleMain-info-item-first-left-bottom-read u-skeleton-rect">{{item.browseNum}}阅读量</view>
 							<view class="ArticleMain-info-item-first-left-bottom-timer u-skeleton-rect">{{item.createTime}}</view>
 						</view>
 					</view>
-					<view class="ArticleMain-info-item-first-right">
+					<view class="ArticleMain-info-item-first-right" v-if="item.isVideo == 0 && item.pics.length">
 						<image :src="item.pics[0]" mode="aspectFill"></image>
 					</view>
+					<view class="ArticleMain-info-item-first-right" v-if="item.isVideo == 1 && item.content[0].pic.length">
+						<image :src="item.content[0].pic[0] + '?vframe/jpg/offset/0'" mode="aspectFill"></image>
+					</view>
 				</view>
+				
+				<view class="ArticleDetail-footer-main-item-advertising" v-if="item.isGg">
+					<view class="ArticleDetail-footer-main-item-advertising-top">
+						<view class="ArticleDetail-footer-main-item-advertising-top-left">{{item.title}}</view>
+						<view class="ArticleDetail-footer-main-item-advertising-top-right">广告</view>
+					</view>
+					<view class="ArticleDetail-footer-main-item-advertising-center">
+						<image :src="item.titlePic" mode="aspectFill"></image>
+					</view>
+					<view class="ArticleDetail-footer-main-item-advertising-footer">{{item.newcontent}}</view>
+					
+				</view>
+				
+				
 				<!-- 剩余的 -->
-				<view class="ArticleMain-info-item-else" v-else>
+				<view class="ArticleMain-info-item-else" v-if="item.pics.length > 1">
 					<view class="ArticleMain-info-item-else-top">{{item.title}}</view>
 					<view class="ArticleMain-info-item-else-center"   v-if="item.pics.length">
-						<image :src="itemImg" mode="aspectFill" v-for="(itemImg, i) in item.pics" :key = "i"></image>
+						<image :src="itemImg" mode="aspectFill" v-for="(itemImg, i) in item.pics" :key = "i" v-if = "i < 3"></image>
 					</view>
 					<view class="ArticleMain-info-item-else-bottom">
 						<view class="ArticleMain-info-item-else-bottom-left">{{item.browseNum}}阅读量</view>
@@ -28,6 +45,7 @@
 					</view>
 				</view>
 			</view>
+			<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
 		</view>
 		
 	</view>
@@ -37,81 +55,12 @@
 	export default {
 		data () {
 			return {
-				ArticleMainArr: [
-					{
-						title: "两会今日看点：人大会议闭幕 李克强会见中外记者",
-						reader: '88',
-						timer: "2020年05月28日 00:07",
-						image: ['https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=f5d2fbefe05d20bb072e110a1cb43926&imgtype=0&src=http%3A%2F%2Ft9.baidu.com%2Fit%2Fu%3D29311073%2C358824429%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D854']	
-					},
-					{
-						title: "两会今日看点：人大会议闭幕 李克强会见中外记者",
-						reader: '88',
-						timer: "2020年05月28日 00:07",
-						image: ['https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=f5d2fbefe05d20bb072e110a1cb43926&imgtype=0&src=http%3A%2F%2Ft9.baidu.com%2Fit%2Fu%3D29311073%2C358824429%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D854',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457'
-							]
-					},
-					{
-						title: "两会今日看点：人大会议闭幕 李克强会见中外记者",
-						reader: '88',
-						timer: "2020年05月28日 00:07",
-						image: ['https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=f5d2fbefe05d20bb072e110a1cb43926&imgtype=0&src=http%3A%2F%2Ft9.baidu.com%2Fit%2Fu%3D29311073%2C358824429%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D854']	
-					},
-					{
-						title: "两会今日看点：人大会议闭幕 李克强会见中外记者",
-						reader: '88',
-						timer: "2020年05月28日 00:07",
-						image: ['https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=f5d2fbefe05d20bb072e110a1cb43926&imgtype=0&src=http%3A%2F%2Ft9.baidu.com%2Fit%2Fu%3D29311073%2C358824429%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D854',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457'
-							
-							]
-					},
-					{
-						title: "两会今日看点：人大会议闭幕 李克强会见中外记者",
-						reader: '88',
-						timer: "2020年05月28日 00:07",
-						image: ['https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=f5d2fbefe05d20bb072e110a1cb43926&imgtype=0&src=http%3A%2F%2Ft9.baidu.com%2Fit%2Fu%3D29311073%2C358824429%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D854']	
-					},
-					{
-						title: "两会今日看点：人大会议闭幕 李克强会见中外记者",
-						reader: '88',
-						timer: "2020年05月28日 00:07",
-						image: ['https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=f5d2fbefe05d20bb072e110a1cb43926&imgtype=0&src=http%3A%2F%2Ft9.baidu.com%2Fit%2Fu%3D29311073%2C358824429%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D854',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457'
-							
-							]
-					},
-					{
-						title: "两会今日看点：人大会议闭幕 李克强会见中外记者",
-						reader: '88',
-						timer: "2020年05月28日 00:07",
-						image: ['https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=f5d2fbefe05d20bb072e110a1cb43926&imgtype=0&src=http%3A%2F%2Ft9.baidu.com%2Fit%2Fu%3D29311073%2C358824429%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D854']	
-					},
-					{
-						title: "两会今日看点：人大会议闭幕 李克强会见中外记者",
-						reader: '88',
-						timer: "2020年05月28日 00:07",
-						image: ['https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=f5d2fbefe05d20bb072e110a1cb43926&imgtype=0&src=http%3A%2F%2Ft9.baidu.com%2Fit%2Fu%3D29311073%2C358824429%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D854',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457',
-							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591878427657&di=399de37eb633f437eea5f354844a2129&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D747431361%2C2735836448%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D3682%26h%3D2457'
-							
-							]
-					}
-				]
+				
 			}
 		},
 		methods: {
-			ArticleMainClick (index) {
-				this.$emit('ArticleMainClick', index)
+			ArticleMainClick (index, userId, item) {
+				this.$emit('ArticleMainClick', index, userId, item)
 			}
 		},
 		props:{
@@ -119,6 +68,12 @@
 				type: Array,
 				default: () => [],
 				redirect: true
+			},
+			hasFlag: {
+				type: Boolean
+			},
+			inType: {
+				
 			}
 		}
 	}
@@ -138,6 +93,9 @@
 						border-bottom: 0;
 						padding-bottom: 30rpx;
 					}
+					.ArticleMain-info-item-first{
+						border: none;
+					}
 				}
 				.ArticleMain-info-item-first{
 					width: 100%;
@@ -146,15 +104,19 @@
 					border-bottom: 1rpx solid #D8D8D8;
 					box-sizing: border-box;
 					.ArticleMain-info-item-first-left{
+						flex: 1;
 						padding-right: 22rpx;
 						box-sizing: border-box;
+						display: flex;
+						flex-direction: column;
+						justify-content: space-between;
 						.ArticleMain-info-item-first-left-top{
 							width: 412rpx;
 							font-family: PingFangSC-Medium;
-							font-size: 14px;
+							font-size: 17px;
 							color: #141414;
 							letter-spacing: -0.34px;
-							font-weight: bold;
+							// font-weight: bold;
 							display: -webkit-box;    
 							-webkit-box-orient: vertical;    
 							-webkit-line-clamp: 2;    //控制行数
@@ -163,11 +125,16 @@
 						.ArticleMain-info-item-first-left-bottom{
 							display: flex;
 							font-family: PingFangSC-Regular;
-							font-size: 10px;
+							font-size: 12px;
 							color: #686868;
 							letter-spacing: -0.24px;
 							padding-top: 58rpx;
 							box-sizing: border-box;
+							justify-content: space-between;
+							.ArticleMain-info-item-first-left-bottom-timer{
+								padding-left: 62rpx;
+								box-sizing: border-box;
+							}
 						}
 					}
 					.ArticleMain-info-item-first-right{
@@ -182,7 +149,7 @@
 			
 				.ArticleMain-info-item-else{
 					width: 100%;
-					padding-top: 34rpx;
+					// padding-top: 34rpx;
 					padding-bottom: 25rpx;
 					border-bottom: 1rpx solid #D8D8D8;
 					box-sizing: border-box;
@@ -192,10 +159,10 @@
 					}
 					.ArticleMain-info-item-else-top{
 						font-family: PingFangSC-Medium;
-						font-size: 14px;
+						font-size: 17px;
 						color: #141414;
 						letter-spacing: -0.34px;
-						font-weight: bold;
+						// font-weight: bold;
 						padding-bottom: 18rpx;
 						box-sizing: border-box;
 					}
@@ -223,12 +190,68 @@
 						display: flex;
 						justify-content: space-between;
 						font-family: PingFangSC-Regular;
-						font-size: 10px;
+						font-size: 12px;
 						color: #686868;
 						letter-spacing: -0.24px;
 						
 					}
 				}
+			
+				.ArticleDetail-footer-main-item-advertising{
+					padding-top: 20rpx;
+					// padding-left: 36rpx;
+					// padding-left: 34rpx;
+					padding-bottom: 26rpx;
+					// border-top: 3rpx solid #f4f4f4;
+					border-bottom: 1rpx solid #D8D8D8;
+					box-sizing: border-box;
+					
+					.ArticleDetail-footer-main-item-advertising-top{
+						display: flex;
+						align-items: center;
+						.ArticleDetail-footer-main-item-advertising-top-left{
+							font-family: PingFangSC-Medium;
+							font-size: 14px;
+							color: #141414;
+							letter-spacing: -0.34px;
+						}
+						.ArticleDetail-footer-main-item-advertising-top-right{
+							font-family: PingFangSC-Medium;
+							font-size: 8px;
+							color: #FF7B30;
+							letter-spacing: -0.19px;
+							border: 1px solid #FF7B30;
+							border-radius: 1px;
+							padding: 0 10rpx;
+							box-sizing: border-box;
+							margin-left: 16rpx;
+						}
+					}
+					.ArticleDetail-footer-main-item-advertising-center{
+						display: flex;
+						flex-wrap: wrap;
+						padding-top: 20rpx;
+						border-radius: 12rpx;
+						overflow: hidden;
+						box-sizing: border-box;
+						image{
+							flex: 1;
+							// width: 216rpx;
+							height: 216rpx;
+							// margin-right: 16rpx;
+							// margin-top: 20rpx;
+							// box-sizing: border-box;
+							// &:nth-child(3n){
+							// 	margin-right: 0;
+							// }
+						}
+					}
+					.ArticleDetail-footer-main-item-advertising-footer{
+						margin-top: 18rpx;
+						box-sizing: border-box;
+					}
+				}
+							
 			}
 		}
 	}

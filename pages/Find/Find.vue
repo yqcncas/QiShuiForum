@@ -1,64 +1,111 @@
 <template>
 	<view class="find">
-		<view class="find-header">
-			<image src="../../static/logo.png" mode="aspectFill"></image>
-			<view class="find-header-bottom" @click="goToHistory">
-				<view class="find-header-bottom-left">
-					<image src="../../static/image/ych/my/24.png" mode=""></image>
-					<view>推荐活动</view>
-				</view>
-				<view class="find-header-bottom-right" >
-					<view>全部</view>
-					<image src="../../static/image/ych/right.png" mode="aspectFill"></image>
-				</view>
-			</view>
-		</view>
-	
-		<view class="find-main">
-			<view class="find-main-item" v-for="(item, index) in 6" :key = "index" @click="goToFindDetail">
-				<view class="line-3"></view>
-				<view class="find-main-item-header">
-					<view class="find-main-item-header-top">活动名称</view>
-					<view class="find-main-item-header-bottom">活动时间：2020.02.02-2020.06.02</view>
-				</view>
-				<view class="find-main-item-center">
-					<image src="../../static/logo.png" mode="aspectFill"></image>
-				</view>
-				<view class="find-main-item-bottom">
-					<view class="find-main-item-bottom-left">
-						<view class="find-main-item-bottom-left-hot">火热进行中</view>
-						<view class="find-main-item-bottom-left-num">555人感兴趣</view>
+		<mescroll-body ref="mescrollRef"  @down="downCallback" :up="upOption">
+			<view class="find-header">
+				<image :src="findHeader.titlePic" mode="aspectFill" @click = "goToRichPage"></image>
+				<view class="find-header-bottom" @click="goToHistory">
+					<view class="find-header-bottom-left">
+						<image src="../../static/image/ych/my/24.png" mode=""></image>
+						<view>推荐活动</view>
 					</view>
-					<view class="find-main-item-bottom-right">立即参加</view>
+					<view class="find-header-bottom-right" >
+						<view>全部</view>
+						<image src="../../static/image/ych/right.png" mode="aspectFill"></image>
+					</view>
 				</view>
 			</view>
-		</view>
+		
+			<view class="find-main">
+				<view class="find-main-item" v-for="(item, index) in findList" :key = "index" @click="goToFindDetail(item.id)">
+					<view class="line-3"></view>
+					<view class="find-main-item-header">
+						<view class="find-main-item-header-top">{{item.name}}</view>
+						<view class="find-main-item-header-bottom">活动时间：{{item.createTime}}-{{item.endTime}}</view>
+					</view>
+					<view class="find-main-item-center">
+						<image :src="item.titlePic" mode="aspectFill"></image>
+					</view>
+					<view class="find-main-item-bottom">
+						<view class="find-main-item-bottom-left">
+							<view class="find-main-item-bottom-left-hot">火热进行中</view>
+							<view class="find-main-item-bottom-left-num">{{item.applyNum}}人感兴趣</view>
+						</view>
+						<view class="find-main-item-bottom-right">立即参加</view>
+					</view>
+				</view>
+			</view>
+			<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
+		</mescroll-body>
 	</view>
 </template>
 
 <script>
+	import MescrollMixin from "@/components/mescroll-uni/mescroll-mixins.js";
 	export default {
+		mixins: [MescrollMixin],
 		onLoad() {
-			
+			this.initFindHeaderImg()
+			this.initFindList()
 		},
 		data() {
 			return {
-			
+				findHeader: {},
+				pageNum: 0,
+				pageSize: 10,
+				hasFlag: true,
+				findList: [],
+				upOption: {
+					use: false
+				}
 			}
 		},
 		methods: {
 			// 详情
-			goToFindDetail () {
+			goToFindDetail (id) {
 				uni.navigateTo({
-					url: './FindDetail'
+					url: './FindDetail?id=' + id
 				})
+			},
+			downCallback () {
+				this.pageNum = 0
+				this.pageSize = 10
+				this.hasFlag = true
+				this.findList = []
+				this.initFindList()
+			
+				this.mescroll.endDownScroll()
+				
+			},
+			// 数据列表
+			async initFindList () {
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.get_activity_list, {pageNum: this.pageNum, pageSize: this.pageSize, type: 1}, 'POST', 'FORM')
+				console.log(res)
+				this.findList = [...this.findList, ...res.rows]
+				this.hasFlag = this.pageNum * this.pageSize < res.total
 			},
 			// 全部活动
 			goToHistory () {
 				uni.navigateTo({
 					url: './historyFind'
 				})
+			},
+			// 头部图
+			async initFindHeaderImg () {
+				let res = await this.$fetch(this.$api.getadvertlist, {type: 5}, "POST", 'FORM')
+				console.log(res)
+				this.findHeader = res.data[0]
+			},
+			//　去富文本
+			goToRichPage () {
+				uni.navigateTo({
+					url: '../RichText/RichText?RichMain=' + this.findHeader.content + "&title=" + this.findHeader.title
+				})
 			}
+		},
+		onReachBottom() {
+			this.initFindList()
 		}
 	}
 </script>
@@ -105,7 +152,7 @@
 				align-items: center;
 				view{
 					font-family: PingFangSC-Medium;
-					font-size: 12px;
+					font-size: 10px;
 					color: #545454;
 					letter-spacing: -0.29px;
 					text-align: justify;
@@ -170,13 +217,13 @@
 					align-items: center;
 					.find-main-item-bottom-left-hot{
 						font-family: PingFangSC-Medium;
-						font-size: 12px;
+						font-size: 10px;
 						color: #FE1818;
 						letter-spacing: -0.29px;
 					}
 					.find-main-item-bottom-left-num{
 						font-family: PingFangSC-Medium;
-						font-size: 12px;
+						font-size: 10px;
 						color: #232323;
 						letter-spacing: -0.29px;
 						text-align: justify;
@@ -191,7 +238,7 @@
 					line-height: 62rpx;
 					text-align: center;
 					font-family: PingFangSC-Medium;
-					font-size: 12px;
+					font-size: 10px;
 					color: #FFFFFF;
 					letter-spacing: -0.29px;
 					background-image: linear-gradient(136deg, #FF8D3F 0%, #E86D29 100%);

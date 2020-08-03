@@ -3,8 +3,8 @@
 		<Status></Status>
 		<view class="Publish-header">
 			<view class="Publish-header-left" @click="cancelPublish">取消</view>
-			<view class="Publish-header-center">发布评论</view>
-			<view class="Publish-header-right">发布</view>
+			<view class="Publish-header-center">{{pageHeader}}</view>
+			<view class="Publish-header-right" @click="submitTieZi">发布</view>
 		</view>
 		<view class="Publish-center">
 			<view class="Publish-center-header">
@@ -12,7 +12,19 @@
 				<view class="Publish-center-header-right" >
 					<picker :range="listArr" @change="handlePicker">
 						<view class="picker-box">
-							<input disabled type="text" placeholder="请选择要发布的版块" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #575757;" />
+							<input disabled type="text" style="width: 100%;" v-model="showPickerText" placeholder="请选择要发布的版块(可不填)" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #575757;" />
+							<image src="../../static/image/ych/my/30.png" mode="aspectFill"></image>
+						</view>
+					</picker>
+					
+				</view>
+			</view>
+			<view class="Publish-center-header" v-if="showfenleiList.length">
+				<view class="Publish-center-header-left">分类</view>
+				<view class="Publish-center-header-right" >
+					<picker :range="showfenleiList" @change="handleFenLeiPicker">
+						<view class="picker-box">
+							<input disabled type="text" style="width: 100%;" v-model="showPickerFenleiText" placeholder="请选择要发布的分类(可不填)" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #575757;" />
 							<image src="../../static/image/ych/my/30.png" mode="aspectFill"></image>
 						</view>
 					</picker>
@@ -20,20 +32,66 @@
 				</view>
 			</view>
 			<view class="Publish-center-title">
-				<input type="text" maxlength="28" placeholder="输入标题(28字以内)" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;" />
+				<input type="text" v-model="artTitle"  maxlength="28" placeholder="输入标题(28字以内)" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;" />
 			</view>
-			<view class="Publish-center-main">
-				<textarea  placeholder="输入内容" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;"/>
+			<view class="Publish-addBox" v-for="(item, index) in addCount" :key = "index">
+			
+			<view class="Publish-center-main" >
+				<textarea v-model="submitArr[index].content" placeholder="输入内容" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;"/>
 			</view>
 			<view class="add-main">
-				<view class="add-main-title">{{addTitle}}</view>
-				<view class="add-main-box">
-					<image src="../../static/image/ych/Advertising/1.png" mode="aspectFill" class="addImg"></image>
+				<view class="add-main-title">
+					<view class="add-main-title-left">{{addTitle}}</view>
+					<view class="add-main-title-right" @click="clearVideoSrc" v-if="type == 2 && videoSrc">清除视频</view>
+					
 				</view>
+				<view class="add-main-box" @click="addSubMitArrImg(index)">
+					<image src="../../static/image/ych/Advertising/1.png" mode="aspectFill" class="addImg" v-if="type == 2 && !videoSrc" @click = "uploadVideo"></image>
+					<video :src="videoSrc" controls v-if="videoSrc"></video>
+					<view class="uploadImg" v-if="type != 2">
+						<u-upload :action="action" :file-list="fileList" @on-uploaded="onUploaded" :form-data = "QNtoken" max-count="9"  @on-remove="onRemove"></u-upload>
+					</view>	
+				</view>
+			</view>
+			</view>
+		</view>
+		<view class="publish-add-main">
+			<view @click="addCountUp" v-if="type == 0" class="addArt">添加原文</view>
+			<view @click="handlehuatiFlag" class="addArt">添加话题</view>
+			<image src="../../static/image/ych/index/26.png" mode="aspectFill" @click = "handleAtFlag">
+		</view>
+		<view class="tag-wrapper" v-if="huatiArr.length">
+			<view class="tag-box" v-for="item in huatiArr" :key = "item.id">
+				<u-tag :text="item.name" type="success" closeable @close="tagClick(item.id)"/>
 			</view>
 		</view>
 		
+		<view class="tag-wrapper" v-if="AtUserList.length">
+			<view class="tag-box" v-for="item in showUserList" :key = "item.userId">
+				<u-tag :text="item.userName" type="success"  closeable @close="AtTagClick(item.userId)" />
+			</view>
+		</view>
 		
+
+		<u-popup v-model="huatiBoxFlag" mode="bottom" border-radius="14" height="400px">
+				<scroll-view scroll-y="true"  @scrolltolower = "lower">
+					<view class="huati-item" v-for="(item, index) in huatiList" :key = "index" @click="handlehuatiArr(item.id, item.name)">
+						<image :src="item.titlePic" mode="aspectFill"></image>
+						<view>{{item.name}}</view>
+					</view>
+					<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
+				</scroll-view>
+		</u-popup>
+		
+		<u-popup v-model="AtFlag" mode="bottom" border-radius="14" height="400px">
+				<scroll-view scroll-y="true" :style="{height: huatiHeight}" @scrolltolower = "lower">
+					<view class="huati-item" v-for="(item, index) in AtList" :key = "index" @click="handleAtUser(item)">
+						<image :src="item.avatar ? item.avatar : '../../static/image/ych/avatar.png'" mode="aspectFill"></image>
+						<view>{{item.userName}}</view>
+					</view>
+					<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
+				</scroll-view>
+		</u-popup>
 
 	</view>
 </template>
@@ -44,36 +102,364 @@
 			this.type = options.type
 			if (this.type == 2) {
 				this.addTitle = '添加视频'
+				this.pageHeader = '发布视频'
+				this.videoFlag = 1
 			}
+			if (this.type == 1) {
+				this.pageHeader = '发布短文'
+			}
+			if (this.type == 0) {
+				this.pageHeader = '发布长文'
+			}
+			this.initGetAllBankuai()
+			this.initQNToken()
+			
+			
 		},
 		data () {
 			return {
-				listArr: ['123', '456'],
+				pageHeader: '发布帖子',
+				addCount: 1,
+				allListArr: [], // 真版块
+				listArr: [], // 展示用的picker数据
+				activePickerId: 0,
+				showPickerText: '',
 				addTitle: '添加图片',
 				type: 0 , // 0长文 1短文 2视频
+				action: 'https://upload.qiniup.com/',
+				fileList: [],
+				QNtoken: {},
+				imgList: [],
+				artTitle: '',
+				choiceImgIndex: 0,
+				userId: '',
+				videoFlag: 0,
+				videoQnToken: '',
+				videoSrc: '',
+				submitArr: [
+					{
+						content: '',
+						pic: []
+					}
+				],
+				huatiBoxFlag: false,
+				huatiList: [],
+				pageNum: 0,
+				pageSize: 10,
+				hasFlag: true,
+				huatiArr: [],
+				huatiArrIds: [],
+				huatiHeight: 140,
+				fenleiList: [],
+				showfenleiList: [],
+				showPickerFenleiText: '',
+				showPickerFenleiId: '',
+				AtFlag: false,
+				AtList: [],
+				AtUserList: [],
+				showUserList: []
 			}
 		},
 		methods: {
+			// 获取七牛token
+			async initQNToken () {
+				let res = await this.$fetch(this.$api.getQiniuToken, {}, 'POST', 'FORM')
+				console.log(res)
+				this.QNtoken = {
+					token: res.msg
+				}
+				this.videoQnToken = res.msg
+				
+			},
+			// 增加次数
+			addCountUp () {
+				this.submitArr.push({content: '', pic: []})
+				this.addCount = ++this.addCount
+				
+			},
+			//单组内容图片
+			addSubMitArrImg (index) {
+				this.choiceImgIndex = index
+			},
+			// 图片上传
+			onUploaded (lists) {
+				this.imgList = []
+				this.submitArr[this.choiceImgIndex].pic = []
+				lists.forEach(item => {
+					console.log(item)
+					this.imgList.push(this.$api.baseLocation + item.response.hash)
+					this.submitArr[this.choiceImgIndex].pic.push(this.$api.baseLocation + item.response.hash)
+				})
+				// console.log(this.submitArr)
+				console.log(this.imgList)
+
+				
+			},
+			//　删除图片
+			onRemove(index, lists) {
+				this.imgList.splice(index, 1)
+				this.submitArr[this.choiceImgIndex].pic.splice(index, 1)
+			},
 			// 版块切换
-			handlePicker (e) {
+			async handlePicker (e) {
 				console.log(e)
+				this.activePickerId = this.allListArr[e.detail.value].id
+				this.showPickerText = this.allListArr[e.detail.value].plateName
+				this.showfenleiList = []
+				this.showPickerFenleiText = ''
+				this.showPickerFenleiId = ''
+				let res = await this.$fetch(this.$api.two_plate_type_by_id, {id: this.activePickerId}, "POST", 'FORM')
+				console.log(res.data)
+				this.fenleiList = res.data
+				if (this.fenleiList.length) {
+					this.fenleiList.forEach(item => {
+						this.showfenleiList.push(item.name)
+					})
+				}
+				
+			
+			},
+			// 发布
+			async submitTieZi () {
+				// if (this.showPickerText.trim() == '') {
+				// 	return uni.showToast({
+				// 		icon: 'none',
+				// 		title: '请选择发布的版块'
+				// 	})
+				// }
+				if (this.artTitle.trim() == "") {
+					return uni.showToast({
+						icon: 'none',
+						title: '请填写标题'
+					})
+				}
+				
+				uni.showLoading({
+					title: '加载中'
+				})
+				
+				if (uni.getStorageSync('userId')) {
+					this.userId = uni.getStorageSync('userId')
+				}
+				let res = await this.$fetch(this.$api.add_article, {content: JSON.stringify(this.submitArr), isVideo: this.videoFlag, pics: JSON.stringify(this.imgList), pushUserId: this.AtUserList, title: this.artTitle, type: this.activePickerId, labelIds: this.huatiArrIds, twoPlateType: this.showPickerFenleiId}, "POST", 'FORM')
+				console.log(res)
+				uni.hideLoading()
+				uni.showToast({
+					icon: 'none',
+					title: res.msg
+				})
+				if (res.code == 0) {
+					this.videoSrc = '',
+					this.submitArr = [
+						{
+							content: '',
+							pic: []
+						}
+					]
+					this.showPickerText = ""
+					this.artTitle = ""
+					uni.setStorageSync('publishSuccess', true)
+					setTimeout(()=> {
+						uni.switchTab({
+							url: './index'
+						})
+					}, 700)
+					
+				}
+					
 			},
 			// 取消发布
 			cancelPublish () {
-				uni.showModal({
-				    title: '',
-				    content: '是否保留此次编辑？',
-					cancelText: '不保留',
-					confirmText: '保留',
-				    success:  (res) => {
-				        if (res.confirm) {
-				            console.log('用户点击确定');
-				        } else if (res.cancel) {
-				            console.log('用户点击取消');
-				        }
-				    }
-				});
+				if (this.artTitle.trim() != '') {
+					uni.showModal({
+					    title: '',
+					    content: '是否保留此次编辑？',
+						cancelText: '不保留',
+						confirmText: '保留',
+					    success:  async (res) => {
+					        if (res.confirm) {
+					            console.log('用户点击确定');
+								let msg = await this.$fetch(this.$api.add_drafts, {content: JSON.stringify(this.submitArr), isVideo: this.videoFlag, title: this.artTitle}, "POST", 'FORM')
+								console.log(msg)
+								uni.redirectTo({
+									url: '../My/Drafts'
+								})
+								
+					        } else if (res.cancel) {
+					            console.log('用户点击取消');
+								uni.navigateBack({
+									delta: 1
+								})
+					        }
+					    }
+					});
+				} else {
+					uni.navigateBack({
+						delta: 1
+					})
+				}
+				
+			},
+			// 获取版块
+			async initGetAllBankuai () {
+				let res = await this.$fetch(this.$api.getAllPlate, {}, "POST", 'FORM')
+				console.log(res)
+				this.allListArr = res.data
+				res.data.forEach((item) => {
+					this.listArr.push(item.plateName)
+				})
+			},
+			// 上传视频
+			uploadVideo () {
+				  uni.chooseVideo({
+						count: 1,
+						sourceType: ['camera', 'album'],
+						success: async (res) => {
+							// self.src = res.tempFilePath;
+							console.log(res)
+							uni.showLoading({
+								title: '上传中'
+							})
+							uni.uploadFile({
+								url: this.$api.unloadLocation, //仅为示例，非真实的接口地址
+								filePath: res.tempFilePath,
+								name: 'file',
+								formData: {
+									token: this.videoQnToken
+								},
+								success: (uploadFileRes) => {
+									// console.log();
+									let videoHash = JSON.parse(uploadFileRes.data).hash
+									
+									this.videoSrc = this.$api.baseLocation + videoHash
+									console.log(this.videoSrc)
+									this.submitArr[0].pic.push(this.videoSrc)
+									uni.hideLoading()
+								}
+							});
+						}
+					});
+			},
+			clearVideoSrc () {
+				this.videoSrc = ""
+				this.submitArr[0].pic = []
+			},
+			// 话题展示
+			handlehuatiFlag () {
+				this.pageNum = 0
+				this.pageSize = 10
+				this.hasFlag = true
+				this.huatiBoxFlag = true
+				this.huatiList = []
+				this.huatiListFn()
+			},
+			// 话题列表
+			async huatiListFn () {
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.new_label, {pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+				console.log(res)
+				this.huatiList = [...this.huatiList, ...res.rows]
+				this.huatiHeight = this.huatiList.length * 140 + 'rpx'
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+				console.log(this.hasFlag)
+			},
+			// 点击话题内容
+			handlehuatiArr (id, name) {
+			
+					
+				this.huatiArr.forEach((item, index) => {
+		
+					if (item.id == id) {
+						this.huatiArr.splice(index, 1)
+						return uni.showToast({
+							icon: 'none',
+							title: '已存在该话题'
+						})
+						
+					}
+				})
+				this.huatiArr.push({
+					id,
+					name
+				})
+				
+				
+				this.huatiArrIds.push(id)
+				this.huatiArrIds = [...new Set(this.huatiArrIds)]
+				console.log(this.huatiArrIds)
+				this.huatiBoxFlag = false
+				
+			},
+			// 点击话题关闭按钮
+			tagClick (id) {
+				this.huatiArr.forEach((item, index) => {
+					if (item.id == id) {
+						this.huatiArr.splice(index, 1)
+						this.huatiArrIds.splice(index, 1)
+					}
+				})
+				console.log(this.huatiArrIds)
+			},
+			lower () {
+				this.huatiListFn()
+			},
+			// 切换分类数据
+			handleFenLeiPicker (e) {
+				console.log(e)
+				console.log(this.fenleiList)
+				this.showPickerFenleiText = this.fenleiList[e.detail.value].name
+				this.showPickerFenleiId = this.fenleiList[e.detail.value].type
+			},
+			// 展示艾特列表
+			handleAtFlag () {
+				this.pageNum = 0
+				this.pageSize = 10
+				this.hasFlag = true
+				this.AtFlag = true
+				this.AtList = []
+				this.AtListFn()
+			},
+			// 艾特列表
+			async AtListFn () {
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.get_can_push_user, {pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+				console.log(res)
+				this.AtList = [...this.AtList, ...res.rows]
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+			},
+			// 点击AT对象
+			handleAtUser (user) {
+				console.log(user)
+				let ExitId = this.AtUserList.indexOf(user.userId)
+				if (ExitId > -1) {
+					uni.showToast({
+						icon: 'none',
+						title: '已在提醒队列中, 请勿重复添加'
+					})
+				} else {
+					this.AtUserList.push(user.userId)
+					this.AtUserList = [...new Set(this.AtUserList)]
+					
+					this.showUserList.push(user)
+				}
+
+				
+				this.AtFlag = false
+			},
+			//　删除艾特对象
+			AtTagClick(userId) {
+				
+				this.AtUserList.forEach((item, index) => {
+					if (item == userId) {
+						this.showUserList.splice(index, 1)
+						this.AtUserList.splice(index, 1)
+					}
+				})
+				console.log(this.AtUserList)
 			}
+			
 		}
 	}
 </script>
@@ -90,11 +476,15 @@
 			box-sizing: border-box;
 			position: fixed;
 			top: var(--status-bar-height);
+			z-index: 999;
+			background-color: #fff;
 			.Publish-header-left, .Publish-header-right{
 				font-family: PingFangSC-Regular;
-				font-size: 14px;
+				font-size: 16px;
 				color: #2A2A2A;
 				letter-spacing: -0.34px;
+				flex: 1;
+				text-align: center;
 			}
 			
 			.Publish-header-center{
@@ -102,8 +492,10 @@
 				font-size: 18px;
 				color: #000000;
 				letter-spacing: -0.03px;
-				padding-left: 212rpx;
-				padding-right: 212rpx;
+				// padding-left: 212rpx;
+				// padding-right: 212rpx;
+				padding-left: 200rpx;
+				padding-right: 200rpx;
 				box-sizing: border-box;
 			}
 		}
@@ -189,6 +581,9 @@
 				padding-right: 36rpx;
 				box-sizing: border-box;
 				.add-main-title{
+					width: 100%;
+					display: flex;
+					justify-content: space-between;
 					font-family: PingFangSC-Regular;
 					font-size: 14px;
 					color: #141414;
@@ -202,6 +597,56 @@
 						height: 222rpx;
 					}
 				}
+			}
+		}
+		.publish-add-main{
+			display: flex;
+			align-items: center;
+			padding-bottom: 30rpx;
+			.addArt{
+				display: inline-block;
+				padding: 0 28rpx;
+				background: #FF7B30;
+				border-radius: 24rpx;
+				font-family: PingFangSC-Regular;
+				font-size: 14px;
+				color: #FFFFFF;
+				letter-spacing: -0.34px;
+				margin-left: 36rpx;
+				
+			}
+			image{
+				width: 48rpx;
+				height: 48rpx;
+				margin-left: 30rpx;
+			}
+		}
+		.huati-item{
+			display: flex;
+			align-items: center;
+			width: 100%;
+			height: 140rpx;
+			image{
+				width: 100rpx;
+				height: 100rpx;
+				border-radius: 50%;
+				margin-left: 30rpx;
+				margin-right: 30rpx;
+			}
+		}
+		.tag-wrapper{
+			display: flex;
+			flex-wrap: wrap;
+			padding: 30rpx;
+			padding-top: 0;
+			.tag-box{
+				// flex: 1;
+				// width: 25%;
+				margin-top: 30rpx;
+				margin-left: 10rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
 			}
 		}
 	}

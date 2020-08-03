@@ -104,7 +104,7 @@
 								fancyArr.push(item.id)
 							})
 							console.log(fancyArr)
-							
+							uni.setStorageSync('TabConfigFlag', true)
 							let msg = await this.$fetch(this.$api.updUserPlate, {plate: fancyArr}, "POST", 'FORM')
 							console.log(msg)
 							
@@ -129,14 +129,24 @@
 				uni.showModal({
 				    title: '提示',
 				    content: '确定删除' + name + '版块么',
-				    success:  (res) => {
+				    success: async (res) => {
 				        if (res.confirm) {
+							let fancyArr = []
 				            this.fancyArr.forEach((item, index) => {
 				            	if (item.id == id) {
 				            		console.log(index)
 				            		this.canAddArr.push(...this.fancyArr.splice(index, 1))
+									
+									this.fancyArr.forEach(item => {
+										fancyArr.push(item.id)
+									})
+									
 				            	}
 				            })
+							uni.setStorageSync('TabConfigFlag', true)
+							let msg = await this.$fetch(this.$api.updUserPlate, {plate: fancyArr}, "POST", 'FORM')
+							console.log(msg)
+	
 				        } else if (res.cancel) {
 				            console.log('用户点击取消');
 				        }
@@ -180,7 +190,7 @@
 					margin-right: 32rpx;
 					box-sizing: border-box;
 					color: #FF7B30;
-					font-size: 12px;
+					font-size: 10px;
 				}
 				image{
 					width: 20rpx;

@@ -9,14 +9,14 @@
 			<swiper style="height: calc(100vh - 84rpx);" :current="cuttentIndex" @change="swiperChange">
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: calc(100vh - 84rpx);" @scrolltolower = "lower">
-						<view class="Advertising-item" v-for="(item, index) in 10" :key = "index">
+						<view class="Advertising-item" v-for="(item, index) in AdvertisingList" :key = "index" @click="goToRichText(item.newContent, item.title, item.pics)">
 							<view class="Advertising-item-top">
 								<view class="Advertising-item-left">
-									<image src="../../static/logo.png" mode="aspectFill"></image>
+									<image :src="item.pics[0]" mode="aspectFill"></image>
 								</view>
 								<view class="Advertising-item-right">
-									<view class="Advertising-item-right-top">胡记核桃</view>
-									<view class="Advertising-item-right-bottom">来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！</view>
+									<view class="Advertising-item-right-top">{{item.title}}</view>
+									<view class="Advertising-item-right-bottom">{{item.content}}</view>
 								</view>
 							</view>
 						<!-- 	<view class="Advertising-item-bottom">
@@ -25,29 +25,32 @@
 							</view> -->
 							
 						</view>
+						<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
 					</scroll-view>
 					
 				</swiper-item>
 				
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: calc(100vh - 84rpx);" @scrolltolower = "lower">
-						<view class="Advertising-item" v-for="(item, index) in 10" :key = "index">
+						<view class="Advertising-item" v-for="(item, index) in AdvertisingList" :key = "index">
 							<view class="Advertising-item-top">
 								<view class="Advertising-item-left">
-									<image src="../../static/logo.png" mode="aspectFill"></image>
+									<image :src="item.pics[0]" mode="aspectFill"></image>
 								</view>
 								<view class="Advertising-item-right">
-									<view class="Advertising-item-right-top">胡记核桃</view>
-									<view class="Advertising-item-right-bottom">来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！来我家买核桃！</view>
+									<view class="Advertising-item-right-top">{{item.title}}</view>
+									<view class="Advertising-item-right-bottom">{{item.content}}</view>
 								</view>
 							</view>
 							<view class="Advertising-item-bottom">
-								<view class="Advertising-item-bottom-item">广告展现量：10</view>
-								<view class="Advertising-item-bottom-item">广告点击量：10</view>
+								<view class="Advertising-item-bottom-item">广告展现量：{{item.displayNum}}</view>
+								<view class="Advertising-item-bottom-item">广告点击量：{{item.hits}}</view>
 							</view>
 							
 						</view>
+						<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
 					</scroll-view>
+					
 				</swiper-item>
 			</swiper>
 				
@@ -58,10 +61,36 @@
 
 <script>
 	export default {
+		onLoad() {
+			
+		},
+		onShow() {
+			this.initMyAdvertising()
+		},
+		onBackPress() {
+			if (uni.getStorageSync('advertisingFlag')) {
+				uni.removeStorageSync('advertisingFlag')
+				uni.switchTab({
+					url: './My'
+				})
+				return true
+			} else {
+				return false
+			}
+		},
 		data () {
 			return {
-				cuttentIndex: 0
+				cuttentIndex: 0,
+				pageNum: 0,
+				pageSize: 10,
+				hasFlag: true,
+				AdvertisingList: []
 			}
+		},
+		onNavigationBarButtonTap () {
+			uni.navigateTo({
+				url: '../Advertising/PublishAdvertising'
+			})
 		},
 		methods: {
 			//　切换
@@ -76,14 +105,46 @@
 			swiperChange (e) {
 				console.log(e)
 				this.handleCurrentIndex(e.detail.current)
-			}
+			},
+			// 去富文本
+			goToRichText (content, title, pics) {
+				uni.navigateTo({
+					url: '../RichText/RichText?RichMain=' + content + '&title=' + title + '&pics=' + JSON.stringify(pics)
+				})
+			},
+			// 数据列表
+			async initMyAdvertising () {
+				if (!this.hasFlag) return 
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.my_ads, {pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
+				console.log(res)
+				this.AdvertisingList = [...this.AdvertisingList, ...res.rows]
+				this.AdvertisingList.forEach(item => {
+					item.pics = JSON.parse(item.pics)
+					item.newContent = item.content
+					item.content = this.filterHTMLTag(item.content)
+				}) 
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+			},
+			filterHTMLTag (msg) {
+			    var msg = msg.replace(/<\/?[^>]*>/g, ''); //去除HTML Tag
+			    msg = msg.replace(/[|]*\n/, '') //去除行尾空格
+			    msg = msg.replace(/&npsp;/ig, ''); //去掉npsp
+			    msg = msg.replace(/[ ]|[&nbsp;]/g, '')
+			    return msg;
+			},
 		},
 		
 	}
 </script>
 
 <style lang="less">
+	page{
+		width: 100%;
+	}
 	.Advertising{
+		width: 100%;
+		overflow: hidden;
 		.Advertising-navtab{
 			width: 100%;
 			// border-bottom: 10rpx solid #f4f4f4;

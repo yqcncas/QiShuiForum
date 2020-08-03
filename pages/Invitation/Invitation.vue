@@ -1,79 +1,201 @@
 <template>
 	<view class="Invitation">
+		<mescroll-body ref="mescrollRef"  @down="downCallback" :up="upOption">
 		<!-- 头部导航 -->
 		<view class="Invitation-header">
 			<view class="Invitation-header-top">
-				<view class="Invitation-header-top-item" v-for="(item, index) in navTab" :key = "index" @click="goToPage(index)">
-					<image :src="item.image" mode="aspectFill"></image>
-					<view class="Invitation-header-top-item-text">{{item.name}}</view>
-				</view>
+				<swiper class="tieziSwiper" :indicator-dots="true"  style="width:100%;height: 366rpx;">
+					<swiper-item v-for="(item, index) in navTab" :key = "index">
+						<view class="swiper-item swiper-flex-box">
+							<view class="Invitation-header-top-item" v-for="(it, i) in item" :key = "i" @click="goToPage(i, it.id, it.plateName)">
+								<image :src="it.platePic" mode="aspectFill"></image>
+								<view class="Invitation-header-top-item-text">{{it.plateName}}</view>
+							</view>
+						</view>
+					</swiper-item>
+
+				</swiper>
+				
+				<!-- <view class="Invitation-header-top-item" v-for="(item, index) in navTab" :key = "index" @click="goToPage(index, item.id, item.plateName)">
+					<image :src="item.platePic" mode="aspectFill"></image>
+					<view class="Invitation-header-top-item-text">{{item.plateName}}</view>
+				</view> -->
+				
 			</view>
 			<view class="line-7"></view>
 		</view>
 		<!-- 置顶 -->
-		<Stick></Stick>
+		<Stick :StickList = "topArtList" @handleStick = "handleStick"></Stick>
 		<!-- 底部导航 -->
 		<view class="line-3"></view>
 		<NavButton :navleft="'最新发布'" :navright="'精华帖'" :navIndex = "navIndex" @handleNavIndex = "handleNavIndex"></NavButton>
 		<view class="line-3"></view>
-		<ArticleMain @ArticleMainClick = "ArticleMainClick"></ArticleMain>
-		<Fab></Fab>
+		<ArticleMain @ArticleMainClick = "ArticleMainClick" :ArticleList = "artList" :hasFlag = "hasFlag"></ArticleMain>
+		<Fab @trigger = "trigger"></Fab>
+		</mescroll-body>
 	</view>
 </template>
 
 <script>
+	import * as _ from 'lodash'
+	import MescrollMixin from "@/components/mescroll-uni/mescroll-mixins.js";
 	export default {
+		mixins: [MescrollMixin],
+		onLoad() {
+			console.log(_.chunk([1,2,3,4,5,6,7,8,9,0,12,213,3,4,5,6,1], 8))
+			
+			
+			this.initAllPlate()
+			this.initArtList()
+			this.initTopArt()
+		},
 		data () {
 			return {
-				navTab: [{image: '../../static/image/ych/index/4.png', name: '房产'},{image: '../../static/image/ych/index/5.png', name: '汽车'},{image: '../../static/image/ych/index/6.png', name: '二手闲置'},
-						 {image: '../../static/image/ych/index/7.png', name: '找工作'},{image: '../../static/image/ych/index/8.png', name: '商城'},{image: '../../static/image/ych/index/9.png', name: '广场'},
-						 {image: '../../static/image/ych/index/10.png', name: '亲子'},{image: '../../static/image/ych/index/11.png', name: '美食'}], 
-						 
-				navIndex: 0		 
+				navTab: [], 
+				navIndex: 0,
+				isCreamFlag: 0,
+				pageNum: 0,
+				pageSize: 10,
+				hasFlag: true,
+				artList: [],
+				topArtList: [],
+				upOption: {
+					use: false,
+					toTop: {
+						bottom: 200
+					}
+				}
 			}
 		},
+		onReachBottom() {
+			this.initArtList()
+		},
 		methods: {
+			downCallback () {
+				this.pageNum = 0
+				this.pageSize = 10
+				this.hasFlag = true
+				this.artList = [],
+				this.topArtList = [],
+				this.initTopArt()
+				this.initArtList()
+				this.mescroll.endDownScroll()
+				
+			},
+			
+			// 去发布
+			trigger(index) {
+				if (index == 0) {
+					uni.navigateTo({
+						url: '../index/Publish?type=' + 0
+					})
+				} else if (index == 1) {
+					uni.navigateTo({
+						url: '../index/Publish?type=' + 1
+					})
+				} else {
+					uni.navigateTo({
+						url: '../index/Publish?type=' + 2
+					})
+				}
+			},
+			// 获取所有版块
+			async initAllPlate () {
+				let res = await this.$fetch(this.$api.getAllPlate, {}, 'POST', 'FORM')
+				console.log(res)
+				// this.navTab = res.data.slice(0, 6)
+				this.navTab = res.data
+				this.navTab.splice(4,0,{platePic: '../../static/image/ych/index/8.png' , plateName: '商城'})
+				this.navTab.splice(5,0,{platePic: '../../static/image/ych/index/9.png' , plateName: '广场', id: 'gc'})
+				console.log(_.chunk(this.navTab, 8))
+				this.navTab = _.chunk(this.navTab, 8)
+			},
+			// 获取文章
+			async initArtList () {
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+				console.log(res)
+				res.rows.forEach((item, index) => {
+					item.content = JSON.parse(item.content)
+					item.pics = JSON.parse(item.pics)
+					item.isGg = false
+				})
+				this.artList = [...this.artList, ...res.rows]
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+			},
 			handleNavIndex (index) {
 				this.navIndex = index
+				this.pageNum = 0
+				this.hasFlag = true
+				this.artList = []
+				if (index == 0) {
+					this.isCreamFlag = 0
+				} else {
+					this.isCreamFlag = 1
+				}
+				this.initArtList()
 			},
-			ArticleMainClick (index) {
-			 	console.log(index)
+			ArticleMainClick (id, userId, item) {
 			 	uni.navigateTo({
-			 		url: '../index/ArticleDetail'
+			 		url: '../index/ArticleDetail?id='+ id + '&userId=' + userId
 			 	})
 			},
 			// 顶部导航跳转
-			goToPage (index) {
-		
-				if (index == 4) {
+			goToPage (index, id, title) {
+				console.log(index)
+				console.log(id)
+				console.log(title)
+				if (index == 4 && title == '商城') {
 					uni.switchTab({
 						url:'../Market/Market'
 					})
-				} else if (index == 6 || index == 7) {
-					return uni.showToast({
-						icon: 'none',
-						title: '暂未开通敬请期待'
+				} else if (index == 4 && title == '找租房') {
+					uni.navigateTo({
+						url: '../HouseProperty/HouseProperty'
 					})
 				}else {
 					uni.navigateTo({
-						url: '../HouseProperty/House?type=' + index
+						url: '../HouseProperty/House?type=' + id + '&title=' + title
 					})
-				}
+				}	
 				
-					
 			}, 
+			// 置顶文章列表
+			async initTopArt() {
+				let res = await this.$fetch(this.$api.top_list, {type: ''}, "POST", 'FORM')
+				console.log(res)
+				this.topArtList = res.data
+			},
+			// 置顶文章跳转
+			handleStick (id, userId) {
+				uni.navigateTo({
+					url: '../index/ArticleDetail?id='+ id + '&userId=' + userId
+				})
+			}
 		}
 	}
 </script>
 
 <style lang="less">
+	page{
+		width: 100%;
+	}
 	.Invitation{
+		width: 100%;
 		.Invitation-header{
+			width: 100%;
 			.Invitation-header-top{
 				display: flex;
 				flex-wrap: wrap;
 				padding-top: 30rpx;
 				box-sizing: border-box;
+				.swiper-flex-box{
+					display: flex;
+					flex-wrap: wrap;
+					padding-top: 30rpx;
+					box-sizing: border-box;
+				}
 				.Invitation-header-top-item{
 					width: 25%;
 					display: flex;
@@ -86,7 +208,7 @@
 					}
 					.Invitation-header-top-item-text{
 						font-family: PingFangSC-Medium;
-						font-size: 12px;
+						font-size: 10px;
 						color: #545454;
 						letter-spacing: -0.29px;
 						padding-top: 8rpx;

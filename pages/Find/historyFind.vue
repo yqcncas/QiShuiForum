@@ -1,26 +1,86 @@
 <template>
 	<view class="find-main">
-		<view class="find-main-item" v-for="(item, index) in 6" :key = "index">
+		<view class="find-main-item" v-for="(item, index) in findList" :key = "index" @click="goToFindDetail(item.id)">
 			<view class="line-3"></view>
 			<view class="find-main-item-header">
-				<view class="find-main-item-header-top">活动名称</view>
-				<view class="find-main-item-header-bottom">活动时间：2020.02.02-2020.06.02</view>
+				<view class="find-main-item-header-top">{{item.name}}</view>
+				<view class="find-main-item-header-bottom">活动时间：{{item.createTime}}-{{item.endTime}}</view>
 			</view>
 			<view class="find-main-item-center">
-				<image src="../../static/logo.png" mode="aspectFill"></image>
+				<image :src="item.titlePic" mode="aspectFill"></image>
 			</view>
 			<view class="find-main-item-bottom">
 				<view class="find-main-item-bottom-left">
-					<view class="find-main-item-bottom-left-hot">火热进行中</view>
-					<view class="find-main-item-bottom-left-num">555人感兴趣</view>
+					<view class="find-main-item-bottom-left-hot" v-if="item.isActiveing == 0">火热进行中</view>
+					<view class="find-main-item-bottom-left-num">{{item.applyNum}}人感兴趣</view>
 				</view>
-				<view class="find-main-item-bottom-right">立即参加</view>
+				<view class="find-main-item-bottom-right" @click.stop="joinUs(item)" :class="{noImg: item.isActiveing != 0}">{{item.isActiveing == 0 ? '立即参加' : item.isActiveing == 1 ? '已过期' : '暂未开始'}}</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	export default {
+		onLoad () {
+			this.initFindList() 
+		},
+		data () {
+			return {
+				pageNum: 0,
+				pageSize: 10,
+				hasFlag: true,
+				findList: []
+			}
+		},
+		methods: {
+			goToFindDetail (id) {
+				uni.navigateTo({
+					url: './FindDetail?id=' + id
+				})
+			},
+			// 数据
+			async initFindList () {
+				var date1 = this.$dayjs().unix()
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.get_activity_list, {pageNum: this.pageNum, pageSize: this.pageSize, type: 0}, 'POST', 'FORM')
+				console.log(res)
+				this.findList = [...this.findList, ...res.rows]
+				this.findList.forEach(item => {
+					var date2 = this.$dayjs(item.startTime).unix()
+					var date3 = this.$dayjs(item.endTime).unix()
+					
+					if (date1 - date2 >= 0 && date3 - date1 >= 0) {
+						item.isActiveing = 0
+					} else if (date3 - date1 < 0) {
+						item.isActiveing = 1
+					} else if (date1 - date2 < 0) {
+						item.isActiveing = 2
+					}
+					
+				})
+				console.log(this.findList)
+				
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+			},
+			joinUs (item) {
+				if (item.isActiveing == 0) {
+					uni.navigateTo({
+						url: '../WebViewPage/WebViewPage?goUrl=' + item.otherUrl
+					})
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: '该活动暂未开始或已过期'
+					})
+				}
+			}
+		},
+		onReachBottom() {
+			this.initFindList()
+		}
+	}
 </script>
 
 <style lang="less">
@@ -79,13 +139,13 @@
 						align-items: center;
 						.find-main-item-bottom-left-hot{
 							font-family: PingFangSC-Medium;
-							font-size: 12px;
+							font-size: 10px;
 							color: #FE1818;
 							letter-spacing: -0.29px;
 						}
 						.find-main-item-bottom-left-num{
 							font-family: PingFangSC-Medium;
-							font-size: 12px;
+							font-size: 10px;
 							color: #232323;
 							letter-spacing: -0.29px;
 							text-align: justify;
@@ -100,11 +160,15 @@
 						line-height: 62rpx;
 						text-align: center;
 						font-family: PingFangSC-Medium;
-						font-size: 12px;
+						font-size: 10px;
 						color: #FFFFFF;
 						letter-spacing: -0.29px;
 						background-image: linear-gradient(136deg, #FF8D3F 0%, #E86D29 100%);
 						border-radius: 4px;
+						&.noImg{
+							background-image: none;
+							background-color: #c8c9cc;
+						}
 					}
 				}
 			}

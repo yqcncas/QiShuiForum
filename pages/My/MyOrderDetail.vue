@@ -2,36 +2,85 @@
 	<view class="MyOrderDetail">
 		<view class="MyOrderDetail-header">
 			<view class="MyOrderDetail-header-left">
-				<image src="../../static/logo.png" mode=""></image>
+				<image :src="orderDetail.goodsPic" mode="aspectFill"></image>
 			</view>
 			<view class="MyOrderDetail-header-right">
-				<view class="MyOrderDetail-header-right-top">正品iPhone Xs Max</view>
+				<view class="MyOrderDetail-header-right-top">{{orderDetail.goodsName}}</view>
 				<view class="MyOrderDetail-header-right-center">
-					<view class="MyOrderDetail-header-right-center-left">积分兑换</view>
-					<view class="MyOrderDetail-header-right-center-right">10000积分</view>
+					<view class="MyOrderDetail-header-right-center-left">{{orderDetail.goodsType == 0 ? '限时抢购' : '积分兑换' }}</view>
+					<view class="MyOrderDetail-header-right-center-right">{{orderDetail.price}}元+{{orderDetail.goodsIntegral}}积分</view>
 				</view>
 				<view class="MyOrderDetail-header-right-bottom">
-					<view class="MyOrderDetail-header-right-bottom-left">有效期至：2020-08-03</view>
-					<view class="MyOrderDetail-header-right-bottom-right">待使用</view>
+					<view class="MyOrderDetail-header-right-bottom-left">有效期至：{{orderDetail.endTime}}</view>
+					<view class="MyOrderDetail-header-right-bottom-right">{{status[orderDetail.status]}}</view>
 				</view>
 			</view>
 		</view>
 		<view class="MyOrderDetail-center">
-			<view class="MyOrderDetail-center-top">创建时间：2020-08-08 20:20:20</view>
-			<view class="MyOrderDetail-center-bottom">订单编号：353265654636543</view>
-			<view class="MyOrderDetail-center-bottom">核销时间：2020-08-08 20:20:20</view>
+			<view class="MyOrderDetail-center-top">创建时间：{{orderDetail.createTime}}</view>
+			<view class="MyOrderDetail-center-bottom">订单编号：{{orderDetail.orderNo}}</view>
+			<view class="MyOrderDetail-center-bottom" v-if="orderDetail.useTime">核销时间：{{orderDetail.useTime}}</view>
 		</view>
-		<view class="MyOrderDetail-bottom">
+		<view class="MyOrderDetail-bottom" v-if="orderDetail.status == 0 || orderDetail.status == 1">
 			<view class="MyOrderDetail-bottom-title">核销码</view>
-			<view class="qrcode">
-				<image src="../../static/logo.png" mode="aspectFill"></image>
+			
+			<view class="qrcode" v-if="qrCode">
+				<!-- {{qrCode}} -->
+				<image :src="qrCode" mode="aspectFill"></image>
 			</view>
 		</view>
-		<view class="submit-button">申请退款</view>
+		<view class="submit-button" @click="exitPrice" v-if="orderDetail.status == 0">申请退款</view>
 	</view>
 </template>
 
 <script>
+	import baseURL from '../../config/index.js'
+	export default {
+		onLoad(options) {
+			this.id = options.id
+			this.index = options.index
+			this.initOrderDetail()
+		},
+		data () {
+			return {
+				id: 0,
+				orderDetail: {},
+				qrCode: "",
+				index: 0,
+				status: ['待使用', '已使用', '退款审核中', '已退款', '已过期']
+			}
+		},
+		methods: {
+			async initOrderDetail () {
+				let res = await this.$fetch(this.$api.order_detail, {id: this.id}, 'POST', 'form')
+				console.log(res)
+				this.orderDetail = res.data.order
+				this.qrCode = baseURL.slice(0, baseURL.length - 1) + res.data.qrcode
+				console.log(this.qrCode)
+			},
+			async exitPrice () {
+				uni.showModal({
+				    title: '提示',
+				    content: '请确认是否退款',
+				    success: async(exitres)=> {
+				        if (exitres.confirm) {
+				           let res = await this.$fetch(this.$api.refund, {id: this.id}, 'POST', 'FORM')
+						   console.log(res)
+						   uni.showToast({
+						   	icon: 'none',
+							title: res.msg
+						   })
+						   this.orderDetail.status = 2
+						   uni.setStorageSync('orderDetaiIndex', this.index)
+				        } else if (exitres.cancel) {
+				            console.log('用户点击取消');
+				        }
+				    }
+				});
+				
+			}
+		}
+	}
 </script>
 
 <style lang="less">
@@ -55,7 +104,7 @@
 					font-family: PingFangSC-Medium;
 					font-size: 16px;
 					color: #545454;
-					letter-spacing: -0.12px;
+					letter-spacing: -0.10px;
 				}
 				.MyOrderDetail-header-right-center{
 					display: flex;
@@ -65,7 +114,7 @@
 					box-sizing: border-box;
 					.MyOrderDetail-header-right-center-left{
 						font-family: PingFangSC-Medium;
-						font-size: 12px;
+						font-size: 10px;
 						color: #FF7B30;
 						letter-spacing: 0.04px;
 						padding: 0 6rpx;
@@ -75,7 +124,7 @@
 					}
 					.MyOrderDetail-header-right-center-right{
 						font-family: PingFangSC-Medium;
-						font-size: 12px;
+						font-size: 10px;
 						color: #FF7B30;
 						letter-spacing: 0.04px;
 					}
@@ -86,13 +135,13 @@
 					align-items: center;
 					.MyOrderDetail-header-right-bottom-left{
 						font-family: PingFangSC-Regular;
-						font-size: 12px;
+						font-size: 10px;
 						color: #292929;
 						letter-spacing: 0.04px;
 					}
 					.MyOrderDetail-header-right-bottom-right{
 						font-family: PingFangSC-Medium;
-						font-size: 12px;
+						font-size: 10px;
 						color: #FF7B30;
 						letter-spacing: -0.29px;
 					}
@@ -105,13 +154,13 @@
 			border-bottom: 6rpx solid #f4f4f4;
 			.MyOrderDetail-center-top{
 				font-family: PingFangSC-Regular;
-				font-size: 12px;
+				font-size: 10px;
 				color: #292929;
 				letter-spacing: 0.04px;
 			}
 			.MyOrderDetail-center-bottom{
 				font-family: PingFangSC-Regular;
-				font-size: 12px;
+				font-size: 10px;
 				color: #292929;
 				letter-spacing: 0.04px;
 				padding-top: 14rpx;
@@ -121,7 +170,7 @@
 		.MyOrderDetail-bottom{
 			.MyOrderDetail-bottom-title{
 				font-family: PingFangSC-Medium;
-				font-size: 12px;
+				font-size: 10px;
 				color: #292929;
 				letter-spacing: 0.04px;
 				padding-left: 30rpx;

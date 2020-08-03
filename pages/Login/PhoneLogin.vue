@@ -13,14 +13,23 @@
 </template>
 
 <script>
+	import jsencrypt from '@/js_sdk/jsencrypt-Rsa/jsencrypt/jsencrypt.vue';
+	const dcRichAlert = uni.requireNativePlugin('ZWM-BJXMapView');
 	export default {
+		onLoad () {
+			if (uni.getStorageSync('loginUserAccount')) {
+				this.phone = uni.getStorageSync('loginUserAccount')
+			}
+			this.cid = plus.push.getClientInfo().clientid
+		},
 		data () {
 			return {
 				getYzmTimer: 0,
 				getYzmFlag: true,
 				timer: null,
 				yzm: '',
-				phone: ''
+				phone: '',
+				cid: ''
 			}
 		},
 		methods: {
@@ -44,7 +53,10 @@
 						this.getYzmTimer--
 					}
 				}, 1000)
-				let res = await this.$fetch(this.$api.mobilecode, {mobile: this.phone}, "POST", 'FORM')
+				var pubblicData=jsencrypt.setEncrypt(this.$api.publiukey,this.phone);
+				
+				console.log(pubblicData);
+				let res = await this.$fetch(this.$api.mobilecode, {mobile: pubblicData}, "POST", 'FORM')
 				console.log(res)
 			},
 			async submitInfo () {
@@ -69,9 +81,24 @@
 				if (res.code == 0) {
 					uni.setStorageSync('token', res.data.token)
 					uni.setStorageSync('userId', res.data.userId)
-					uni.switchTab({
-						url: '../index/index'
-					})
+					uni.setStorageSync('loginUserAccount', this.phone)
+					let msg = await this.$fetch(this.$api.upd_user, {cid: this.cid}, "post", 'form')
+					
+					let result = await this.$fetch(this.$api.im_register, {token: res.data.token}, "POST", 'FORM')
+					
+					let ImMsg =  JSON.parse(result.msg)
+					
+					let imUserName = ImMsg[0].username
+												
+					dcRichAlert.logIn({username: imUserName,password: imUserName}, result => {console.log(result)});
+					
+					
+					setTimeout(() => {
+						uni.switchTab({
+							url: '../index/index'
+						})
+					}, 500)
+					
 				}
 			
 				

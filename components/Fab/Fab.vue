@@ -5,7 +5,9 @@
 		:horizontal="horizontal"
 		:vertical="vertical"
 		:direction="direction"
+		:show = "show"
 		@trigger="trigger"
+		@fabClick = "fabClick"
 	></uni-fab>
 </template>
 
@@ -54,10 +56,21 @@
 				} else {
 					this.$emit("trigger", 2)
 				}
+			},
+			fabClick() {
+				
 			}
+		},
+		onHide() {
+			console.log('1231313')
 		},
 		comments:{
 			uniFab
+		},
+		props:{
+			show: {
+				type: Boolean
+			}
 		}
 	}
 </script>

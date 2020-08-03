@@ -3,15 +3,15 @@
 		<view class="pay-header">
 			<view class="pay-header-box">
 				<view class="pay-header-box-left">支付金额</view>
-				<view class="pay-header-box-right">¥20.00</view>
+				<view class="pay-header-box-right">¥{{price}}</view>
 			</view>
 		</view>
 		<view class="pay-way">
 			<view class="pay-way-title">支付方式</view>
 			<view class="pay-item" @click="handlePayIndex(0)">
 				<view class="pay-item-left">
-					<image src="../../static/image/ych/pay/3.png" mode="aspectFill"></image>
-					<view class="pay-item-left-text">支付宝支付</view>
+					<image src="../../static/image/ych/pay/5.png" mode="aspectFill"></image>
+					<view class="pay-item-left-text">余额支付</view>
 				</view>
 				<view class="pay-item-right" :class="{active: currentIndex == 0}">
 					 <icon type="success" size="24" v-if="currentIndex == 0 "/>
@@ -19,30 +19,218 @@
 			</view>
 			<view class="pay-item" @click="handlePayIndex(1)">
 				<view class="pay-item-left">
-					<image src="../../static/image/ych/pay/4.png" mode="aspectFill"></image>
-					<view class="pay-item-left-text">微信支付</view>
+					<image src="../../static/image/ych/pay/1.png" mode="aspectFill"></image>
+					<view class="pay-item-left-text">支付宝支付</view>
 				</view>
 				<view class="pay-item-right" :class="{active: currentIndex == 1}">
-					 <icon type="success" size="23" v-if="currentIndex == 1 "/>
+					 <icon type="success" size="24" v-if="currentIndex == 1 "/>
+				</view>
+			</view>
+			<view class="pay-item" @click="handlePayIndex(2)">
+				<view class="pay-item-left">
+					<image src="../../static/image/ych/pay/2.png" mode="aspectFill"></image>
+					<view class="pay-item-left-text">微信支付</view>
+				</view>
+				<view class="pay-item-right" :class="{active: currentIndex == 2}">
+					 <icon type="success" size="23" v-if="currentIndex == 2 "/>
 				</view>
 			</view>
 			
 		</view>
-		<view class="pay-button">确认支付</view>
+		<view class="pay-button" @click="payButton">确认支付</view>
 	</view>
 </template>
 
 <script>
 	export default {
+		onLoad(options) {
+			if (options.id) {
+				this.id = options.id
+			}
+			
+			this.price= options.price
+			this.type = options.type
+			if (this.type == 1) {
+				// this.startTime = options.startTime
+				// this.endTime = options.endTime
+				this.day = options.day
+			}
+			if (this.type == 2) {
+				this.content = options.content
+				this.day = options.day
+				this.title = options.title
+				this.pics = options.pics
+			}
+			if (this.type == 3) {
+				this.num = options.num
+			}
+		},
 		data () {
 			return {
-				currentIndex: 0
+				currentIndex: 0,
+				id: '',
+				price: 0,
+				type: 0 ,// 0 积分商城 1置顶购买 2广告购买 3加油包购买
+				startTime: '',
+				endTime: '',
+				content: '',
+				day: 0,
+				title: '',
+				pics: [],
+				num: 0
 			}
 		},
 		methods: {
 			handlePayIndex (index) {
 				this.currentIndex = index
-			}
+			},
+			payButton () {
+				uni.showModal({
+				    title: '提示',
+				    content: '是否确认支付',
+				    success: async (modelres) => {
+				        if (modelres.confirm) {
+							let res
+							if (this.type == 0) {
+								res = await this.$fetch(this.$api.buy_goods, {id: this.id, payType: this.currentIndex}, 'POST', 'FORM')
+							} else if (this.type == 1) {
+								res = await this.$fetch(this.$api.buy_top, {articleId : this.id, payType: this.currentIndex, day: this.day}, 'POST', 'FORM')
+							} else if (this.type == 2) {
+								res = await this.$fetch(this.$api.buy_advert, {payType: this.currentIndex, content: this.content, day: this.day, pics: this.pics, title: this.title}, 'POST', 'FORM')
+							} else if (this.type == 3) {
+								res = await this.$fetch(this.$api.buy_refueling_bag, {id: this.id, num: this.num, payType: this.currentIndex,}, 'POST', 'FORM')
+							}
+							
+							console.log(res)
+							if (this.currentIndex == 0) {
+								uni.showToast({
+									icon: 'none',
+									title: res.msg
+								})
+								if (this.type == 0) {
+									uni.setStorageSync('inMyOrderFlag', true)
+									setTimeout(() => {
+										uni.navigateTo({
+											url: '../My/MyOrder'
+										})
+									}, 700)
+								} else if (this.type == 1) {
+									setTimeout(() => {
+										uni.switchTab({
+											url: '../index/index'
+										})
+									}, 700)
+								} else if (this.type == 2) {
+									uni.setStorageSync('advertisingFlag', true)
+									setTimeout(() => {
+										uni.navigateTo({
+											url: '../My/Advertising'
+										})
+									}, 700)
+								} else if (this.type == 3)  {
+									uni.navigateBack({
+										delta: 1
+									})
+								}
+								
+							} else if (this.currentIndex == 1) {
+								uni.requestPayment({
+								    provider: 'alipay',
+								    orderInfo: res.msg, //微信、支付宝订单数据
+								    success: (msg)=> {
+								        uni.showToast({
+								        	icon: 'success',
+											title: '支付成功'
+								        })
+										if (this.type == 0) {
+											uni.setStorageSync('inMyOrderFlag', true)
+											setTimeout(() => {
+												uni.navigateTo({
+													url: '../My/MyOrder'
+												})
+											}, 700)
+										} else if (this.type == 1) {
+											setTimeout(() => {
+													uni.switchTab({
+														url: '../index/index'
+													})
+											}, 700)
+										} else if (this.type == 2) {
+											uni.setStorageSync('advertisingFlag', true)
+											setTimeout(() => {
+												uni.navigateTo({
+													url: '../My/Advertising'
+												})
+											}, 700)
+										} else if (this.type == 3) {
+											uni.switchTab({
+												url: '../My/My'
+											})
+										} 
+								    },
+								    fail: function (err) {
+								        console.log('fail:' + JSON.stringify(err));
+										uni.showToast({
+											icon: 'none',
+											title: '支付失败'
+										})
+								    }
+								});
+							} else if(this.currentIndex == 2) {
+								console.log(res)
+								uni.requestPayment({
+								    provider: 'wxpay',
+								    orderInfo: JSON.parse(res.msg), //微信、支付宝订单数据
+								    success: (msg)=> {
+								        uni.showToast({
+								        	icon: 'success',
+											title: '支付成功'
+								        })
+										if (this.type == 0) {
+											uni.setStorageSync('inMyOrderFlag', true)
+											setTimeout(() => {
+												uni.navigateTo({
+													url: '../My/MyOrder'
+												})
+											}, 700)
+										} else if (this.type == 1) {
+											setTimeout(() => {
+													uni.switchTab({
+														url: '../index/index'
+													})
+												}, 700)
+										} else if (this.type == 2) {
+											uni.setStorageSync('advertisingFlag', true)
+											setTimeout(() => {
+												uni.navigateTo({
+													url: '../My/Advertising'
+												})
+											}, 700)
+										} else if (this.type == 3) {
+											uni.switchTab({
+												url: '../My/My'
+											})
+										} 
+								    },
+								    fail: function (err) {
+								        console.log('fail:' + JSON.stringify(err));
+										uni.showToast({
+											icon: 'none',
+											title: '支付失败'
+										})
+								    }
+								});
+							}
+							
+				        } else if (modelres.cancel) {
+							uni.showToast({
+								icon: 'none',
+								title: '取消支付'
+							})
+				        }
+				    }
+				});
+			},
 		}
 	}
 </script>

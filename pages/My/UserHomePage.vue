@@ -1,117 +1,255 @@
 <template>
-	<view class="userhome-page">
+	<view class="userhome-page" v-if="showLoadingFlag">
 		<view class="userhome-page-header">
 			<view class="user-avatar">
-				<image src="../../static/logo.png" mode="aspectFill" class="avatar"></image>
+				<image :src="userInfoList.avatar ? userInfoList.avatar : '../../static/image/ych/avatar.png'" mode="aspectFill" class="avatar" @click = "showBigAvatarImg(userInfoList.avatar)"></image>
 				<image src="../../static/image/ych/my/22.png" mode="aspectFill" class="renzhen"></image>
 			</view>
 			<view class="user-info">
-				<view class="user-info-name">王大锤</view>
+				<view class="user-info-name">{{userInfoList.userName}}</view>
 				<view class="user-info-sex">
-					<image src="../../static/image/ych/my/1.png" mode="aspectFill"></image>
-					<!-- <image src="../../static/image/ych/my/2.png" mode="aspectFill"></image> -->
+					<image src="../../static/image/ych/my/1.png" mode="aspectFill" v-if="userInfoList.sex == 0"></image>
+					<image src="../../static/image/ych/my/2.png" mode="aspectFill" v-if="userInfoList.sex == 1"></image>
 				</view>
-				<view class="user-info-level">Lv.1</view>
+				<view class="user-info-level">Lv.{{userInfoList.level}}</view>
 			</view>
 			<view class="count">
 				<view class="count-left">
 					<view class="count-left-name">关注</view>
-					<view class="count-left-num">0</view>
+					<view class="count-left-num">{{userInfoList.params.myFollow}}</view>
 				</view>
 				<view class="count-left">
 					<view class="count-left-name">粉丝</view>
-					<view class="count-left-num">0</view>
+					<view class="count-left-num">{{userInfoList.params.myFans}}</view>
 				</view>
 			</view>
-			<view class="sign">还没有个性签名，快去编辑吧！</view>
+			<view class="sign">{{userInfoList.gxSign ? userInfoList.gxSign : '还没有个性签名，快去编辑吧！'}}</view>
 		</view>
 		<view class="userhome-page-center">
-			<view class="userhome-page-center-title">全部帖子（25）</view>
-			<view class="tiezi-item" v-for="(item, index) in 10" :key = "index">
+			<view class="userhome-page-center-title">全部帖子（{{HomePageListTotal}}）</view>
+			<view class="tiezi-item" :class="{haveisMe: !isMe}" v-for="(item, index) in HomePageList" :key = "item.id" @click="goToArtDetail(item.id, item.userId)">
 				<view class="tiezi-item-header">
 					<view class="tiezi-item-header-left">
-						<image src="../../static/logo.png" mode="aspectFill"></image>
+						<image :src="userInfoList.avatar ? userInfoList.avatar : '../../static/image/ych/avatar.png'" mode="aspectFill"></image>
 						<view class="tiezi-item-header-right">
-							<view class="tiezi-item-header-right-top">黑胡椒</view>
-							<view class="tiezi-item-header-right-bottom">2020年05月28日 00:07</view>
+							<view class="tiezi-item-header-right-top">{{userInfoList.userName}}</view>
+							<view class="tiezi-item-header-right-bottom">{{item.createTime}}</view>
 						</view>
 					</view>
 					<view class="tiezi-item-header-r">
 						<image src="../../static/image/ych/index/delete.png" mode="aspectFill"></image>
 					</view>
 				</view>
-				<view class="tiezi-item-center">2020年旅游业该何去何从</view>
-				<view class="tiezi-item-image-box">
+				<view class="tiezi-item-center">{{item.content[0].content}}</view>
+				<view class="tiezi-item-image-box" v-if="item.isVideo == 0">
 					
+					<image :src="picItem" mode="aspectFill" v-for="(picItem, i) in item.content[0].pic" :key = "i" @click.stop = "showBigImg(picItem, item.content[0].pic)"></image>
+					<!-- <image src="../../static/logo.png" mode="aspectFill"></image>
 					<image src="../../static/logo.png" mode="aspectFill"></image>
-					<image src="../../static/logo.png" mode="aspectFill"></image>
-					<image src="../../static/logo.png" mode="aspectFill"></image>
-					<image src="../../static/logo.png" mode="aspectFill"></image>
+					<image src="../../static/logo.png" mode="aspectFill"></image> -->
+					
+				</view>
+				<view class="tiezi-item-image-box" v-if="item.isVideo == 1">
+					<video :src="item.content[0].pic[0]" controls style="flex: 1;"></video>
 					
 				</view>
 				<view class="share-box">
-					<view class="share-left">
+					<view class="share-left" @click.stop="handleShareFlag">
 						<image src="../../static/image/ych/my/23.png" mode=""></image>
 						<view class="share-left-text">分享</view>
 					</view>
 					<view class="share-right">
 						<image src="../../static/image/ych/my/6.png" mode=""></image>
-						<view class="share-left-text">评论(3)</view>
+						<view class="share-left-text">评论({{item.evaluateNum}})</view>
 					</view>
 				</view>
 				<!-- <view class="line-3" v-if="index != 10"></view> -->
 			</view>
 			
 		</view>
-		<view class="userhome-page-button">
-			<view class="userhome-page-button-item">
-				<image src="../../static/image/ych/index/22.png" mode="aspectFill"></image>
-				<view class="userhome-page-button-item-text">关注</view>
+		<view class="userhome-page-button" v-if="!isMe"> 
+			<view class="userhome-page-button-item" @click.stop="followUser(userInfoList.userId)">
+				<image src="../../static/image/ych/index/22.png" mode="aspectFill" v-if="!userInfoList.followFlag"></image>
+				<view class="userhome-page-button-item-text" :class="{attention: userInfoList.followFlag}">{{userInfoList.followFlag ? '已关注' : '关注'}}</view>
 			</view>
-			<view class="userhome-page-button-item" @click="goToChat">
+			<view class="userhome-page-button-item" @click.stop="goToChat">
 				<view class="userhome-page-button-item-right">私信</view>
 			</view>
 		</view>
+		<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
+		<shareBox :showShareBoxFlag = "showShareBoxFlag" @changeShowBoxFLag = "changeShowBoxFLag" @shareWx = "shareWx"  @shareFre = "shareFre"></shareBox>
 	</view>
 </template>
 
 <script>
+	import chat from '../../chat.js'
 	export default {
 		onLoad(options) {
 			this.type = options.type
-			if (type == 0) {
-				this.initMyArtilce()
-			}
+			this.userId = options.userId
+			this.currentIndex = options.currentIndex
+			this.initUserInfo()
+			// if (this.type == 0) {
+			this.initMyArtilce()
+			// }
 		},
 		data () {
 			return {
+				showLoadingFlag: false,
+				userId: '',
 				type: 0,
 				pageNum: 0,
 				pageSize: 10,
-				hasFlag: true
+				hasFlag: true,
+				HomePageList: [],
+				HomePageListTotal: 0,
+				userInfoList: {},
+				isMe: false,
+				showShareBoxFlag: false,
+				currentIndex: 0
 			}
 		},
+		onReachBottom () {
+			this.initMyArtilce()
+		},
 		methods: {
+			// 分享
+			handleShareFlag () {
+				this.showShareBoxFlag = true
+			},
+			//更改分享显示
+			changeShowBoxFLag (newV) {
+				console.log(newV)
+				this.showShareBoxFlag = newV
+			},
+			// 微信分享
+			shareWx () {
+				
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSceneSession",
+				    type: 0,
+				    href: "https://www.baidu.com/",
+				    title: "汽水论坛分享",
+				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
+					imageUrl: '../../static/qslogo.png',
+					success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
+				this.showShareBoxFlag = false
+			},
+			shareFre () {
+				
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSenceTimeline",
+				    type: 0,
+					href: "https://www.baidu.com/",
+					title: "汽水论坛分享",
+					summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
+				    imageUrl: '../../static/qslogo.png',
+					success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
+				this.showShareBoxFlag = false
+			},
 			// 去私信
 			goToChat () {
-				uni.navigateTo({
-					url: '../Chat/Chat'
+			
+				chat('forum_' + this.userInfoList.userId, this.userInfoList.userName)
+			
+			},
+			// 预览
+			showBigAvatarImg (avatar) {
+				if (!avatar) {
+					avatar = '../../static/image/ych/avatar.png'
+				}
+				uni.previewImage({
+					urls: [avatar]
 				})
+			},
+			// 获取个人信息
+			async initUserInfo () {
+				let userId = uni.getStorageSync('userId')
+				let res = await this.$fetch(this.$api.get_user_by_id, {userId: this.userId, fromUserId: userId}, "POST", 'FORM')
+				console.log(res)
+				this.userInfoList = res.data
+				this.showLoadingFlag = true
+				if (uni.getStorageSync('userId')) {
+					this.isMe = this.userInfoList.userId == uni.getStorageSync('userId')
+				}
+				
 			},
 			// 我的帖子
 			async initMyArtilce () {
 				if (!this.hasFlag) return
 				this.pageNum = ++this.pageNum
-				let res = await this.$fetch(this.$api.myArticle, {pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
+				let res = await this.$fetch(this.$api.myArticle, {pageNum: this.pageNum, pageSize: this.pageSize, userId: this.userId}, "POST", 'FORM')
 				console.log(res)
-			}
+				res.rows.forEach(item => {
+					item.content = JSON.parse(item.content)
+				})
+				this.HomePageList = [...this.HomePageList, ...res.rows] 
+				this.HomePageListTotal = res.total
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+			},
+			// 预览图
+			showBigImg (imgItem, imgItemList) {
+				uni.previewImage({
+				    current:imgItem,
+				    urls: imgItemList    
+				})
+			},
+			// 帖子详情
+			goToArtDetail (id, userId) {
+				uni.navigateTo({
+					url: '../index/ArticleDetail?id=' + id + '&userId=' + userId
+				})
+			},
+			
+			async followUser (userId) {
+				let res = await this.$fetch(this.$api.follow, {toUserId: userId}, 'POST', 'FORM')
+				console.log(res)
+				uni.showToast({
+					icon: 'none',
+					title: res.msg
+				})
+				if (res.code == 0) {
+					
+					
+					if (this.userInfoList.followFlag == 0) {
+						this.userInfoList.followFlag = 1
+						this.$set(this.userInfoList, 'followFlag', 1)
+					} else {
+						this.userInfoList.followFlag = 0
+						this.$set(this.userInfoList, 'followFlag', 0)
+					}
+					if (this.type == 1) {
+						let followIndex = {
+							index: this.currentIndex,
+							isFollow: this.userInfoList.followFlag
+						}
+						uni.setStorageSync('followIndex', followIndex)
+					}
+					
+				} 
+				
+			},
 		}
 	}
 </script>
 
 <style lang="less">
 	.userhome-page{
-		padding-bottom: 90rpx;
+		// padding-bottom: 90rpx;
 		.userhome-page-header{
 			width: 100%;
 			height: 456rpx;
@@ -165,7 +303,7 @@
 				}
 				.user-info-level{
 					font-family: PingFangSC-Medium;
-					font-size: 10px;
+					font-size: 12px;
 					color: #FF7B30;
 					letter-spacing: -0.24px;
 					border: 1px solid #FF7B30;
@@ -227,9 +365,13 @@
 				padding-top: 14rpx;
 				box-sizing: border-box;
 				border-bottom: 6rpx solid #f4f4f4;
-				// &:last-child{
-				// 	border: none;
-				// }
+				&:last-child{
+					// border: none;
+					// padding-bottom: 90rpx;
+					&.haveisMe{
+						padding-bottom: 90rpx;
+					}
+				}
 				.tiezi-item-header{
 					padding-left: 32rpx;
 					padding-right: 32rpx;
@@ -266,7 +408,7 @@
 						}
 						.tiezi-item-header-right-bottom{
 							font-family: PingFangSC-Regular;
-							font-size: 10px;
+							font-size: 12px;
 							color: #686868;
 							letter-spacing: -0.24px;
 							text-align: justify;
@@ -343,6 +485,8 @@
 			display: flex;
 			align-items: center;
 			background-color: #fff;
+			border-top: 1rpx solid #f4f4f4;
+			z-index: 99;
 			.userhome-page-button-item{
 				width: 50%;
 				height: 86rpx;
@@ -363,6 +507,9 @@
 					font-size: 14px;
 					color: #FF7B30;
 					letter-spacing: -0.34px;
+					&.attention{
+						color: #C4C4C4;
+					}
 				}
 				.userhome-page-button-item-right{
 					font-family: PingFangSC-Medium;

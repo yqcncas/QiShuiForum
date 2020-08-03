@@ -1,38 +1,38 @@
 <template>
 	<view class="ShopDetail">
 		<view class="ShopDetail-header">
-			<image src="../../static/logo.png" mode="aspectFill"></image>
+			<image :src="shopDetailInfo.goodsPic" mode="aspectFill"></image>
 		</view>
 		<view class="ShopDetail-center">
 			<view class="ShopDetail-center-top">
-				<view class="ShopDetail-center-top-left">正品iPhone Xs Max</view>
-				<image src="../../static/image/ych/index/19.png" mode="aspectFill" class="like"></image>
-				<!-- <image src="../../static/image/ych/index/20.png" mode="aspectFill"></image> -->
+				<view class="ShopDetail-center-top-left">{{shopDetailInfo.goodsName}}</view>
+				<image src="../../static/image/ych/index/19.png" mode="aspectFill" class="like" v-if="collection == 0"  @click = "changeCollection(1)"></image>
+				<image src="../../static/image/ych/index/20.png" mode="aspectFill" v-if="collection == 1" @click = "changeCollection(0)"></image>
 			</view>
 			<view class="ShopDetail-center-center">
 				<view class="ShopDetail-center-center-left">
-					<view class="ShopDetail-center-center-left-price">3000元 + 200积分</view>
+					<view class="ShopDetail-center-center-left-price">{{shopDetailInfo.price}}元 + {{shopDetailInfo.goodsIntegral}}积分</view>
 					<view class="ShopDetail-center-center-left-timer" v-if="type == 1">
-						<view class="ShopDetail-center-center-left-timer-item">17</view>
+						<view class="ShopDetail-center-center-left-timer-item">{{hour}}</view>
 						<view class="maohao">:</view>
-						<view class="ShopDetail-center-center-left-timer-item">17</view>
+						<view class="ShopDetail-center-center-left-timer-item">{{minute}}</view>
 						<view class="maohao">:</view>
-						<view class="ShopDetail-center-center-left-timer-item">17</view>
+						<view class="ShopDetail-center-center-left-timer-item">{{second}}</view>
 					</view>
 				</view>
-				<view class="ShopDetail-center-center-right">剩余  90</view>
+				<view class="ShopDetail-center-center-right">剩余  {{shopDetailInfo.remainder}}</view>
 			</view>	
-			<view class="ShopDetail-center-bottom" v-if="type == 1">5000元</view>
+			<view class="ShopDetail-center-bottom" v-if="type == 1">{{shopDetailInfo.originalPrice}}元</view>
 		</view>
 		<view class="ShopDetail-bottom">
 			<view class="ShopDetail-bottom-title">详情说明</view>
 			<scroll-view scroll-y="true" style="height: 670rpx">
 				<view class="rich-box" style="padding-bottom: 200rpx;">
-					<jyf-parser :html="html" ref="article"></jyf-parser>
+					<jyf-parser :html="shopDetailInfo.goodsContent" ref="article"></jyf-parser>
 				</view>
 			</scroll-view>
 		</view>
-		<view class="buy-button">立即抢购</view>
+		<view class="buy-button" @click="goToPayPage(shopDetailInfo.id, shopDetailInfo.price)">立即抢购</view>
 	</view>
 </template>
 
@@ -40,8 +40,12 @@
 	import jyfParser from "@/components/jyf-parser/jyf-parser";
 	export default {
 		onLoad(options) {
-			console.log(options.type)
+			uni.showLoading({
+				title: '加载中'
+			})
 			this.type = options.type
+			this.id = options.id
+			this.initShopDetail()
 		},
 		components: {
 		    jyfParser
@@ -50,8 +54,86 @@
 		    return {
 		      html: '',
 			  type: 1, // 0 兑换 1抢购 
+			  id: 0,
+			  shopDetailInfo: {},
+			  diffTotal: 0,
+			  hour: '00',
+			  minute: '00',
+			  second: '00',
+			  countdown: null,
+			  collection: 0
 		    }
 	    },
+		methods: {
+			// 收藏
+			async changeCollection (index) {
+				this.collection = index
+				let res = await this.$fetch(this.$api.collection, {relationId: this.shopDetailInfo.id, type: 0}, "POST", 'FORM')
+				console.log(res)
+			},
+			// 数据
+			async initShopDetail () {
+				let res
+				if (uni.getStorageSync('userId')) {
+					let userId = uni.getStorageSync('userId')
+					 res = await this.$fetch(this.$api.goods_detail, {id: this.id, userId: userId}, 'POST', 'FORM')
+				} else {
+					 res = await this.$fetch(this.$api.goods_detail, {id: this.id}, 'POST', 'FORM')
+				}
+				
+				console.log(res)
+				this.shopDetailInfo = res.data.goods
+				this.collection = res.data.collection
+				let nowTimer = this.$dayjs()
+				let endTimer = this.$dayjs(this.shopDetailInfo.endTime)
+				console.log(nowTimer)
+				console.log(endTimer)
+				this.diffTotal = endTimer.diff(nowTimer,'second')
+				console.log(this.diffTotal)
+				if (this.diffTotal) {
+					this.countdown = setInterval(() => {
+						this.diffTotal--
+						if (this.diffTotal < 0) {
+						    this.hour = 0
+						    this.minute = 0
+						    this.second = 0
+							this.endOfTime()
+							return
+						}
+						this.countDown(this.diffTotal)
+					}, 1000)
+				}
+				uni.hideLoading()
+			},
+			countDown(timer) {
+				if (timer > 0) {
+					this.hour = Math.floor(this.diffTotal / (60 * 60))
+					this.minute = Math.floor(this.diffTotal / 60) - (this.hour * 60)
+					this.second = Math.floor(this.diffTotal) - (this.hour * 60 * 60) - (this.minute * 60)
+					   //判断时间是否大于10 
+						if (this.hour < 10) {
+							this.hour = "0" + this.hour
+						}
+						if (this.minute < 10) {
+							this.minute = "0" + this.minute
+						}
+						if (this.second < 10) {
+							this.second = "0" + this.second
+						}
+				} else {
+					this.endOfTime()
+				}
+			},
+			endOfTime () {
+				clearInterval(this.countdown)
+				this.countdown = null;
+			},
+			goToPayPage (id, price) {
+				uni.navigateTo({
+					url: '../Pay/Pay?id=' + id + '&price=' + price + '&type=' + 0
+				})
+			}
+		}
 	}
 </script>
 
@@ -81,7 +163,7 @@
 					font-family: PingFangSC-Medium;
 					font-size: 16px;
 					color: #545454;
-					letter-spacing: -0.12px;
+					letter-spacing: -0.10px;
 				}
 				image{
 					width: 44rpx;

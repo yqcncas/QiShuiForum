@@ -426,7 +426,7 @@
 	}
 
 	._ul-bef {
-		margin: 0 12px 0 23px;
+		margin: 0 10px 0 23px;
 		line-height: normal;
 	}
 

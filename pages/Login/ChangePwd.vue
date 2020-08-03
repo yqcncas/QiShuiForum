@@ -3,15 +3,15 @@
 		<view class="changePwd-title">修改登录密码</view>
 		<view class="changePwd-item">
 			<view class="changePwd-item-left">原密码*</view>
-			<input type="text" v-model="pwd" placeholder="请输入原密码" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #C3C3C3;letter-spacing: 0.06px;" />
+			<input type="password" v-model="pwd" placeholder="请输入原密码" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #C3C3C3;letter-spacing: 0.06px;" />
 		</view>
 		<view class="changePwd-item">
 			<view class="changePwd-item-left">新密码*</view>
-			<input type="text" v-model="newPwd" placeholder="请输入新密码" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #C3C3C3;letter-spacing: 0.06px;" />
+			<input type="password" v-model="newPwd" placeholder="请输入新密码" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #C3C3C3;letter-spacing: 0.06px;" />
 		</view>
 		<view class="changePwd-item">
 			<view class="changePwd-item-left">确认密码*</view>
-			<input type="text" v-model="againPwd" placeholder="请再一次输入新密码" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #C3C3C3;letter-spacing: 0.06px;" />
+			<input type="password" v-model="againPwd" placeholder="请再一次输入新密码" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #C3C3C3;letter-spacing: 0.06px;" />
 		</view>
 		
 		<view class="submit-button" @click="submitPwd">提交</view>
@@ -28,7 +28,7 @@
 			}
 		},
 		methods: {
-			submitPwd () {
+			async submitPwd () {
 				if (this.pwd.trim() == '' || this.newPwd.trim() == '' || this.againPwd.trim() == '') {
 					return uni.showToast({
 						icon: 'none',
@@ -41,6 +41,12 @@
 						title: '两次输入的密码不一致'
 					})
 				}
+				let res = await this.$fetch(this.$api.upd_pwd, {newPwd: this.newPwd, pwd: this.pwd}, 'POST', 'FORM')
+				console.log(res)
+				uni.showToast({
+					icon: 'none',
+					title: res.msg
+				})
 			}
 		}
 	}

@@ -1,28 +1,131 @@
 <template>
 	<view class="sign">
 		<view class="sign-header">
-			<image src="../../static/logo.png" mode="aspectFill" class="banner"></image>
-			<image src="../../static/image/ych/my/25.png" mode="aspectFill" class="share"></image>
+			<image :src="signTitle.titlePic ? signTitle.titlePic : ''" mode="aspectFill" class="banner" @click = "goToRichPage"></image>
+			<image src="../../static/image/ych/my/25.png" mode="aspectFill" class="share" @click = "handleShareFlag"></image>
 		</view>
 		<view class="sign-main">
-			<view class="sign-main-title">连续签到：2天</view>
+			<view class="sign-main-title">连续签到：{{signNum}}天</view>
 			<view class="sign-img-box">
 				<view class="sign-img-box-item" v-for="(item, index) in 7" :key = "index">
-					<view class="sign-img-box-item-top active" :style="{backgroundImage: `url(../../static/image/ych/my/27.png)`}">88</view>
-					<view class="sign-img-box-item-bottom active">{{index + 1}}天</view>
+					<view class="sign-img-box-item-top" :class="{'active' : index < signNum}" :style="{backgroundImage: index < signNum ? `url(../../static/image/ych/my/26.png)` : `url(../../static/image/ych/my/27.png)`}">{{signValue[index+1]}}</view>
+					<view class="sign-img-box-item-bottom " :class="{'active' : index < signNum}">{{index + 1}}天</view>
 				</view>
 			</view>
-			<view class="sign-button">签到</view>
+			<view class="sign-button" @click="signFn">签到</view>
 		</view>
+		<shareBox :showShareBoxFlag = "showShareBoxFlag" @changeShowBoxFLag = "changeShowBoxFLag" @shareWx = "shareWx"  @shareFre = "shareFre"></shareBox>
 	</view>
 </template>
 
 <script>
 	export default {
+		onLoad() {
+			this.initFindHeaderImg()
+			this.initBytype()
+			this.initYesterdaySign()
+		},
 		data () {
 			return {
-				
+				showShareBoxFlag: false,
+				signValue: {},
+				yesterday: {},
+				today: {},
+				signNum: 0,
+				signTitle: {}
 			}
+		},
+		methods: {
+			goToRichPage () {
+				uni.navigateTo({
+					url: '../RichText/RichText?RichMain=' + this.signTitle.content + "&title=" + this.signTitle.title
+				})
+			},
+			// 昨日是否签到
+			async initYesterdaySign () {
+				let res = await this.$fetch(this.$api.yesterday_is_sign, {}, "POST", 'FORM')
+				console.log(res)
+				this.yesterday = res.data.yesterday
+				this.today = res.data.today
+				if (this.yesterday != null && this.today == null) {
+					this.signNum = this.yesterday.signNum
+				} else if (this.today != null) {
+					this.signNum = this.today.signNum
+				}
+			},
+			// 获取倍数
+			async initBytype () {
+				let res = await this.$fetch(this.$api.get_property_by_type, {type: 3}, "POST", 'FORM')
+				console.log(res)
+				this.signValue = res.data
+			},
+			// 签到
+			async signFn () {
+				let res = await this.$fetch(this.$api.sign, {}, "POST", 'FORM')
+				console.log(res)
+				uni.showToast({
+					icon: 'none',
+					title: res.msg
+				})
+				this.initYesterdaySign()
+			
+			},
+			async initFindHeaderImg () {
+				let res = await this.$fetch(this.$api.getadvertlist, {type: 3}, "POST", 'FORM')
+				console.log(res)
+				if (!res.data.length) {
+					this.signTitle.titlePic = ''
+				} else {
+					this.signTitle = res.data[0]
+				}
+			},
+			
+			// 分享
+			handleShareFlag () {
+				this.showShareBoxFlag = true
+			},
+			//更改分享显示
+			changeShowBoxFLag (newV) {
+				this.showShareBoxFlag = newV
+			},
+			// 微信分享
+			shareWx () {
+				
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSceneSession",
+				    type: 0,
+				    href: "http://uniapp.dcloud.io/",
+				    title: "uni-app分享",
+				    summary: "我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！",
+				    imageUrl: "https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png",
+				    success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
+				this.showShareBoxFlag = false
+			},
+			shareFre () {
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSenceTimeline",
+				    type: 0,
+				    href: "http://uniapp.dcloud.io/",
+				    title: "uni-app分享",
+				    summary: "我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！",
+				    imageUrl: "https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png",
+				    success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
+				this.showShareBoxFlag = false
+			},
 		}
 	}
 </script>
@@ -81,11 +184,13 @@
 						color: #B9B9B9;
 						letter-spacing: 0.01px;
 						text-align: center;
-						// background-image: url();
+						
+			
 						background-repeat: no-repeat;
 						background-size: 100% 100%;
 						&.active{
 							color: #FFECDA;
+							background-image: url(../../static/image/ych/my/26.png);
 						}
 					}
 					.sign-img-box-item-bottom{

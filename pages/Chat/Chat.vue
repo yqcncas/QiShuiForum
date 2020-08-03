@@ -34,7 +34,11 @@
 </template>
 
 <script>
+	
 	export default {
+		onLoad() {
+			
+		},
 		data () {
 			return {
 				sendMain: '',
@@ -48,6 +52,9 @@
 					if (res.height <= 84) this.sendHeight = 84
 					else this.sendHeight = res.height + 2
 				}).exec()
+			},
+			chatSend () {
+				
 			}
 		},
 		watch: {

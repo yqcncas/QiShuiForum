@@ -12,14 +12,14 @@
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: calc(100vh - 98rpx);" @scrolltolower = "lower">
 						<view class="market-list-main">
-							<view class="market-list-item" v-for="(item, index) in 5" :key = "index" @click="goToShopDetail(0)">
-								<image src="../../static/logo.png" mode="aspectFill"></image>
+							<view class="market-list-item" v-for="(item, index) in jfList" :key = "index" @click="goToShopDetail(0, item.id)">
+								<image :src="item.goodsPic" mode="aspectFill"></image>
 								<view class="market-list-item-bottom">
-									<view class="market-list-item-bottom-top">正品iPhone Xs Max</view>
+									<view class="market-list-item-bottom-top">{{item.goodsName}}</view>
 									<view class="market-list-item-bottom-footer">
 										<view class="market-list-item-bottom-footer-left">
-											<view class="market-list-item-bottom-footer-left-top">3000元 + 200积分</view>
-											<view class="market-list-item-bottom-footer-left-bottom">5000元</view>
+											<view class="market-list-item-bottom-footer-left-top">{{item.price}}元 + {{item.goodsIntegral}}积分</view>
+											<view class="market-list-item-bottom-footer-left-bottom">{{item.originalPrice}}元</view>
 										</view>
 										<view class="market-list-item-bottom-footer-right">兑换</view>
 									</view>
@@ -33,14 +33,14 @@
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: calc(100vh - 98rpx);" @scrolltolower = "lower">
 						<view class="market-list-main">
-							<view class="market-list-item" v-for="(item, index) in 5" :key = "index" @click="goToShopDetail(1)">
-								<image src="../../static/logo.png" mode="aspectFill"></image>
+							<view class="market-list-item" v-for="(item, index) in qGList" :key = "index" @click="goToShopDetail(1, item.id)">
+								<image :src="item.goodsPic" mode="aspectFill"></image>
 								<view class="market-list-item-bottom">
-									<view class="market-list-item-bottom-top">正品iPhone Xs Max</view>
+									<view class="market-list-item-bottom-top">{{item.goodsName}}</view>
 									<view class="market-list-item-bottom-footer">
 										<view class="market-list-item-bottom-footer-left">
-											<view class="market-list-item-bottom-footer-left-top">3000元 + 200积分</view>
-											<view class="market-list-item-bottom-footer-left-bottom">5000元</view>
+											<view class="market-list-item-bottom-footer-left-top">{{item.price}}元 + {{item.goodsIntegral}}积分</view>
+											<view class="market-list-item-bottom-footer-left-bottom">{{item.originalPrice}}元</view>
 										</view>
 										<view class="market-list-item-bottom-footer-right">抢购</view>
 									</view>
@@ -60,26 +60,70 @@
 
 <script>
 	export default {
+		onLoad() {
+			this.JFduihuanFn()
+		},
 		data () {
 			return {
 				tabIndex: 0,
-				hasFlag: true
+				hasFlag: true,
+				pageNum: 0,
+				pageSize: 10,
+				qgPageNum: 0,
+				jfList: [],
+				qGList: [],
+				qGhasFlag: true,
 			}
 		},
 		methods: {
 			handleTabIndex (index) {
+				// this.hasFlag = true
+				// this.pageNum = 0
 				this.tabIndex = index
+				
+				if (index == 0) {
+					// this.JFduihuanFn()
+				} else {
+					this.XianShiQGFn()
+				}
 			},
 			swiperChange (e) {
 				this.handleTabIndex(e.detail.current)
 			},
 			lower () {
 				console.log('下拉')
+				if (this.tabIndex == 0) {
+					this.JFduihuanFn()
+				} else {
+					this.XianShiQGFn()
+				}
 			},
-			goToShopDetail (index) {
+			goToShopDetail (index, id) {
 				uni.navigateTo({
-					url: '../ShopDetail/ShopDetail?type=' + index
+					url: '../ShopDetail/ShopDetail?type=' + index + '&id=' + id
 				})
+			},
+			async JFduihuanFn () {
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.goods_list, {type: 1, goodsStatus: 1, boutiqueFlag: 0, pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
+				this.jfList = [...this.jfList, ...res.rows]
+				console.log(this.jfList)
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+			},
+			async XianShiQGFn() {
+				if (!this.qGhasFlag) return
+				this.qgPageNum = ++this.qgPageNum
+				let res = await this.$fetch(this.$api.goods_list, {type: 0, goodsStatus: 1, boutiqueFlag: 0, pageNum: this.qgPageNum, pageSize: this.pageSize}, "POST", 'FORM')
+				this.qGList = [...this.qGList, ...res.rows]
+				console.log(this.qGList)
+				let obj = {};
+				// 要去重的数组
+				this.qGList = this.qGList.reduce((cur,next) => {
+				    obj[next.id] ? "" : obj[next.id] = true && cur.push(next);
+				    return cur;
+				},[]) //设置cur默认类型为数组，并且初始值为空的数组
+				this.qGhasFlag = this.qgPageNum * this.pageSize < res.total
 			}
 		}
 	}
@@ -162,7 +206,7 @@
 					box-sizing: border-box;
 					.market-list-item-bottom-top{
 						font-family: PingFangSC-Medium;
-						font-size: 12px;
+						font-size: 10px;
 						color: #545454;
 						letter-spacing: -0.09px;
 						text-align: justify;

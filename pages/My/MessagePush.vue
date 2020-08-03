@@ -21,31 +21,51 @@
 
 <script>
 	export default {
+		onLoad() {
+			this.initMyInfo()
+			this.cid = plus.push.getClientInfo().clientid
+		},
 		data () {
 			return {
 				commentFlag: true,
 				AtFlag: false,
 				siXinFlag: true,
-				newFansFlag: true
+				newFansFlag: true,
+				cid: ''
 			}
 		},
 		methods: {
+			async initMyInfo () {
+				let res = await this.$fetch(this.$api.getCurrentUser, {}, 'GET', 'FORM')
+				let usreInfo = res.data.user
+				this.commentFlag = usreInfo.evaluateFlag
+				this.newFansFlag = usreInfo.followFlag
+				this.AtFlag = usreInfo.pushFlag
+				// this.siXinFlag = usreInfo.evaluateFlag
+			},
 			// 评论
-			commentFn (e) {
+			async commentFn (e) {
 				console.log(e)
-				this.commentFlag = e.detail.value
+				this.commentFlag = e.detail.value ? 1 : 0
+				let res = await this.$fetch(this.$api.upd_user, {evaluateFlag: this.commentFlag, cid: this.cid}, "POST", 'FORM')
+				console.log(res)
 			},
 			// @
-			AtFn (e) {
-				this.AtFlag = e.detail.value
+			async AtFn (e) {
+				this.AtFlag = e.detail.value ? 1 : 0
+				let res = await this.$fetch(this.$api.upd_user, {pushFlag: this.AtFlag, cid: this.cid}, "POST", 'FORM')
+				console.log(res)
 			},
 			// 私信
-			siXinFn (e) {
+			async siXinFn (e) {
 				this.siXinFlag = e.detail.value
+				
 			},
 			// 新粉丝
-			newFansFn (e) {
-				this.newFansFlag = e.detail.value
+			async newFansFn (e) {
+				this.newFansFlag = e.detail.value ? 1 : 0
+				let res = await this.$fetch(this.$api.upd_user, {followFlag: this.newFansFlag, cid: this.cid}, "POST", 'FORM')
+				console.log(res)
 			} 
 		}
 	}

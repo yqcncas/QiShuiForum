@@ -4,11 +4,20 @@
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+			"path": "pages/Start/Start",
+			"style": {
+				// "navigationBarTitleText": "uni-app",
+				"titleNView": "false"
+			}
+		},
+		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "",
+				"enablePullDownRefresh": true,
 				"app-plus":{
-					"titleNView": false
+					"titleNView": false,
+					"scrollIndicator":"none"
 				}
 			}
 		},
@@ -33,7 +42,18 @@
 		{
 			"path": "pages/My/My",
 			"style": {
-				"navigationBarTitleText": "我的"
+				"navigationBarTitleText": "我的",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [
+							{
+								"type": "none",
+								"text": "消息",
+								"fontSize": "16px" 
+							}
+						]
+					}
+				}
 			}
 		},
 		{
@@ -60,7 +80,16 @@
 				"navigationBarTitleText": "用户登录"
 			}
 		},
-		
+		{
+			"path": "pages/weather/weather",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus":{
+					"titleNView": false
+				}
+			}
+		},
+	
 		{
 			"path": "pages/Login/PhoneLogin",
 			"style": {
@@ -246,7 +275,8 @@
 		{
 			"path": "pages/My/MyOrder",
 			"style": {
-				"navigationBarTitleText": "我的订单"
+				"navigationBarTitleText": "我的订单",
+				"popGesture": "none"
 			}
 		},
 		{
@@ -345,7 +375,20 @@
 		{
 			"path": "pages/My/Advertising",
 			"style": {
-				"navigationBarTitleText": "我的广告"
+				"navigationBarTitleText": "我的广告",
+				"popGesture": "none",  
+				"app-plus":{
+					"titleNView": {
+						"buttons": [
+							{
+								"type": "none",
+								"text": "投放",
+								"fontSize": "16px"
+								 
+							}
+						]
+					}
+				}
 			}
 		},
 		{
@@ -358,7 +401,7 @@
 							{
 								"type": "none",
 								"text": "清空",
-								"fontSize": "14px"
+								"fontSize": "16px"
 							}
 						]
 					}
@@ -372,20 +415,29 @@
 				"app-plus": {
 					"titleNView": {
 						"buttons": [
-							{
-								"type": "none",
-								"text": "充值",
-								"fontSize": "14px"
-							}
+							// {
+							// 	"type": "none",
+							// 	"text": "充值",
+							// 	"fontSize": "14px"
+							// }
 						]
 					}
+				}
+			}
+		},
+		{
+			"path": "pages/WebViewPage/WebViewPage",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus":{
+					"titleNView": false
 				}
 			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "汽水网",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8",
 		"app-plus": {

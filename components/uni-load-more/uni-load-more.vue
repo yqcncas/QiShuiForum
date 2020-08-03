@@ -1,5 +1,5 @@
 <template>
-  <view class="uni-load-more" :style="{ background: bgColor }">
+  <view class="uni-load-more"  style="{background-color: #FFFFFF;}">
     <view
       v-if="iconType==='circle' || iconType==='auto' && platform === 'android'"
       v-show="status === 'loading' && showIcon"
@@ -114,7 +114,7 @@ export default {
 	display: flex;
 	flex-direction: row;
 	height: 80upx;
-	background: red;
+	background: #FFFFFF;
 	align-items: center;
 	justify-content: center;
 

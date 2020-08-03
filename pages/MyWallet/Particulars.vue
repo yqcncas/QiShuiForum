@@ -1,16 +1,53 @@
 <template>
 	<view class="Particulars">
-		<view class="Particulars-item" v-for="(item, index) in 6" :key = "index">
+		<view class="Particulars-item" v-for="(item, index) in ParticularsList" :key = "index">
 			<view class="Particulars-item-left">
-				<view class="Particulars-item-left-top">充值</view>
-				<view class="Particulars-item-left-bottom">2020-03-02 08:00:02</view>
+				<view class="Particulars-item-left-top">{{item.remark}}</view>
+				<view class="Particulars-item-left-bottom">{{item.createTime}}</view>
 			</view>
-			<view class="Particulars-item-right">+200.00</view>
+			<view class="Particulars-item-right">{{item.type == 14 || item.type == 16 || item.type == 17 || item.type == 18  || item.type == 33 ? '-' : '+'}}{{item.amount}}</view>
 		</view>
+		<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
 	</view>
 </template>
 
 <script>
+	export default {
+		onLoad(options) {
+			this.type = options.type
+			this.initParticulars()
+			
+		},
+		data () {
+			return {
+				pageNum: 0,
+				pageSize: 20,
+				hasFlag: true,
+				ParticularsList: [],
+				type: 0
+				
+			}
+		},
+		methods: {
+			async initParticulars () {
+				if (!this.hasFlag) return
+				let res
+				this.pageNum = ++this.pageNum
+				if (this.type == 0) {
+					res = await this.$fetch(this.$api.my_wallet_details, {typeIn:"14,15,16,17,18", pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
+				} else {
+					res = await this.$fetch(this.$api.my_wallet_details, {typeIn:"31,32,33,34", pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
+				}
+				console.log(res)
+				this.ParticularsList = [...this.ParticularsList, ...res.rows]
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+			}
+			
+		},
+		onReachBottom() {
+			this.initParticulars()
+		}
+	}
 </script>
 
 <style lang="less">

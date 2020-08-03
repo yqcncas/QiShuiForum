@@ -1,20 +1,23 @@
 <template>
 	<view class="my">
+		<scroll-view scroll-y="true"  style="height: 100vh;">
+			
+		
 		<view class="my-header" @click="goToMyHomePage">
 			<view class="my-header-left">
 				<view class="user-avatar">
-					<image :src="usreInfo.avatar ? usreInfo.avatar :'../../static/logo.png'" mode="aspectFill"></image>
+					<image :src="usreInfo.avatar ? usreInfo.avatar :'../../static/image/ych/avatar.png'" mode="aspectFill"></image>
 					<image src="../../static/image/ych/my/22.png" mode="" class="renzhen"></image>
 				</view>
 				<view class="user-info">
 					<view class="user-info-top">
-						<view class="user-info-top-name">{{usreInfo.userName}}</view>
-						<image src="../../static/image/ych/my/1.png" mode="aspectFill"></image>
-						<!-- <image src="../../static/image/ych/my/2.png" mode="aspectFill"></image> -->
-						<view class="user-info-top-level">Lv.1</view>
+						<view class="user-info-top-name">{{usreInfo.userName ? usreInfo.userName: '未登录'}}</view>
+						<image src="../../static/image/ych/my/1.png" mode="aspectFill" v-if="usreInfo.sex == 0"></image>
+						<image src="../../static/image/ych/my/2.png" mode="aspectFill" v-if="usreInfo.sex == 1"></image>
+						<view class="user-info-top-level">Lv.{{usreInfo.level}}</view>
 					</view>
 					<view class="user-info-center">{{usreInfo.phonenumber}}</view>
-					<view class="user-info-footer">还没有个性签名，快去编辑吧！</view>
+					<view class="user-info-footer">{{usreInfo.gxSign ? usreInfo.gxSign : '还没有个性签名，快去编辑吧！' }}</view>
 				</view>
 			</view>
 			<view class="my-header-right">
@@ -24,7 +27,7 @@
 		</view>
 		<view class="line-3"></view>
 		<view class="my-header-main">
-			<view class="my-header-main-left-box" @click="goToMyInfo">
+			<view class="my-header-main-left-box" @click="goToMyInfo(usreInfo)">
 				<image src="../../static/image/ych/my/6.png" mode="aspectFill"></image>
 				<view class="my-header-main-left">编辑资料</view>
 			</view>
@@ -39,22 +42,22 @@
 			<view class="my-banner-wrapper">
 				<view class="my-banner-wrapper-left">
 					<image src="../../static/image/ych/my/3.png" mode=""></image>
-					<view class="my-banner-wrapper-left-main">
+					<view class="my-banner-wrapper-left-main" @click="goToMyWallet">
 						<view class="my-banner-wrapper-left-main-top">{{usreInfo.amount}}</view>
 						<view class="my-banner-wrapper-left-main-bottom">钱包</view>
 					</view>
 				</view>
 				<view class="my-banner-wrapper-left">
 					<image src="../../static/image/ych/my/4.png" mode=""></image>
-					<view class="my-banner-wrapper-left-main">
-						<view class="my-banner-wrapper-left-main-top">Lv.1</view>
+					<view class="my-banner-wrapper-left-main" @click="goToParticulars">
+						<view class="my-banner-wrapper-left-main-top">{{usreInfo.integral}}</view>
 						<view class="my-banner-wrapper-left-main-bottom">积分</view>
 					</view>
 				</view>
 				<view class="my-banner-wrapper-left">
 					<image src="../../static/image/ych/my/5.png" mode=""></image>
 					<view class="my-banner-wrapper-left-main">
-						<view class="my-banner-wrapper-left-main-top">Lv.1</view>
+						<view class="my-banner-wrapper-left-main-top">Lv.{{usreInfo.level}}</view>
 						<view class="my-banner-wrapper-left-main-bottom">等级</view>
 					</view>
 				</view>
@@ -143,6 +146,7 @@
 			</view>
 					
 		</view>
+		</scroll-view>
 	</view>
 </template>
 
@@ -156,21 +160,35 @@
 				usreInfo: {}
 			}
 		},
+		onNavigationBarButtonTap () {
+			uni.navigateTo({
+				url: '../Message/Message'
+			})
+		},
 		methods: {
 			// 个人信息
 			async initMyInfo () {
 				let res = await this.$fetch(this.$api.getCurrentUser, {}, 'GET', 'FORM')
 				console.log(res)
 				res.data.user.amount = res.data.amount
+				res.data.user.integral = res.data.integral
+				res.data.user.surplusPosts = res.data.surplusPosts
+				res.data.user.totalConsum = res.data.totalConsum
+				
 				this.usreInfo = res.data.user
 				console.log(this.usreInfo)
+				uni.setStorageSync('userId', this.usreInfo.userId)
+				uni.setStorageSync('userAvatar', this.usreInfo.avatar)
+				uni.setStorageSync('userName', this.usreInfo.userName)
+				uni.setStorageSync('userLevel', this.usreInfo.level)
+				uni.setStorageSync('plateName', this.usreInfo.plateName)
 			},
 			
 			
 			// 去个人信息
-			goToMyInfo () {
+			goToMyInfo (userInfo) {
 				uni.navigateTo({
-					url: './MyInfo'
+					url: './MyInfo?userInfo=' + JSON.stringify(userInfo)
 				})
 			},
 			// 去收藏
@@ -182,13 +200,13 @@
 			// 去个人主页
 			goToMyHomePage () {
 				uni.navigateTo({
-					url: './UserHomePage?type=' + 0
+					url: './UserHomePage?type=' + 0 + '&userId=' + this.usreInfo.userId
 				})
 			},
 			// 去充值包
 			goToCheerBag () {
 				uni.navigateTo({
-					url: './MyCheerBag'
+					url: './MyCheerBag?avatar=' + this.usreInfo.avatar + "&name=" + this.usreInfo.userName + '&sex=' + this.usreInfo.sex + '&level=' + this.usreInfo.level + '&phonenumber=' + this.usreInfo.phonenumber + '&surplusPosts=' + this.usreInfo.surplusPosts
 				})
 			},
 			// 去积分商城
@@ -242,13 +260,13 @@
 			// 去我的钱包
 			goToMyWallet () {
 				uni.navigateTo({
-					url: '../MyWallet/MyWallet'
+					url: '../MyWallet/MyWallet?myMoney=' + this.usreInfo.amount + '&totalMoney=' + this.usreInfo.totalConsum
 				})
 			},
 			// 去设置
 			goToSetting () {
 				uni.navigateTo({
-					url: './Setting'
+					url: './Setting?phone=' + this.usreInfo.phonenumber
 				})
 			},
 			// 去我的广告
@@ -259,14 +277,25 @@
 			},
 			goToComment () {
 				uni.navigateTo({
-					url: '../Message/Comment'
+					url: '../Message/Comment?type=' + 0
 				})
-			}
+			},
+			// 积分
+			goToParticulars () {
+				uni.navigateTo({
+					// url: './Particulars?type=' + 1
+					url: '../MyWallet/Particulars?type=' + 1
+				}) 
+			},
 		}
 	}
 </script>
 
 <style lang="less">
+	page{
+		width: 100%;
+		overflow: hidden;
+	}
 	.my{
 		padding-bottom: 30rpx;
 		.my-header{
@@ -327,14 +356,14 @@
 					}
 					.user-info-center{
 						font-family: PingFangSC-Regular;
-						font-size: 12px;
+						font-size: 10px;
 						color: #141414;
 						letter-spacing: -0.29px;
 						text-align: justify;
 					}
 					.user-info-footer{
 						font-family: PingFangSC-Regular;
-						font-size: 12px;
+						font-size: 10px;
 						color: #141414;
 						letter-spacing: -0.29px;
 						text-align: justify;
@@ -348,7 +377,7 @@
 				box-sizing: border-box;
 				.my-header-right-text{
 					font-family: PingFangSC-Medium;
-					font-size: 12px;
+					font-size: 10px;
 					color: #545454;
 					letter-spacing: -0.29px;
 					text-align: justify;
@@ -441,7 +470,7 @@
 							padding-top: 10rpx;
 							box-sizing: border-box;
 							font-family: PingFangSC-Medium;
-							font-size: 12px;
+							font-size: 10px;
 							color: #121212;
 							letter-spacing: -0.29px;
 							text-align: justify;
@@ -494,6 +523,7 @@
 				display: flex;
 				
 				flex-wrap: wrap;
+				padding-bottom: 20rpx;
 				.my-main-item{
 					width: 25%;
 					
@@ -529,7 +559,7 @@
 						padding-top: 8rpx;
 						box-sizing: border-box;
 						font-family: PingFangSC-Medium;
-						font-size: 12px;
+						font-size: 10px;
 						color: #545454;
 						letter-spacing: -0.29px;
 					}

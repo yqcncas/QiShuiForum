@@ -1,7 +1,7 @@
 <template>
 	<view class="ForgetPassWord">
 		<view class="ForgetPassWord-phone">
-			<input type="text" v-model="phone" maxlength="11" placeholder="请输入账号" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #B7B7B7;letter-spacing: 0.06px;"/>
+			<input type="text" v-model="phone" maxlength="11" placeholder="请输入手机号" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #B7B7B7;letter-spacing: 0.06px;"/>
 		</view>
 		<view class="ForgetPassWord-yzm">
 			<view class="ForgetPassWord-yzm-box">
@@ -33,7 +33,7 @@
 		},
 		methods: {
 			//　验证码
-			getYzm () {
+			async getYzm () {
 				if (!this.$u.test.mobile(this.phone)) {
 					return uni.showToast({
 						icon: 'none',
@@ -52,9 +52,12 @@
 						this.getYzmTimer--
 					}
 				}, 1000)
+				
+				let res = await this.$fetch(this.$api.mobilecode, {mobile: this.phone}, "POST", 'FORM')
+				console.log(res)
 			},
 			// 提交
-			submitInfo () {
+			async submitInfo () {
 				if (!this.$u.test.mobile(this.phone)) {
 					return uni.showToast({
 						icon: 'none',
@@ -72,6 +75,20 @@
 						icon: 'none',
 						title: '请输入新密码'
 					})
+				}
+				
+				let res = await this.$fetch(this.$api.forget_pwd, {checkCode: this.yzm, mobile: this.phone, pwd: this.newPwd}, 'POST', 'FORM')
+				console.log(res)
+				uni.showToast({
+					icon: 'none',
+					title: res.msg
+				})
+				if (res.code == 0) {
+					setTimeout(() => {
+						uni.navigateBack({
+							delta: 1
+						})
+					}, 500)
 				}
 			}
 		}

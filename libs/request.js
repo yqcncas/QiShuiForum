@@ -1,6 +1,6 @@
 import  baseURL  from '../config'
 import api from '../api'
-
+const dcRichAlert = uni.requireNativePlugin('ZWM-BJXMapView');
 let baseUrl = baseURL
 
 /**
@@ -41,7 +41,25 @@ export default (url, data, method = 'POST', contentType = 'json', headers = {}) 
 			method: method,
 			header: headers,
 			success: function(res) {
-				// console.log(res)
+				
+				
+				if (url == 'nt/user/login' && res.data.code == 500 && res.data.msg !== '密码错误') {
+					
+					uni.setStorageSync('elseLogin', true)
+				} 
+				if (url == 't/user/im_register' && res.data.code == 500) {
+		
+					let IMRegMsg = res.data.msg.slice(res.data.msg.indexOf('['), res.data.msg.length)
+					
+					dcRichAlert.logIn({username: JSON.parse(IMRegMsg)[0].username, password: JSON.parse(IMRegMsg)[0].username}, result => {console.log(result)});
+					// dcRichAlert.logIn({username: 'bbbb',password: 'bbbb'}, result => {console.log(result)});
+					setTimeout(() => {
+						uni.switchTab({
+							url: '/pages/index/index'
+						})
+					}, 500)
+				} 
+				
 				if (parseInt(res.statusCode) === 200) {
 					
 					if(res.data.code == 401){
@@ -56,10 +74,15 @@ export default (url, data, method = 'POST', contentType = 'json', headers = {}) 
 						}, 1500)
 						
 					}else if (res.data.code == 500) {
-						uni.showToast({
-							icon: 'none',
-							title: res.data.msg
-						})
+						if (url == 't/user/im_register') {
+							
+						} else {
+							uni.showToast({
+								icon: 'none',
+								title: res.data.msg
+							})
+						}
+						
 					}else{
 						resolve(res.data)
 					}

@@ -1,47 +1,142 @@
 <template>
 	<view class="topic-detail">
 		<view class="topic-detail-header">
-			<image src="../../static/logo.png" mode="aspectFill"></image>
+			<image :src="titlePic" mode="aspectFill"></image>
 			<view class="topic-detail-header-right">
-				<view class="topic-detail-header-right-top">两会</view>
-				<view class="topic-detail-header-right-bottom">8.8w条讨论</view>
+				<view class="topic-detail-header-right-top">{{name}}</view>
+				<view class="topic-detail-header-right-bottom">{{articleNum}}条讨论</view>
 			</view>
 		</view>
 		<view class="line-3"></view>
-		<view class="tiezi-item" v-for="(item, index) in 10" :key = "index">
+		<view class="tiezi-item" v-for="(item, index) in artList" :key = "index" @click="goToArtDetail(item.id, item.userId, index)">
 			<view class="tiezi-item-header">
-				<image src="../../static/logo.png" mode="aspectFill"></image>
+				<image :src="item.avatar ? item.avatar : '../../static/image/ych/avatar.png' " mode="aspectFill"></image>
 				<view class="tiezi-item-header-right">
-					<view class="tiezi-item-header-right-top">黑胡椒</view>
-					<view class="tiezi-item-header-right-bottom">2020年05月28日 00:07</view>
+					<view class="tiezi-item-header-right-top">{{item.userName}}</view>
+					<view class="tiezi-item-header-right-bottom">{{item.createTime}}</view>
 				</view>
 			</view>
-			<view class="tiezi-item-center">2020年旅游业该何去何从</view>
+			<view class="tiezi-item-center">{{item.content[0].content}}</view>
 			<view class="tiezi-item-image-box">
 				
-				<image src="../../static/logo.png" mode="aspectFill"></image>
-				<image src="../../static/logo.png" mode="aspectFill"></image>
-				<image src="../../static/logo.png" mode="aspectFill"></image>
-				<image src="../../static/logo.png" mode="aspectFill"></image>
-				
+				<image :src="contentImg" mode="aspectFill" v-for="contentImg in item.content[0].pic" :key = "contentImg"></image>
+
 			</view>
 			<view class="share-box">
-				<view class="share-left">
+				<view class="share-left" @click.stop="handleShareFlag">
 					<image src="../../static/image/ych/my/23.png" mode=""></image>
 					<view class="share-left-text">分享</view>
 				</view>
 				<view class="share-right">
 					<image src="../../static/image/ych/my/6.png" mode=""></image>
-					<view class="share-left-text">评论(3)</view>
+					<view class="share-left-text">评论({{item.evaluateNum}})</view>
 				</view>
 			</view>
 			<!-- <view class="line-3" v-if="index != 10"></view> -->
 		</view>
-		
+		<shareBox :showShareBoxFlag = "showShareBoxFlag" @changeShowBoxFLag = "changeShowBoxFLag" @shareWx = "shareWx"  @shareFre = "shareFre"></shareBox>
 	</view>
 </template>
 
 <script>
+	export default {
+		onLoad(options) {
+			console.log(options)
+			this.id = options.id
+			this.articleNum = options.articleNum
+			this.name = options.name
+			this.titlePic = options.titlePic
+			this.initTopicDetal()
+		},
+		onShow() {
+			if (uni.getStorageSync('sendSuccessIndex')) {
+				let topPicInfo = uni.getStorageSync('sendSuccessIndex')
+				this.artList[topPicInfo.sendIndex].evaluateNum += topPicInfo.sendCount
+				uni.removeStorageSync('sendSuccessIndex')
+			}
+		},
+		data () {
+			return {
+				id: 0,
+				pageNum: 0,
+				pageSize: 10,
+				hasFlag: true,
+				articleNum: 0,
+				name: '',
+				titlePic: '',
+				artList: [],
+				showShareBoxFlag: false
+			}
+		},
+		methods: {
+			async initTopicDetal() {
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.artivle_list, {pageNum: this.pageNum, pageSize: this.pageSize, labelId: this.id}, 'POST', 'FORM')
+				console.log(res)
+				res.rows.forEach((item, index) => {
+					item.content = JSON.parse(item.content)
+					item.pics = JSON.parse(item.pics)
+					item.isGg = false
+				})
+				this.artList = [...this.artList, ...res.rows]
+				console.log(this.artList)
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+			},
+			goToArtDetail (id, userId, index) {
+				uni.navigateTo({
+					url: './ArticleDetail?id=' + id + '&userId=' + userId + '&index=' + index + '&TopArtType=' + 1
+				})
+			},
+			// 分享
+			handleShareFlag () {
+				this.showShareBoxFlag = true
+			},
+			//更改分享显示
+			changeShowBoxFLag (newV) {
+				this.showShareBoxFlag = newV
+			},
+			// 微信分享
+			shareWx () {
+				
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSceneSession",
+				    type: 0,
+				    href: "http://uniapp.dcloud.io/",
+				    title: "uni-app分享",
+				    summary: "我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！",
+				    imageUrl: "https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png",
+				    success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
+				this.showShareBoxFlag = false
+			},
+			shareFre () {
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSenceTimeline",
+				    type: 0,
+				    href: "http://uniapp.dcloud.io/",
+				    title: "uni-app分享",
+				    summary: "我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！",
+				    imageUrl: "https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png",
+				    success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
+				this.showShareBoxFlag = false
+			},
+			
+		}
+	}
 </script>
 
 <style lang="less">
@@ -86,7 +181,7 @@
 			box-sizing: border-box;
 			border-bottom: 6rpx solid #F4F4F4;
 			&:last-child{
-				border-bottom: 0
+				// border-bottom: 0
 			}
 			.tiezi-item-header{
 				padding-left: 32rpx;

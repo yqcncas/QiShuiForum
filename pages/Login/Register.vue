@@ -18,7 +18,7 @@
 				<view class="Register-item-box">
 					<view class="Register-item-left">性别</view>
 					<view class="Register-item-right">
-						<input type="text" v-model="showSex" placeholder="请选择性别" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #C3C3C3;letter-spacing: 0.06px;" />
+						<input type="text" disabled v-model="showSex" placeholder="请选择性别" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #C3C3C3;letter-spacing: 0.06px;" />
 					</view>
 				</view>
 				
@@ -30,7 +30,7 @@
 				<view class="Register-item-box">
 					<view class="Register-item-left">生日</view>
 					<view class="Register-item-right">
-						<input type="text" v-model="birthday" placeholder="请选择日期" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #C3C3C3;letter-spacing: 0.06px;" />
+						<input type="text" disabled v-model="birthday" placeholder="请选择日期" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #C3C3C3;letter-spacing: 0.06px;" />
 					
 					</view>
 				</view>
@@ -55,9 +55,18 @@
 </template>
 
 <script>
+	const dcRichAlert = uni.requireNativePlugin('ZWM-BJXMapView');
 	export default {
-		onLoad() {
+		onLoad(options) {
 			this.cid = plus.push.getClientInfo().clientid
+			console.log(options.openId)
+			if (options.openId) {
+				this.openId = options.openId
+			}
+			if (options.loginType) {
+				this.loginType = options.loginType
+			}
+			
 		},
 		data () {
 			return {
@@ -73,7 +82,8 @@
 				sex: '',
 				showSex: '',
 				cid: '',
-				loginType: 0
+				loginType: 0,
+				openId: ''
 			}
 		},
 		methods: {
@@ -117,20 +127,40 @@
 						title: '请检查必填写是否填写完整'
 					})
 				}
-				let res = await this.$fetch(this.$api.register, {birthday: this.birthday, checkCode: this.yzm, cid: this.cid, id: '', inviteCode: '', loginType: this.loginType, mobile: this.phone, nickName: this.userName, password: this.userPwd, sex: this.sex}, 'POST', 'FORM')
+				let res = await this.$fetch(this.$api.register, {birthday: this.birthday, checkCode: this.yzm, cid: this.cid, id: this.openId, inviteCode: '', loginType: this.loginType, mobile: this.phone, nickName: this.userName, password: this.userPwd, sex: this.sex}, 'POST', 'FORM')
 				console.log(res)
 				uni.showToast({
 					icon: 'none',
 					title: res.msg
 				})
 				if (res.code == 0) {
-					let res = await this.$fetch(this.$api.login, {loginName: this.phone, checkCode: this.userPwd, loginType: this.loginType}, "POST", 'FORM')
+					let res
+					if (this.openId) {
+						console.log(this.loginType)
+						res = await this.$fetch(this.$api.login, {loginName: this.openId ,loginType: this.loginType}, "POST", 'FORM')
+					} else {
+						res = await this.$fetch(this.$api.login, {loginName: this.phone, checkCode: this.userPwd, loginType: this.loginType}, "POST", 'FORM')
+					}
 					console.log(res)
 					uni.setStorageSync('token', res.data.token)
 					uni.setStorageSync('userId', res.data.userId)
-					uni.switchTab({
-						url: '../index/index'
-					})
+					uni.setStorageSync('loginUserAccount', this.phone)
+					
+					let result = await this.$fetch(this.$api.im_register, {token: res.data.token}, "POST", 'FORM')
+					
+					let ImMsg =  JSON.parse(result.msg)
+					
+					let imUserName = ImMsg[0].username
+												
+					dcRichAlert.logIn({username: imUserName,password: imUserName}, result => {console.log(result)});
+					
+					
+					setTimeout(() => {
+						uni.switchTab({
+							url: '../index/index'
+						})
+					}, 500)
+					
 				}
 			}
 		}
@@ -156,11 +186,11 @@
 			&:nth-child(7){
 				.Register-item-right{
 					input{
-						transform: translateX(18rpx);
-						padding-right: 40rpx;
+						// transform: translateX(18rpx);
+						// padding-right: 40rpx;
 						box-sizing: border-box;
 						&.active{
-							transform: translateX(32rpx);
+							// transform: translateX(32rpx);
 						}
 					}
 				}
@@ -193,6 +223,7 @@
 				input{
 					flex: 1;
 					// width: 300rpx;
+					position: relative;
 				}
 				.getYzm{
 					display: inline-block;
@@ -201,6 +232,9 @@
 					border-radius: 3px;
 					box-sizing: border-box;
 					color: #FF7B30;
+					position: absolute;
+					right: 32rpx;
+					z-index: 99;
 					&.active{
 						color: #C8C9CC;
 					}

@@ -1,16 +1,16 @@
 <template>
 	<view class="myInfo">
-		<view class="myInfo-avatar">
+		<view class="myInfo-avatar" @click="changMyAvatar">
 			<view class="myInfo-avatar-left">头像</view>
 			<view class="myInfo-avatar-right">
-				<image src="../../static/logo.png" mode="aspectFill" class="user-avatar"></image>
+				<image :src="userAvatar ? userAvatar : '../../static/image/ych/avatar.png'" mode="aspectFill" class="user-avatar" @click.stop = "showMyAvatar(userAvatar)"></image>
 				<image src="../../static/image/ych/right.png" mode="aspectFill" class="myInfo-right"></image>
 			</view>
 		</view>
 		<view class="userinfo-item">
 			<view class="userinfo-item-left">用户名</view>
 			<view class="userinfo-item-right">
-				<input type="text" placeholder="请输入用户名" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A2A2A2;letter-spacing: 0;"/>
+				<input v-model="userName" type="text" placeholder="请输入用户名" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A2A2A2;letter-spacing: 0;"/>
 				<image src="../../static/image/ych/right.png" mode="aspectFill" class="myInfo-right"></image>
 			</view>
 		</view>
@@ -29,9 +29,9 @@
 		<view class="userinfo-item">
 			<view class="userinfo-item-left">生日</view>
 			<view class="userinfo-item-right">
-				 <picker mode="date" @change="bindTimeChange">
+				 <picker mode="date" @change="bindTimeChange" :fields = "'day'">
 					<view class="sex">
-						<view class="user-sex">{{time}}</view>
+						<view class="user-sex">{{birthday}}</view>
 						<image src="../../static/image/ych/right.png" mode="aspectFill" class="myInfo-right"></image>
 					</view>
 				</picker>
@@ -39,30 +39,90 @@
 		</view>
 		<view class="user-sign">个性签名</view>
 		<view class="my-sign">
-				<textarea  placeholder="还没有个性签名，快编辑吧！"  placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;letter-spacing: -0.34px;"/>
+				<textarea v-model="gxSign" placeholder="还没有个性签名，快编辑吧！"  placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;letter-spacing: -0.34px;"/>
 		</view>
-		<view class="saveMyInfo">保存</view>
+		<view class="saveMyInfo" @click="saveMyInfoFn">保存</view>
 		
 	</view>
 </template>
 
 <script>
 	export default {
+		onLoad (options) {
+			this.userInfo = JSON.parse(options.userInfo)
+			console.log(this.userInfo)
+			this.userName = this.userInfo.userName
+			this.userSex = this.sexList[this.userInfo.sex] 
+			this.userSexIndex = this.userInfo.sex
+			this.birthday = this.userInfo.birthday
+			this.gxSign = this.userInfo.gxSign
+			this.userAvatar = this.userInfo.avatar
+			this.initQnTokenFn()
+		},
 		data () {
 			return {
-				sexList: ['男', '女', '保密'],
+				sexList: ['男', '女'],
 				userSex: '',
-				time: ''
+				birthday: '',
+				userName: '',
+				gxSign: '',
+				QnToken: '',
+				userSexIndex: 0,
+				userAvatar: '../../static/image/ych/avatar.png'
 			}
 		},
 		methods:{
 			selectedSex (e) {
 				console.log(e)
 				this.userSex = this.sexList[e.detail.value] 
+				this.userSexIndex = e.detail.value
 				console.log(this.userSex)
 			},
 			bindTimeChange (e) {
-				this.time = e.target.value
+				this.birthday = e.target.value
+			},
+			// 七牛
+			async initQnTokenFn () {
+				let res = await this.$fetch(this.$api.getQiniuToken,{}, "POST", 'FORM')
+				console.log(res)
+				this.QnToken = res.msg
+			},
+			// 改变头像
+			changMyAvatar () {
+				uni.chooseImage({
+				    count: 1, //默认9
+				    sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+				    success: (res) => {
+				        console.log(JSON.stringify(res.tempFilePaths));
+						 uni.uploadFile({
+							url: this.$api.unloadLocation, //仅为示例，非真实的接口地址
+							filePath: res.tempFilePaths[0],
+							name: 'file',
+							formData: {
+								'token': this.QnToken
+							},
+							success: (uploadFileRes) => {
+								this.userAvatar = this.$api.baseLocation + JSON.parse(uploadFileRes.data).hash
+							}
+						});
+				    }
+				});
+			},
+			showMyAvatar (bigImg) {
+				if (!bigImg) {
+					bigImg = '../../static/image/ych/avatar.png'
+				}
+				uni.previewImage({
+					urls: [bigImg]
+				})
+			},
+			async saveMyInfoFn () {
+				let res = await this.$fetch(this.$api.upd_user, {avatar: this.userAvatar, birthDay: this.birthday, gxSign: this.gxSign, sex: this.userSexIndex, userName: this.userName}, 'POST', 'FORM')
+				console.log(res)
+				uni.showToast({
+					icon: 'none',
+					title: res.msg
+				})
 			}
 		}
 	}
@@ -165,7 +225,7 @@
 		}
 		.saveMyInfo{
 			margin: 0 auto;
-			margin-top: 510rpx;
+			// margin-top: 510rpx;
 			box-sizing: border-box;
 			width: 604rpx;
 			height: 102rpx;
@@ -178,6 +238,11 @@
 			letter-spacing: 1.19px;
 			text-align: center;
 			line-height: 102rpx;
+			position: fixed;
+			bottom: 30rpx;
+			left: 50%;
+			transform: translateX(-50%);
+			
 			
 		}
 	}

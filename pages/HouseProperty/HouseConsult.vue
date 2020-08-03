@@ -53,7 +53,7 @@
 		},
 		methods: {
 			//　提交
-			submitForm () {
+			async submitForm () {
 				if(!this.$u.test.mobile(this.userPhone)){
 					return uni.showToast({
 						icon: 'none',
@@ -68,6 +68,19 @@
 							title: '请检查信息是否填写正确'
 						})
 					}
+					let res = await this.$fetch(this.$api.house_consult, {intentionFloor: this.loupan, houseType: this.huxing, name: this.userName, mobile: this.userPhone, remark: this.elseConsult}, "POST", 'JSON')
+					console.log(res)
+					uni.showToast({
+						icon: 'none',
+						title: res.msg
+					})
+					if (res.code == 0) {
+						setTimeout(() => {
+							uni.navigateBack({
+								delta: 1
+							})
+						}, 500)
+					}
 				} else {
 					// 汽车
 					if (this.userName.trim() == '' || this.yixiangCar.trim() == '') {
@@ -75,6 +88,19 @@
 							icon: 'none',
 							title: '请检查信息是否填写正确'
 						})
+					}
+					let res = await this.$fetch(this.$api.car_consult, {intentionCar: this.yixiangCar, name: this.userName, mobile: this.userPhone, remark: this.elseConsult}, "POST", 'JSON')
+					console.log(res)
+					uni.showToast({
+						icon: 'none',
+						title: res.msg
+					})
+					if (res.code == 0) {
+						setTimeout(() => {
+							uni.navigateBack({
+								delta: 1
+							})
+						}, 500)
 					}
 				}
 					

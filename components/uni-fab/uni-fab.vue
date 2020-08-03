@@ -162,7 +162,9 @@
 				//console.log(JSON.stringify(newValue))
 				this.styles = Object.assign({}, this.styles, newValue)
 			}
+			
 		},
+		
 		created() {
 			this.isShow = this.show
 			if (this.top === 0) {

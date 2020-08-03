@@ -12,12 +12,12 @@
 			<view class="setting-item-left">绑定手机</view>
 			<view class="setting-item-right">
 				<view class="setting-item-right-box">
-					<view class="phone">158****8888</view>
+					<view class="phone">{{phoneNumber}}</view>
 					<!-- <image src="../../static/image/ych/right.png" mode="aspectFill"></image> -->
 				</view>
 			</view>
 		</view>
-		<view class="setting-item">
+		<!-- <view class="setting-item">
 			<view class="setting-item-left">绑定微信</view>
 			<view class="setting-item-right">
 				<view class="setting-item-right-box">
@@ -25,7 +25,7 @@
 					<image src="../../static/image/ych/right.png" mode="aspectFill"></image>
 				</view>
 			</view>
-		</view>
+		</view> -->
 		<view class="setting-item" @click="goToMessagePush">
 			<view class="setting-item-left">消息推送</view>
 			<view class="setting-item-right">
@@ -44,7 +44,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="setting-item">
+		<view class="setting-item" @click="goToRichText">
 			<view class="setting-item-left">关于我们</view>
 			<view class="setting-item-right">
 				<view class="setting-item-right-box">
@@ -53,21 +53,54 @@
 			</view>
 		</view>
 		
-		<view class="exit-button">退出当前帐号</view>
+		<view class="exit-button" @click="exit">退出当前帐号</view>
 	</view>
 </template>
 
 <script>
 	export default {
-		onLoad() {
+		onLoad(options) {
+			this.phoneNumber = options.phone
 			this.formatSize()
+			
 		},
 		data () {
 			return{
-				fileSizeString: ''
+				fileSizeString: '',
+				phoneNumber: ''
 			}
 		},
 		methods:{
+			// 退出
+			exit () {
+				uni.showModal({
+				    title: '提示',
+				    content: '是否确认退出',
+				    success: function (res) {
+				        if (res.confirm) {
+				            uni.removeStorageSync('token')
+							uni.removeStorageSync('userId')
+							uni.removeStorageSync('userAvatar')
+							uni.removeStorageSync('userName')
+							uni.removeStorageSync('userLevel')
+							uni.removeStorageSync('plateName')
+				            uni.showToast({
+				            	icon: 'none',
+				            	title: '退出成功'
+				            })
+				            setTimeout(() => {
+				            	uni.switchTab({
+				            		url: '../index/index'
+				            	})
+				            }, 700)
+				        } else if (res.cancel) {
+				            console.log('用户点击取消');
+				        }
+				    }
+				});
+				
+				
+			},
 			// 去修改密码
 			goToChangPwd () {
 				uni.navigateTo({
@@ -98,6 +131,12 @@
 					}  
 					console.log(that.fileSizeString)
 				});  
+			},
+			// 去富文本
+			goToRichText () {
+				uni.navigateTo({
+					url: '../RichText/RichText?id=' + 16
+				})
 			},
 			// 清除缓存
 			clearCache () {

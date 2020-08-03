@@ -1,21 +1,43 @@
 <template>
 	<view class="HotCar">
-		<HotMain :title = "'热卖车款'" @handleHotItem = "handleHotItem"></HotMain>
+		<HotMain :title = "'热卖车款'" @handleHotItem = "handleHotItem" :HotMainArr = "HotMainArr"></HotMain>
 	</view>
 </template>
 
 <script>
 	import HotMain from '../../components/HotMain/HotMain.vue'
 	export default {
+		onLoad() {
+			this.initHotHouse()
+		},
 		comments:{
 			HotMain
 		},
-		methods: {
-			handleHotItem (index) {
-				uni.navigateTo({
-					url: '../HouseProperty/HouseDetail?type=' + 0 
-				})
+		data () {
+			return {
+				pageNum: 0,
+				pageSize: 10,
+				hasFlag: true,
+				HotMainArr: []
 			}
+		},
+		methods: {
+			handleHotItem (id) {
+				uni.navigateTo({
+					url: '../HouseProperty/HouseDetail?type=' + 0 + '&id=' + id
+				})
+			},
+			async initHotHouse () {
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.hot_plate, {pageNum: this.pageNum, pageSize: this.pageSize, type: 2}, "POST", 'FORM')
+				console.log(res)
+				this.HotMainArr = [...this.HotMainArr, ...res.rows]
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+			}
+		},
+		onReachBottom() {
+			this.initHotHouse()
 		}
 	}
 </script>

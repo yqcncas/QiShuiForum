@@ -1,29 +1,25 @@
 <template>
 	<view class="HouseProperty">
 		<Status></Status>
+		<mescroll-body ref="mescrollRef"  @down="downCallback" :up="upOption">
 		<view class="HouseProperty-header">
 			<view class="img-box" @click="goBack">
 				<image src="../../static/image/ych/back.png" mode=""></image>
 			</view>
 			<view class="HouseProperty-header-center">{{title}}</view>
 			<view class="HouseProperty-header-right">
-				<image src="../../static/image/ych/index/19.png" mode="aspectFill" class="like"></image>
+				<!-- <image src="../../static/image/ych/index/19.png" mode="aspectFill" class="like"></image> -->
 				<!-- <image src="../../static/image/ych/index/20.png" mode="aspectFill" class="like"></image> -->
-				<image src="../../static/image/ych/index/21.png" mode="aspectFill" class="more"></image>
+				<image src="../../static/image/ych/index/21.png" mode="aspectFill" class="more" @click.stop="shareFn"></image>
 			</view>
 		</view>
 		<view class="HouseProperty-center">
-			<view class="index-banner" v-if="type != 5">
+			<view class="index-banner"  v-if="bannerList.length">
 				<view class="index-banner-wrapper">
 					<swiper :indicator-dots="true" :autoplay="true" :interval="5000" :duration="1000" class="index-swiper" circular>
-						<swiper-item class="index-swiper-item">
+						<swiper-item class="index-swiper-item" v-for="(item, index) in bannerList" :key = "index">
 							<view class="swiper-item">
-								<image src="http://t8.baidu.com/it/u=2247852322,986532796&fm=79&app=86&f=JPEG?w=1280&h=853" mode=""></image>
-							</view>
-						</swiper-item>
-						<swiper-item class="index-swiper-item">
-							<view class="swiper-item">
-								<image src="http://t8.baidu.com/it/u=1484500186,1503043093&fm=79&app=86&f=JPEG?w=1280&h=853" mode=""></image>
+								<image :src="item.picPath" mode="aspectFill"></image>
 							</view>
 						</swiper-item>
 					</swiper>
@@ -31,53 +27,68 @@
 			</view>
 				<view class="find-housePage">
 					<!-- 房产 -->
-					<view class="fangchan-banner" v-if="type == 0">
+					<view class="fangchan-banner" v-if="type == 1">
 						<image src="../../static/image/ych/index/fangchan1.png" mode="aspectFill" @click="goToHotHouse"></image>
 						<image src="../../static/image/ych/index/fangchan2.png" mode="aspectFill" @click= "goToHouseConsult(0)"></image>
 						<image src="../../static/image/ych/index/fangchan3.png" mode="aspectFill" @click="goToHouseProperty"></image>
 					</view>
 					<!-- 汽车 -->
-					<view class="car-banner" v-if="type == 1">
+					<view class="car-banner" v-if="type == 2">
 						<image src="../../static/image/ych/index/car2.png" mode="aspectFill" @click = "goToHotCar"></image>
 						<image src="../../static/image/ych/index/car1.png" mode="aspectFill" @click = "goToHouseConsult(1)"></image>
 					</view>
 					
-					<view class="line-3" v-if="type != 5"></view>
-					<view class="HouseProperty-center-zhiding" v-if="type != 1 && type != 5">我要置顶</view>
-					<view class="line-7" v-if="type != 1 && type != 5"></view>
-					<Stick v-if="type != 1 && type != 5"></Stick>
-					<view class="line-3" v-if="type != 5"></view>
-					<NavButton :navleft="navLeft" :navright="navRight" :navIndex = "navIndex" @handleNavIndex = "handleNavIndex" v-if="type != 5"></NavButton>
-					<view class="line-3" v-if="type != 5"></view>
+					<view class="line-3"></view>
+					<view class="HouseProperty-center-zhiding"  @click="gotoTopArt">我要置顶</view>
+					<view class="line-7" v-if="type != 1 "></view>
+					<!-- <Stick v-if="type != 1 " :StickList = "topArtList" @handleStick = "handleStick"></Stick> -->
+					<Stick  :StickList = "topArtList" @handleStick = "handleStick"></Stick>
+					<view class="line-3" ></view>
+					<NavButton :navleft="navLeft" :navright="navRight" :navIndex = "navIndex" @handleNavIndex = "handleNavIndex" ></NavButton>
+					<view class="line-3" ></view>
 				</view>
-			<ArticleMain @ArticleMainClick = "ArticleMainClick"></ArticleMain>
+				<ArticleMain @ArticleMainClick = "ArticleMainClick" :ArticleList = "artList"></ArticleMain>
 		</view>
+		<u-action-sheet :list="sharelist" v-model="shareShow" @click="shareItemClick"></u-action-sheet>
+		</mescroll-body>
 	</view>
 </template>
 
 <script>
+	import MescrollMixin from "@/components/mescroll-uni/mescroll-mixins.js";
 	export default {
+		mixins: [MescrollMixin],
 		onLoad(options) {
 			this.type = options.type
-			if (this.type == 1) {
-				this.title = '汽车'
-			} else if (this.type == 2 ) {
-				this.title = '二手闲置'
-				this.navLeft = "出售"
-				this.navRight = "购买"
-			} else if (this.type == 3 ) {
-				this.title = '找工作'
-				this.navLeft = "招聘"
-				this.navRight = "求职"
-			} else if (this.type == 4 ) {
-				this.title = '商品'
-			} else if (this.type == 5 ) {
+			this.title = options.title
+			console.log(this.type)
+			// if (this.type == 1) {
+			// 	this.title = '房产'
+			// } else if (this.type == 2 ) {
+			// 	this.title = '汽车'
+			// 	// this.navLeft = "出售"
+			// 	// this.navRight = "购买"
+			// } else if (this.type == 3 ) {
+			// 	this.title = '找工作'
+			// 	this.navLeft = "招聘"
+			// 	this.navRight = "求职"
+			// } else if (this.type == 4 ) {
+			// 	this.title = '商品'
+			// } else if (this.type == 5 ) {
+			// 	this.title = '广场'
+			// } else if (this.type == 6 ) {
+			// 	this.title = '科技'
+			// } else if (this.type == 7 ) {
+			// 	this.title = '美食'
+			// } 
+			if (this.type == 'gc' ) {
+				this.type  = ''
 				this.title = '广场'
-			} else if (this.type == 6 ) {
-				this.title = '亲子'
-			} else if (this.type == 7 ) {
-				this.title = '美食'
+			} else {
+				this.initTopArt()
 			}
+			this.initBanner()
+			this.initArtList()
 		},
 		data () {
 			return {
@@ -86,9 +97,78 @@
 				navLeft: '最新发布',
 				navRight: '精华贴',
 				type: 0, // 0房产 1汽车 2二手闲置 3找工作 4商品 5广场 6亲子 7美食
+				bannerList: [],
+				isCreamFlag: 0,
+				pageNum: 0,
+				pageSize: 10,
+				hasFlag: true,
+				artList: [],
+				topArtList: [],
+				upOption: {
+					use: false
+				},
+				sharelist: [{
+					text: '分享给微信好友',
+					fontSize: 28
+				}, {
+					text: '分享到微信朋友圈',
+					fontSize: 28
+				}],
+				shareShow: false
 			}
 		},
 		methods: {
+			downCallback () {
+				this.pageNum = 0
+				this.pageSize = 10
+				this.hasFlag = true
+				this.artList = [],
+				this.topArtList = [],
+				this.initTopArt()
+				this.initArtList()
+				this.mescroll.endDownScroll()
+			},
+			gotoTopArt () {
+				uni.navigateTo({
+					url: '../TopArticles/TopArticles?typeId=' + this.type
+				})
+			},
+			async initBanner () {
+				if (this.type != 'gc') {
+					let res = await this.$fetch(this.$api.getrotationchart, {plateTypeId: this.type}, 'POST', 'FORM')
+					console.log(res)
+					this.bannerList = res.data
+				}
+			},
+			async initArtList () {
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res
+				if (this.type != 'gc') {
+					res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, type: this.type, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+				} else {
+					res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+				}
+				console.log(res)
+				
+				res.rows.forEach((item, index) => {
+					item.content = JSON.parse(item.content)
+					item.pics = JSON.parse(item.pics)
+					item.isGg = false
+				})
+				this.artList = [...this.artList, ...res.rows]
+				
+				let obj = {};
+				// 要去重的数组
+				this.artList = this.artList.reduce((cur,next) => {
+				    obj[next.id] ? "" : obj[next.id] = true && cur.push(next);
+				    return cur;
+				},[]) //设置cur默认类型为数组，并且初始值为空的数组
+				
+				
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+			},
+			
 			goBack () {
 				uni.navigateBack({
 					delta: 1
@@ -103,11 +183,19 @@
 			// 底部导航切换
 			handleNavIndex (index) {
 				this.navIndex = index
+				this.pageNum = 0
+				this.hasFlag = true
+				this.artList = []
+				if (index == 0) {
+					this.isCreamFlag = 0
+				} else {
+					this.isCreamFlag = 1
+				}
+				this.initArtList()
 			},
-			ArticleMainClick (index) {
-			 	console.log(index)
+			ArticleMainClick (id, userId, item) {
 			 	uni.navigateTo({
-			 		url: '../index/ArticleDetail'
+			 		url: '../index/ArticleDetail?id='+ id + '&userId=' + userId
 			 	})
 			},
 			// 热点楼盘
@@ -128,6 +216,56 @@
 					url: '../HouseProperty/HouseConsult?type=' + index
 				})
 			},
+			async initTopArt() {
+				let res = await this.$fetch(this.$api.top_list, {type: this.type}, "POST", 'FORM')
+				this.topArtList = res.data
+			},
+			// 置顶文章跳转
+			handleStick (id, userId) {
+				uni.navigateTo({
+					url: '../index/ArticleDetail?id='+ id + '&userId=' + userId
+				})
+			},
+			shareFn () {
+				this.shareShow = true
+			},
+			shareItemClick (index) {
+				if (index == 0) {
+					uni.share({
+					    provider: "weixin",
+					    scene: "WXSceneSession",
+					    type: 0,
+					    href: "https://www.baidu.com/",
+					    title: "汽水论坛分享",
+					    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
+						imageUrl: '../../static/qslogo.png',
+						success: function (res) {
+					        console.log("success:" + JSON.stringify(res));
+					    },
+					    fail: function (err) {
+					        console.log("fail:" + JSON.stringify(err));
+					    }
+					});
+					this.shareShow = false
+				} else if (index == 1) {
+					uni.share({
+					    provider: "weixin",
+					    scene: "WXSenceTimeline",
+					    type: 0,
+						href: "https://www.baidu.com/",
+						title: "汽水论坛分享",
+						summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
+					    imageUrl: '../../static/qslogo.png',
+						success: function (res) {
+					        console.log("success:" + JSON.stringify(res));
+					    },
+					    fail: function (err) {
+					        console.log("fail:" + JSON.stringify(err));
+					    }
+					});
+					this.shareShow = false
+				}
+			}
 		}
 	}
 </script>
@@ -151,12 +289,13 @@
 			z-index: 999;
 			.img-box{
 				position: relative;
+				transform: translateY(4rpx);
 				&::after{
 					position: absolute;
-					left: -20rpx;
-					right: -20rpx;
-					top: -20rpx;
-					bottom: -20rpx;
+					left: -30rpx;
+					right: -30rpx;
+					top: -30rpx;
+					bottom: -30rpx;
 				}
 				image{
 					width: 18rpx;
@@ -167,8 +306,9 @@
 			}
 			.HouseProperty-header-center{
 				// padding-left: 35.2%	;
-				transform: translateX(40rpx);
+				// transform: translateX(8rpx);
 				// padding-right: 22.9%;
+				transform: translate(14rpx, 4rpx);
 				box-sizing: border-box;
 				font-family: PingFangSC-Medium;
 				font-size: 18px;
@@ -187,6 +327,7 @@
 				.more{
 					width: 44rpx;
 					height: 8rpx;
+					transform: translateY(4rpx);
 				}
 			}
 		}

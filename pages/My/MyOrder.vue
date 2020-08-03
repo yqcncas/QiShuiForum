@@ -1,31 +1,101 @@
 <template>
 	<view class="my-order">
-		<view class="my-order-item" v-for="(item, index) in 10" :key = "index" @click="goToOrderDetail">
-			<view class="my-order-item-left">
-				<image src="../../static/logo.png" mode="aspectFill"></image>
-			</view>
-			<view class="my-order-item-right">
-				<view class="my-order-item-right-top">
-					<view class="my-order-item-right-top-left">正品iPhone Xs Max</view>
-					<view class="my-order-item-right-top-right active">待使用</view>
+		<mescroll-body ref="mescrollRef"  @down="downCallback" :up="upOption">
+			<view class="my-order-item" v-for="(item, index) in myOrderList" :key = "index" @click="goToOrderDetail(item.id, index)">
+				<view class="my-order-item-left">
+					<image :src="item.goodsPic" mode="aspectFill"></image>
 				</view>
-				<view class="my-order-item-right-center">积分兑换</view>
-				<view class="my-order-item-right-bottom">
-					<view class="my-order-item-right-bottom-left">有效期至：2020-08-03</view>
-					<view class="my-order-item-right-bottom-right">核销</view>
+				<view class="my-order-item-right">
+					<view class="my-order-item-right-top">
+						<view class="my-order-item-right-top-left">{{item.goodsName}}</view>
+						<view class="my-order-item-right-top-right active">{{orderStatus[item.status]}}</view>
+					</view>
+					<view class="my-order-item-right-center">{{orderType[item.goodsType]}}</view>
+					<view class="my-order-item-right-bottom">
+						<view class="my-order-item-right-bottom-left">有效期至：{{item.endTime}}</view>
+						<view class="my-order-item-right-bottom-right" :class="{canHeXiao: item.status != 0}">{{item.status == 0 ? '核销' : item.status == 1 ? '已使用' : item.status == 2 ? '退款审核中' : item.status == 3 ? '已退款' : '已过期'}}</view>
+					</view>
 				</view>
 			</view>
-		</view>
+			<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
+		</mescroll-body>
 	</view>
 </template>
 
 <script>
+	import MescrollMixin from "@/components/mescroll-uni/mescroll-mixins.js";
 	export default {
+		mixins: [MescrollMixin],
+		onLoad() {
+			this.initMyOrder()
+			
+		},
+		onShow() {
+			console.log('1231313')
+			if (uni.getStorageSync('orderDetaiIndex')) {
+				let orderDetaiIndex = uni.getStorageSync('orderDetaiIndex')
+				this.myOrderList[orderDetaiIndex].status = 2
+				this.$set(this.myOrderList[orderDetaiIndex], 'status', 2 )
+				console.log(this.myOrderList[orderDetaiIndex])
+				uni.removeStorageSync('orderDetaiIndex')
+			}
+		},
+		data () {
+			return {
+				pageNum: 0,
+				pageSize: 10,
+				hasFlag: true,
+				myOrderList: [],
+				orderType: ['限时抢购', '积分兑换'],
+				orderStatus: ['待使用', '已使用', '退款审核中', '已退款', '已过期'],
+				upOption: {
+					use: false
+				}
+			}
+		},
 		methods: {
-			goToOrderDetail () {
+			downCallback () {
+				this.pageNum = 0
+				this.pageSize = 10
+				this.hasFlag = true
+				this.myOrderList = []
+				this.initMyOrder()
+							
+				this.mescroll.endDownScroll()
+			},
+			goToOrderDetail (id, index) {
 				uni.navigateTo({
-					url: './MyOrderDetail'
+					url: './MyOrderDetail?id=' + id + '&index=' + index
 				})
+			},
+			async initMyOrder () {
+				if (!this.hasFlag) return
+				this.pageNum = ++this.pageNum
+				let res = await this.$fetch(this.$api.my_order, {pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+				console.log(res)
+				this.myOrderList = [...this.myOrderList, ...res.rows]
+				this.hasFlag = this.pageNum * this.pageSize < res.total
+				let obj = {};
+				// 要去重的数组
+				this.myOrderList = this.myOrderList.reduce((cur,next) => {
+				    obj[next.id] ? "" : obj[next.id] = true && cur.push(next);
+				    return cur;
+				},[]) //设置cur默认类型为数组，并且初始值为空的数组
+				
+			}
+		},
+		onReachBottom() {
+			this.initMyOrder()
+		},
+		onBackPress () {
+			if (uni.getStorageSync('inMyOrderFlag')) {
+				uni.removeStorageSync('inMyOrderFlag')
+				uni.switchTab({
+					url: './My'
+				})
+				return true
+			} else {
+				return false
 			}
 		}
 	}
@@ -61,7 +131,7 @@
 						font-family: PingFangSC-Medium;
 						font-size: 16px;
 						color: #545454;
-						letter-spacing: -0.12px;
+						letter-spacing: -0.10px;
 					}
 					.my-order-item-right-top-right{
 						font-family: PingFangSC-Medium;
@@ -79,7 +149,7 @@
 				.my-order-item-right-center{
 					display: inline-block;
 					font-family: PingFangSC-Medium;
-					font-size: 12px;
+					font-size: 10px;
 					color: #FF7B30;
 					letter-spacing: 0.04px;
 					padding: 0 6rpx;
@@ -95,7 +165,7 @@
 					align-items: center;
 					.my-order-item-right-bottom-left{
 						font-family: PingFangSC-Regular;
-						font-size: 12px;
+						font-size: 10px;
 						color: #292929;
 						letter-spacing: 0.04px;
 					}
@@ -110,6 +180,10 @@
 						text-align: center;
 						background-image: linear-gradient(136deg, #F6B081 0%, #E86D29 100%);
 						border-radius: 4px;
+						&.canHeXiao{
+							background-image:none;
+							background-color: #c8c9cc;
+						}
 					}
 				}
 			}

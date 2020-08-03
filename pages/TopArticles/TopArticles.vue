@@ -5,45 +5,54 @@
 			<view class="TopArticles-header-bottom">
 				<picker  :range="artTitle" @change="handleArtTitle">
 					<view class="TopArticles-header-bottom-box">
-						<input disabled="true" type="text" placeholder="请选择需要置顶的帖子" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #575757;"/>
+						<input disabled="true" v-model="showPickerMain" type="text" placeholder="请选择需要置顶的帖子" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #575757;"/>
 						<image src="../../static/image/ych/my/30.png" mode="aspectFill"></image>
 					</view>
 				</picker>
 			</view>
 		</view>
 		<view class="TopArticles-center">
-			<view class="TopArticles-center-top">
+			<!-- <view class="TopArticles-center-top">
 				<view class="TopArticles-center-top-left">置顶起始时间*</view>
 				<view class="TopArticles-center-top-right" @click="showStar">
-					<input style="font-size: 14px;" disabled type="text" v-model="starTimer" placeholder="请选择起始时间" placeholder-style="font-family: PingFangSC-Regular;font-size: 12px;color: #575757;"/>
+					<input style="font-size: 14px;" disabled type="text" v-model="starTimer" placeholder="请选择起始时间" placeholder-style="font-family: PingFangSC-Regular;font-size: 10px;color: #575757;"/>
 					<image src="../../static/image/ych/my/31.png" mode=""></image>
 				</view>
-			</view>
+			</view> -->
 			<view class="TopArticles-center-top">
-				<view class="TopArticles-center-top-left">置顶结束时间*</view>
-				<view class="TopArticles-center-top-right" @click="showEnd">
-					<input style="font-size: 14px;"  disabled type="text" v-model="endTimer" placeholder="请选择结束时间" placeholder-style="font-family: PingFangSC-Regular;font-size: 12px;color: #575757;"/>
-					<image src="../../static/image/ych/my/31.png" mode=""></image>
+				<view class="TopArticles-center-top-left">置顶天数*</view>
+				<view class="TopArticles-center-top-right" >
+					<input style="font-size: 14px;" type="number" v-model="buyDay"  placeholder="请指定购买天数" placeholder-style="font-family: PingFangSC-Regular;font-size: 10px;color: #575757;"/>
+					<!-- <image src="../../static/image/ych/my/31.png" mode=""></image> -->
 				</view>
 			</view>
 		</view>
 		<view class="TopArticles-price">
 			<view class="TopArticles-price-left">金额</view>
-			<view class="TopArticles-price-right">88元</view>
+			<view class="TopArticles-price-right">{{payPrice}}元</view>
+		</view>
+		<view class="TopArticles-price">
+			<view style="padding-right: 30rpx;">*置顶时间从下单时间开始，若当天排期已满，则自动顺延到空闲日期开始置顶。</view>
 		</view>
 		<view class="goPay" @click="goToPay">去支付</view>
 	
-		<u-calendar v-model="showStarFlag" :mode="'date'" @change="changeStar"></u-calendar>
-		<u-calendar v-model="showEndFlag" :mode="'date'" @change="changeEnd"></u-calendar>
+		<!-- <u-calendar v-model="showStarFlag" :mode="'date'" @change="changeStar" :min-date = "minData" :max-date = "'2030-01-01'"></u-calendar>
+		<u-calendar v-model="showEndFlag" :mode="'date'" @change="changeEnd" :min-date = "minData" :max-date = "'2030-01-01'"></u-calendar> -->
 	</view>
 </template>
 
 <script>
 	export default {
+		onLoad(options) {
+			this.typeId = options.typeId
+			this.minData = this.$dayjs().format('YYYY-MM-DD')
+			this.initBytype()
+			this.initMyArt()
+		},
 		data () {
 			return {
 				// 帖子列表
-				artTitle: ['1111', '2222'],
+				artTitle: [],
 				showStarFlag: false, // 起始日期展示
 				showEndFlag: false, // 结束日期展示
 				starTimer: '', //　起始日期
@@ -53,12 +62,36 @@
 				starDay: 0,
 				endYear: 0,
 				endMouth: 0,
-				endDay: 0
+				endDay: 0,
+				pickerText: [],
+				showPickerMain: '',
+				showPickerId: '',
+				diffDay: 0,
+				magnification : 0,
+				payPrice: 0,
+				minData: '',
+				buyDay: '',
+				typeId: 0
+			}
+		},
+		watch:{
+			buyDay(newV) {
+				console.log(newV)
+				this.payPrice = newV * this.magnification
 			}
 		},
 		methods: {
 			handleArtTitle (e) {
 				console.log(e)
+				this.showPickerMain = this.pickerText[e.detail.value].title
+				this.showPickerId = this.pickerText[e.detail.value].id
+				
+			},
+			// 获取倍数
+			async initBytype () {
+				let res = await this.$fetch(this.$api.get_property_by_type, {type: 1}, "POST", 'FORM')
+				console.log(res)
+				this.magnification = res.data.buy_top_amount_by_day
 			},
 			// 展示起始日期
 			showStar () {
@@ -75,8 +108,17 @@
 				this.starYear = e.year
 				this.starMouth = e.month
 				this.starDay = e.day
+				
+				if (this.endDay != 0) {
+					let daystart = this.$dayjs(this.starTimer)
+					let dayend = this.$dayjs(this.endTimer)
+					this.diffDay = dayend.diff(daystart, 'day') == 0 ? 1 : dayend.diff(daystart, 'day')
+					console.log(this.diffDay)
+					this.payPrice = this.diffDay * this.magnification < 0 ? 0 : this.diffDay * this.magnification
+				}
+				
 				if (this.endYear != 0) {
-					if (this.endYear < this.starYear || this.endMouth < this.starMouth || this.endDay < this.starDay) {
+					if (this.diffDay < 0) {
 						uni.showToast({
 							icon: 'none',
 							title: '选择日期有误, 请仔细检查'
@@ -85,6 +127,8 @@
 					}
 				}
 				
+				
+				
 			},
 			changeEnd (e) {
 				console.log(e)
@@ -92,20 +136,63 @@
 				this.endYear = e.year
 				this.endMouth = e.month
 				this.endDay = e.day
+				if (this.starDay != 0) {
+					let daystart = this.$dayjs(this.starTimer)
+					let dayend = this.$dayjs(this.endTimer)
+					this.diffDay = dayend.diff(daystart, 'day') == 0 ? 1 : dayend.diff(daystart, 'day')
+					console.log(this.diffDay)
+					this.payPrice = this.diffDay * this.magnification < 0 ? 0 : this.diffDay * this.magnification
+				}
 				
 				if (this.starYear != 0) {
-					if (this.endYear < this.starYear || this.endMouth < this.starMouth || this.endDay < this.starDay) {
+					// if (this.endYear < this.starYear || this.endMouth < this.starMouth || this.endDay < this.starDay) {
+					// 	uni.showToast({
+					// 		icon: 'none',
+					// 		title: '选择日期有误, 请仔细检查'
+					// 	})
+					// 	this.endTimer = ""
+					// }
+					console.log(this.diffDay)
+					if (this.diffDay < 0) {
 						uni.showToast({
 							icon: 'none',
 							title: '选择日期有误, 请仔细检查'
 						})
 						this.endTimer = ""
+						console.log('3333')
 					}
+					
 				}
 			},
 			goToPay () {
+				if (this.showPickerId == 0) return uni.showToast({
+					icon: 'none',
+					title: '请先选择需要置顶的帖子'
+				})
+				// if (this.starTimer == '') return uni.showToast({
+				// 	icon: 'none',
+				// 	title: '请先选择置顶起始时间'
+				// })
+				// if (this.endTime == '') return uni.showToast({
+				// 	icon: 'none',
+				// 	title: '请先选择置顶结束时间'
+				// })
+				if (!this.buyDay) return uni.showToast({
+					icon: 'none',
+					title: '请先指定购买的天数'
+				})
 				uni.navigateTo({
-					url: '../Pay/Pay'
+					url: '../Pay/Pay?id=' + this.showPickerId + '&price=' + this.payPrice + '&type=' + 1 + '&day=' + this.buyDay
+				})
+			},
+			async initMyArt () {
+				let userId = uni.getStorageSync('userId')
+				console.log(userId)
+				let res = await this.$fetch (this.$api.myArticle,{pageNum: 1, pageSize: 100, userId: userId, typeId: this.typeId}, 'POST', 'FORM')
+				console.log(res)
+				this.pickerText = res.rows
+				this.pickerText.forEach(item => {
+					this.artTitle.push(item.title)
 				})
 			}
 		}
@@ -185,6 +272,9 @@
 					image{
 						width: 32rpx;
 						height: 32rpx;
+					}
+					input{
+						flex: 1;
 					}
 				}
 			}
