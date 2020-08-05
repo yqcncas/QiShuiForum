@@ -62,25 +62,14 @@
 			this.type = options.type
 			this.title = options.title
 			console.log(this.type)
-			// if (this.type == 1) {
-			// 	this.title = '房产'
-			// } else if (this.type == 2 ) {
-			// 	this.title = '汽车'
-			// 	// this.navLeft = "出售"
-			// 	// this.navRight = "购买"
-			// } else if (this.type == 3 ) {
-			// 	this.title = '找工作'
-			// 	this.navLeft = "招聘"
-			// 	this.navRight = "求职"
-			// } else if (this.type == 4 ) {
-			// 	this.title = '商品'
-			// } else if (this.type == 5 ) {
-			// 	this.title = '广场'
-			// } else if (this.type == 6 ) {
-			// 	this.title = '科技'
-			// } else if (this.type == 7 ) {
-			// 	this.title = '美食'
-			// } 
+			if (this.type == 2 ) {
+				this.navLeft = "出售"
+				this.navRight = "购买"
+			} else if (this.type == 3) {
+				this.navLeft = "招聘"
+				this.navRight = "求职"
+			}
+		
 			if (this.type == 'gc' ) {
 				this.type  = ''
 				this.title = '广场'

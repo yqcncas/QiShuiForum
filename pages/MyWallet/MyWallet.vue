@@ -2,15 +2,18 @@
 	<view class="MyWallet">
 		<view class="my-MyWallet">
 			<view class="my-MyWallet-left">钱包余额</view>
-			<view class="my-MyWallet-right">¥{{myMoney}}</view>
+			<view class="my-MyWallet-right">¥{{usreInfo.amount}}</view>
 		</view>
 		<view class="MyWallet-center">
 			<view class="MyWallet-center-item">
 				<view class="MyWallet-center-item-left">总消费金额</view>
-				<view class="MyWallet-center-item-right">¥{{totalMoney}}</view>
+				<view class="MyWallet-center-item-right">¥{{usreInfo.totalConsum}}</view>
 			</view>
 			<view class="MyWallet-center-item" @click="goToParticulars">
 				<view class="MyWallet-center-item-left">明细</view>
+			</view>
+			<view class="MyWallet-center-item" @click="goToWithdraw">
+				<view class="MyWallet-center-item-left">提现</view>
 			</view>
 		</view>
 	</view>
@@ -19,10 +22,14 @@
 <script>
 	export default {
 		onLoad(options) {
-			this.myMoney = options.myMoney
-			this.totalMoney = options.totalMoney
+			// this.myMoney = options.myMoney
+			// this.totalMoney = options.totalMoney
+			
+			
 		},
-		
+		onShow() {
+			this.initMyInfo()
+		},
 		// 点击充值
 		onNavigationBarButtonTap () {
 			uni.navigateTo({
@@ -32,7 +39,10 @@
 		data () {
 			return {
 				myMoney: 0,
-				totalMoney: 0
+				totalMoney: 0,
+				usreInfo: {
+					
+				}
 			}
 		},
 		methods: {
@@ -41,7 +51,23 @@
 				uni.navigateTo({
 					url: './Particulars?type=' + 0
 				}) 
-			}
+			},
+			goToWithdraw () {
+				uni.navigateTo({
+					url: '../Withdraw/Withdraw?money=' + this.usreInfo.amount
+				})
+			},
+			// 个人信息
+			async initMyInfo () {
+				let res = await this.$fetch(this.$api.getCurrentUser, {}, 'GET', 'FORM')
+				console.log(res)
+				res.data.user.amount = res.data.amount
+				res.data.user.integral = res.data.integral
+				res.data.user.surplusPosts = res.data.surplusPosts
+				res.data.user.totalConsum = res.data.totalConsum
+				this.usreInfo = res.data.user
+	
+			},
 		}
 	}
 </script>

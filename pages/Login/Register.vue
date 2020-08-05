@@ -56,6 +56,7 @@
 
 <script>
 	const dcRichAlert = uni.requireNativePlugin('ZWM-BJXMapView');
+	import jsencrypt from '@/js_sdk/jsencrypt-Rsa/jsencrypt/jsencrypt.vue';
 	export default {
 		onLoad(options) {
 			this.cid = plus.push.getClientInfo().clientid
@@ -116,8 +117,11 @@
 						this.getYzmTimer--
 					}
 				}, 1000)
-				let res = await this.$fetch(this.$api.mobilecode, {mobile: this.phone}, "POST", 'FORM')
+				var pubblicData = jsencrypt.setEncrypt(this.$api.publiukey,this.phone);
+				
+				let res = await this.$fetch(this.$api.mobilecode, {mobile: pubblicData}, "POST", 'FORM')
 				console.log(res)
+				
 			},
 			//　提交
 			async submitForm () {

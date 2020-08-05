@@ -223,7 +223,7 @@
 			box-sizing: border-box;
 			view{
 				font-family: PingFangSC-Regular;
-				font-size: 10px;
+				font-size: 14px;
 				color: #2C2C2C;
 				letter-spacing: 0.04px;
 			}

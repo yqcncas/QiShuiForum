@@ -22,8 +22,8 @@
             "Push" : {},
             "Share" : {},
             "VideoPlayer" : {},
-            "OAuth" : {},
-            "Maps" : {}
+            "Maps" : {},
+            "OAuth" : {}
         },
         /* 应用发布信息 */
         "distribute" : {
@@ -68,14 +68,14 @@
                     "alipay" : {},
                     "weixin" : {
                         "appid" : "wx01c81590213381db",
-                        "UniversalLinks" : "https://bajiaostar.com/"
+                        "UniversalLinks" : "https://www.bajiaostar.com/"
                     }
                 },
                 "oauth" : {
                     "weixin" : {
                         "appid" : "wx01c81590213381db",
                         "appsecret" : "a3556cbc3e3ef53179cc9dc7a7e692b9",
-                        "UniversalLinks" : "https://bajiaostar.com/"
+                        "UniversalLinks" : "https://www.bajiaostar.com/"
                     }
                 },
                 "share" : {

@@ -63,7 +63,7 @@
 </template>
 
 <script>
-	const dcRichAlertIos = uni.requireNativePlugin('ZWM-BJXJobView'); // ios
+	// const dcRichAlertIos = uni.requireNativePlugin('ZWM-BJXJobView'); // ios
 	let dcRichAlert
 	if (uni.getSystemInfoSync().platform == 'android') {
 		dcRichAlert = uni.requireNativePlugin('ZWM-BJXMapView');
@@ -80,16 +80,35 @@
 			setTimeout(() => {
 				uni.hideLoading()
 				this.isMessageShow = true
+				this.getMessageList()
 			}, 1600)
+			this.timer = setInterval(() => {
+				// console.log(uni.getStorageInfoSync('newMessageFlag'))
+				
+				if (uni.getStorageSync('newMessageFlag')) {
+					// console.log('1111')
+					uni.removeStorageSync('newMessageFlag')
+					this.getMessageList()
+				}
+			}, 1200)
+			
+		},
+		onHide() {
+			clearInterval(this.timer)
+			this.timer = null
 		},
 		onReady() {
-			dcRichAlert.addNewMessageReceiver({}, result => {
-				console.log(result)
-				this.getMessageList()
-			})
+			// dcRichAlert.addNewMessageReceiver({}, result => {
+			// 	console.log(result)
+			// 	this.getMessageList()
+			// })
 		},
 		onShow() {
 			// this.getMessageList()
+			if (uni.getStorageInfoSync('newMessageFlag')) {
+				uni.removeStorageSync('newMessageFlag')
+				this.getMessageList()
+			}
 		},
 		data () {
 			return {
@@ -102,7 +121,8 @@
 					}
 				],
 				MessageList: [],
-				isMessageShow: false
+				isMessageShow: false,
+				timer: null
 			}
 		},
 		methods: {
@@ -141,6 +161,7 @@
 				
 					dcRichAlert.getMyConversationList({}, result => { 
 						console.log(result)
+						if (result.result == 'fail') return ''
 						
 						if (uni.getSystemInfoSync().platform == 'android') {
 							this.MessageList = result.conversationList
@@ -179,7 +200,7 @@
 							})
 						}
 						
-						console.log(this.MessageList)
+						// console.log(this.MessageList)
 					})
 				
 			},

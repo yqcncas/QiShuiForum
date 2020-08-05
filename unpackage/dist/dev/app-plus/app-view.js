@@ -7152,7 +7152,7 @@ if(false) {}
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/api.js */ 13);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".login {\n  padding-top: 126rpx;\n  padding-left: 76rpx;\n  padding-right: 70rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.login .login-header {\n  font-family: PingFangSC-Medium;\n  font-size: 18px;\n  color: #212121;\n  letter-spacing: 0.07px;\n  font-weight: bold;\n  padding-bottom: 80rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.login .user-account,\n.login .user-password {\n  padding-bottom: 28rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  border-bottom: 1px solid #DDDDDD;\n}\n.login .user-account uni-input,\n.login .user-password uni-input {\n  font-family: PingFangSC-Regular;\n  font-size: 16px;\n}\n.login .user-password {\n  padding-top: 42rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.login .phone-login {\n  font-family: PingFangSC-Regular;\n  font-size: 10px;\n  color: #2C2C2C;\n  letter-spacing: 0.04px;\n  margin-top: 42rpx;\n  margin-bottom: 96rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.login .login-button {\n  width: 600rpx;\n  height: 102rpx;\n  line-height: 102rpx;\n  text-align: center;\n  margin: 0 auto;\n  background-image: -webkit-linear-gradient(314deg, #FF8D3F 0%, #E86D29 100%);\n  background-image: linear-gradient(136deg, #FF8D3F 0%, #E86D29 100%);\n  border-radius: 4px;\n  font-family: PingFangSC-Medium;\n  font-size: 21px;\n  color: #FFFFFF;\n  letter-spacing: 1.09px;\n}\n.login .login-text {\n  width: 100%;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n          justify-content: space-between;\n  padding-top: 22rpx;\n  padding-bottom: 424rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.login .login-text uni-view {\n  font-family: PingFangSC-Regular;\n  font-size: 10px;\n  color: #2C2C2C;\n  letter-spacing: 0.04px;\n}\n.login .else-login {\n  width: 100%;\n  position: fixed;\n  bottom: 30rpx;\n  left: 50%;\n  -webkit-transform: translateX(-50%);\n          transform: translateX(-50%);\n}\n.login .else-login .else-login-top {\n  font-family: PingFangSC-Regular;\n  font-size: 10px;\n  color: #2C2C2C;\n  letter-spacing: 0.04px;\n  text-align: center;\n}\n.login .else-login .else-login-bottom {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n          justify-content: center;\n  text-align: center;\n  padding-top: 36rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.login .else-login .else-login-bottom uni-image {\n  width: 62rpx;\n  height: 62rpx;\n}\n.login .else-login .else-login-bottom uni-image:nth-child(2) {\n  margin-left: 80rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n", ""]);
+exports.push([module.i, ".login {\n  padding-top: 126rpx;\n  padding-left: 76rpx;\n  padding-right: 70rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.login .login-header {\n  font-family: PingFangSC-Medium;\n  font-size: 18px;\n  color: #212121;\n  letter-spacing: 0.07px;\n  font-weight: bold;\n  padding-bottom: 80rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.login .user-account,\n.login .user-password {\n  padding-bottom: 28rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  border-bottom: 1px solid #DDDDDD;\n}\n.login .user-account uni-input,\n.login .user-password uni-input {\n  font-family: PingFangSC-Regular;\n  font-size: 16px;\n}\n.login .user-password {\n  padding-top: 42rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.login .phone-login {\n  font-family: PingFangSC-Regular;\n  font-size: 10px;\n  color: #2C2C2C;\n  letter-spacing: 0.04px;\n  margin-top: 42rpx;\n  margin-bottom: 96rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.login .login-button {\n  width: 600rpx;\n  height: 102rpx;\n  line-height: 102rpx;\n  text-align: center;\n  margin: 0 auto;\n  background-image: -webkit-linear-gradient(314deg, #FF8D3F 0%, #E86D29 100%);\n  background-image: linear-gradient(136deg, #FF8D3F 0%, #E86D29 100%);\n  border-radius: 4px;\n  font-family: PingFangSC-Medium;\n  font-size: 21px;\n  color: #FFFFFF;\n  letter-spacing: 1.09px;\n}\n.login .login-text {\n  width: 100%;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n          justify-content: space-between;\n  padding-top: 22rpx;\n  padding-bottom: 424rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.login .login-text uni-view {\n  font-family: PingFangSC-Regular;\n  font-size: 14px;\n  color: #2C2C2C;\n  letter-spacing: 0.04px;\n}\n.login .else-login {\n  width: 100%;\n  position: fixed;\n  bottom: 30rpx;\n  left: 50%;\n  -webkit-transform: translateX(-50%);\n          transform: translateX(-50%);\n}\n.login .else-login .else-login-top {\n  font-family: PingFangSC-Regular;\n  font-size: 10px;\n  color: #2C2C2C;\n  letter-spacing: 0.04px;\n  text-align: center;\n}\n.login .else-login .else-login-bottom {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n          justify-content: center;\n  text-align: center;\n  padding-top: 36rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.login .else-login .else-login-bottom uni-image {\n  width: 62rpx;\n  height: 62rpx;\n}\n.login .else-login .else-login-bottom uni-image:nth-child(2) {\n  margin-left: 80rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -25901,7 +25901,12 @@ var render = function() {
                           {
                             key: item,
                             staticClass: _vm._$g("18-" + $31, "sc"),
-                            attrs: { _i: "18-" + $31 }
+                            attrs: { _i: "18-" + $31 },
+                            on: {
+                              click: function($event) {
+                                return _vm.$handleViewEvent($event)
+                              }
+                            }
                           },
                           [
                             _c(
@@ -26481,6 +26486,26 @@ var render = function() {
                 "v-uni-view",
                 { staticClass: _vm._$g(9, "sc"), attrs: { _i: 9 } },
                 [_vm._v("明细")]
+              )
+            ],
+            1
+          ),
+          _c(
+            "v-uni-view",
+            {
+              staticClass: _vm._$g(10, "sc"),
+              attrs: { _i: 10 },
+              on: {
+                click: function($event) {
+                  return _vm.$handleViewEvent($event)
+                }
+              }
+            },
+            [
+              _c(
+                "v-uni-view",
+                { staticClass: _vm._$g(11, "sc"), attrs: { _i: 11 } },
+                [_vm._v("提现")]
               )
             ],
             1

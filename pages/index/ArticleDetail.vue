@@ -263,7 +263,7 @@
 				
 			},
 			async updateguangG () {
-				let res = await this.$fetch(this.$api.upd_evaluate_advert_display_num, {id: this.guangGaoInfo.id}, 'POST', 'FORM')
+				let res = await this.$fetch(this.$api.upd_evaluate_advert_display_num, {id: this.guangGaoInfo.advert.id}, 'POST', 'FORM')
 				console.log(res)
 			},
 			filterHTMLTag (msg) {
@@ -275,8 +275,7 @@
 			},
 			// 广告点击
 			async goToRichText () {
-				console.log('123123')
-				let res = await this.$fetch(this.$api.upd_advert_hits, {id: this.guangGaoInfo.id}, 'POST', 'FORM')
+				let res = await this.$fetch(this.$api.upd_advert_hits, {id: this.guangGaoInfo.advert.id}, 'POST', 'FORM')
 				uni.navigateTo({
 					url: '../RichText/RichText?RichMain=' + this.guangGaoInfo.advert.newContent + '&title=' + this.guangGaoInfo.advert.title + '&pics=' + JSON.stringify(this.guangGaoInfo.advert.pics)
 				})

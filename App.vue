@@ -1,5 +1,13 @@
 <script>
-	const dcRichAlert = uni.requireNativePlugin('ZWM-BJXMapView');
+	// const dcRichAlert = uni.requireNativePlugin('ZWM-BJXMapView');
+	let dcRichAlert
+	let dcRichLogin
+	if (uni.getSystemInfoSync().platform == 'android') {
+		dcRichLogin = uni.requireNativePlugin('ZWM-BJXMapView');
+	} else {
+		dcRichAlert = uni.requireNativePlugin('ZWM-BJXJobView');
+		dcRichLogin = uni.requireNativePlugin('ZWM-BJXMapView');
+	}
 	export default {
 		data () {
 			return {
@@ -10,7 +18,8 @@
 			this.initPosition()
 			this.initMyCity()
 			
-			 dcRichAlert.JmessageManagerInit({
+			
+			 dcRichLogin.JmessageManagerInit({
 				appKey:'67438bad79ab28487215a722'
 				},
 				result => {
@@ -20,6 +29,21 @@
 				
 			
 			console.log('App Launch')
+			if (uni.getSystemInfoSync().platform == 'android') {
+				dcRichLogin.addNewMessageReceiver({}, result => {
+					console.log(result)
+					// this.getMessageList()
+					uni.setStorageSync('newMessageFlag', true)
+				})
+			} else {
+				dcRichAlert.addNewMessageReceiver({}, result => {
+					console.log(result)
+					// this.getMessageList()
+					uni.setStorageSync('newMessageFlag', true)
+				})
+			}
+			
+			
 			this.$fetch(this.$api.getadvertlist, {type: 0}, 'POST', 'FORM').then((res) => {
 				console.log(res)
 				uni.setStorageSync('startImg', res.data[0].titlePic)

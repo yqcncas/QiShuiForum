@@ -170,8 +170,43 @@
 			
 			}
 		},
-		onReachBottom () {
-			// this.initArtivleList(this.navIndex, this.headerNav[this.navIndex].id, '', 0)
+		// onReachBottom () {
+		// 	// this.initArtivleList(this.navIndex, this.headerNav[this.navIndex].id, '', 0)
+		// },
+		onTabItemTap (e) {
+			this.headerNav = [{plateName: '推荐',childId: 'child99', id: 'tuijian'}],
+			this.fancyArrId= [], // 头部导航ID
+			this.tochildView= '',
+			this.currentTabIndexId = 0,
+			this.navIndex = 0, // 导航index
+			this.pageNum = 0,
+			this.pageSize = 10,
+			this.hasFlag = true,
+			this.activeId = '', // 底部切换记录id
+			this.typeInIndex = [],
+			this.ArticleList =[],
+			this.indexMainNavTop = [], // 中部导航顶部
+			this.indexMainNavBottom = [{platePic: '../../static/image/ych/index/8.png' , plateName: '商城'}, {platePic: '../../static/image/ych/index/9.png' , plateName: '广场'}], // 中部导航底部
+			this.canPush = true
+			this.talkArr = [],
+			this.tabIndex = 0, // 底部Tab
+			this.bannerList = [], // 轮播图
+			this.hotTieZiIndex = 0,
+			this.hotTieZiList = [] ,// 热门贴
+			this.isCreamFlag = 0, // 是否为精华
+			
+			this.initBanner()
+			// 热帖
+			this.hotTieZi()
+			
+			// 对版块进行处理
+			if (uni.getStorageSync("token")) {
+				this.initMyInfo()
+			} else {
+				this.initTabConfig()
+			}
+			// 置顶帖
+			this.huatiList()
 		},
 		onPullDownRefresh () {
 			// this.pageNum = 0

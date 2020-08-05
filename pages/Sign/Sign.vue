@@ -61,12 +61,21 @@
 			},
 			// 签到
 			async signFn () {
+
 				let res = await this.$fetch(this.$api.sign, {}, "POST", 'FORM')
-				console.log(res)
-				uni.showToast({
-					icon: 'none',
-					title: res.msg
-				})
+
+				if (res.code == 0) {
+					uni.showToast({
+						icon: 'none',
+						title: res.msg + '获得' + this.signValue[this.signNum + 1] + '积分'
+					})
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: res.msg
+					})
+				}
+				
 				this.initYesterdaySign()
 			
 			},

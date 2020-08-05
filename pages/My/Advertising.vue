@@ -32,7 +32,7 @@
 				
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: calc(100vh - 84rpx);" @scrolltolower = "lower">
-						<view class="Advertising-item" v-for="(item, index) in AdvertisingList" :key = "index">
+						<view class="Advertising-item" v-for="(item, index) in AdvertisingList" :key = "index" @click="goToRichText(item.newContent, item.title, item.pics)">
 							<view class="Advertising-item-top">
 								<view class="Advertising-item-left">
 									<image :src="item.pics[0]" mode="aspectFill"></image>
@@ -69,7 +69,7 @@
 		},
 		onBackPress() {
 			if (uni.getStorageSync('advertisingFlag')) {
-				uni.removeStorageSync('advertisingFlag')
+				uni.removeStorageSync('advertisingFlag')	
 				uni.switchTab({
 					url: './My'
 				})
