@@ -5,6 +5,7 @@
 				<view class="pay-header-box-left">支付金额</view>
 				<view class="pay-header-box-right">¥{{price}}</view>
 			</view>
+			<view style="padding-top: 20rpx;" v-if="type == 1 || type == 2">*预计投放时间为: {{tfstartTime}} - {{tfendTime}}</view>
 		</view>
 		<view class="pay-way">
 			<view class="pay-way-title">支付方式</view>
@@ -54,12 +55,14 @@
 				// this.startTime = options.startTime
 				// this.endTime = options.endTime
 				this.day = options.day
+				this.calculateTime()
 			}
 			if (this.type == 2) {
 				this.content = options.content
 				this.day = options.day
 				this.title = options.title
 				this.pics = options.pics
+				this.calculateTime()
 			}
 			if (this.type == 3) {
 				this.num = options.num
@@ -77,12 +80,25 @@
 				day: 0,
 				title: '',
 				pics: [],
-				num: 0
+				num: 0,
+				tfstartTime: '',
+				tfendTime: ''
 			}
 		},
 		methods: {
 			handlePayIndex (index) {
 				this.currentIndex = index
+			},
+			async calculateTime() {
+				let res
+				if (this.type == 2) {
+					res = await this.$fetch(this.$api.calculate_time, {day: this.day, type: 0}, "POST", 'FORM')
+				} else {
+					res = await this.$fetch(this.$api.calculate_time, {day: this.day, type: 1, articleId: this.id}, "POST", 'FORM')
+				}
+				console.log(res)
+				this.tfstartTime = res.data.startTime
+				this.tfendTime = res.data.endTime
 			},
 			payButton () {
 				uni.showModal({

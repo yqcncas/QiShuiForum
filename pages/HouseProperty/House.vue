@@ -62,12 +62,15 @@
 			this.type = options.type
 			this.title = options.title
 			console.log(this.type)
-			if (this.type == 2 ) {
+			if (this.type == 4 ) {
 				this.navLeft = "出售"
 				this.navRight = "购买"
+				this.labelId = 3
+				
 			} else if (this.type == 3) {
 				this.navLeft = "招聘"
 				this.navRight = "求职"
+				this.labelId = 1
 			}
 		
 			if (this.type == 'gc' ) {
@@ -103,7 +106,8 @@
 					text: '分享到微信朋友圈',
 					fontSize: 28
 				}],
-				shareShow: false
+				shareShow: false,
+				labelId: ''
 			}
 		},
 		methods: {
@@ -134,7 +138,7 @@
 				this.pageNum = ++this.pageNum
 				let res
 				if (this.type != 'gc') {
-					res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, type: this.type, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+					res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, labelId: this.labelId,type: this.type, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
 				} else {
 					res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
 				}
@@ -177,9 +181,20 @@
 				this.artList = []
 				if (index == 0) {
 					this.isCreamFlag = 0
+					if (this.type == 4 ) {
+						this.labelId = 3
+					}else if (this.type == 3) {
+						this.labelId = 1
+					}
 				} else {
 					this.isCreamFlag = 1
+					if (this.type == 4 ) {
+						this.labelId = 4
+					}else if (this.type == 3) {
+						this.labelId = 2
+					}
 				}
+				
 				this.initArtList()
 			},
 			ArticleMainClick (id, userId, item) {

@@ -185,7 +185,7 @@
 					.my-order-item-right-center{
 						display: inline-block;
 						font-family: PingFangSC-Medium;
-						font-size: 10px;
+						font-size: 12px;
 						color: #FF7B30;
 						letter-spacing: 0.04px;
 						padding: 0 6rpx;
@@ -201,7 +201,7 @@
 						align-items: center;
 						.my-order-item-right-bottom-left{
 							font-family: PingFangSC-Regular;
-							font-size: 10px;
+							font-size: 12px;
 							color: #292929;
 							letter-spacing: 0.04px;
 						}

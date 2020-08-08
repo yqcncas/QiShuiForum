@@ -356,14 +356,14 @@
 					}
 					.user-info-center{
 						font-family: PingFangSC-Regular;
-						font-size: 10px;
+						font-size: 12px;
 						color: #141414;
 						letter-spacing: -0.29px;
 						text-align: justify;
 					}
 					.user-info-footer{
 						font-family: PingFangSC-Regular;
-						font-size: 10px;
+						font-size: 12px;
 						color: #141414;
 						letter-spacing: -0.29px;
 						text-align: justify;
@@ -377,7 +377,7 @@
 				box-sizing: border-box;
 				.my-header-right-text{
 					font-family: PingFangSC-Medium;
-					font-size: 10px;
+					font-size: 12px;
 					color: #545454;
 					letter-spacing: -0.29px;
 					text-align: justify;

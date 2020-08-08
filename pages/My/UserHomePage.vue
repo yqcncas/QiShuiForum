@@ -1,6 +1,9 @@
 <template>
 	<view class="userhome-page" v-if="showLoadingFlag">
 		<view class="userhome-page-header">
+			<view class="back" style="position: absolute; left:30rpx; top: 30rpx;" @click="goBack">
+				<image src="../../static/image/ych/back.png" mode="aspectFill" style="width: 18rpx; height: 34rpx;"></image>
+			</view>
 			<view class="user-avatar">
 				<image :src="userInfoList.avatar ? userInfoList.avatar : '../../static/image/ych/avatar.png'" mode="aspectFill" class="avatar" @click = "showBigAvatarImg(userInfoList.avatar)"></image>
 				<image src="../../static/image/ych/my/22.png" mode="aspectFill" class="renzhen"></image>
@@ -14,11 +17,11 @@
 				<view class="user-info-level">Lv.{{userInfoList.level}}</view>
 			</view>
 			<view class="count">
-				<view class="count-left">
+				<view class="count-left" @click="goToMyFriend(1)">
 					<view class="count-left-name">关注</view>
 					<view class="count-left-num">{{userInfoList.params.myFollow}}</view>
 				</view>
-				<view class="count-left">
+				<view class="count-left" @click="goToMyFriend(2)">
 					<view class="count-left-name">粉丝</view>
 					<view class="count-left-num">{{userInfoList.params.myFans}}</view>
 				</view>
@@ -113,6 +116,17 @@
 			this.initMyArtilce()
 		},
 		methods: {
+			goBack () {
+				uni.navigateBack({
+					delta: 1
+				})
+			},
+			// 去好友列表
+			goToMyFriend (index) {
+				uni.navigateTo({
+					url: './MyFriend?type=' + index
+				})
+			},
 			// 分享
 			handleShareFlag () {
 				this.showShareBoxFlag = true

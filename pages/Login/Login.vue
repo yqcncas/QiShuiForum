@@ -192,7 +192,7 @@
 		}
 		.phone-login{
 			font-family: PingFangSC-Regular;
-			font-size: 10px;
+			font-size: 14px;
 			color: #2C2C2C;
 			letter-spacing: 0.04px;
 			// padding-top: 42rpx;

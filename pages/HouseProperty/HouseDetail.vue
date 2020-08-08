@@ -105,7 +105,7 @@
 				}
 				.HouseDetail-center-bg-main{
 					font-family: PingFangSC-Regular;
-					font-size: 10px;
+					font-size: 14px;
 					color: #141414;
 					padding: 0 30rpx;
 					// padding-bottom: 18rpx;

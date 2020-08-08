@@ -125,31 +125,17 @@
             }
         },
         "nativePlugins" : {
-            "ZWM-BJXJobView" : {
+            "ZWM-BJXMapView" : {
                 "__plugin_info__" : {
-                    "name" : "BJXJobView",
+                    "name" : "BJXMapView",
                     "description" : "极光",
-                    "platforms" : "iOS",
+                    "platforms" : "Android,iOS",
                     "url" : "",
                     "android_package_name" : "",
                     "ios_bundle_id" : "",
                     "isCloud" : false,
                     "bought" : -1,
                     "pid" : "",
-                    "parameters" : {}
-                }
-            },
-            "ZWM-BJXMapView" : {
-                "__plugin_info__" : {
-                    "name" : "极光聊天室原生插件",
-                    "description" : "极光即时通讯聊天室插件",
-                    "platforms" : "iOS",
-                    "url" : "https://ext.dcloud.net.cn/plugin?id=1238",
-                    "android_package_name" : "com.bajiaostar.drink",
-                    "ios_bundle_id" : "com.bajiaostar.drink",
-                    "isCloud" : true,
-                    "bought" : 1,
-                    "pid" : "1238",
                     "parameters" : {}
                 }
             }

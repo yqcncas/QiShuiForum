@@ -99,6 +99,7 @@
 			},
 			//　去富文本
 			goToRichPage () {
+				uni.setStorageSync('RichMainText', this.findHeader.content)
 				uni.navigateTo({
 					url: '../RichText/RichText?RichMain=' + this.findHeader.content + "&title=" + this.findHeader.title
 				})
@@ -152,7 +153,7 @@
 				align-items: center;
 				view{
 					font-family: PingFangSC-Medium;
-					font-size: 10px;
+					font-size: 14px;
 					color: #545454;
 					letter-spacing: -0.29px;
 					text-align: justify;
@@ -187,10 +188,12 @@
 				}
 				.find-main-item-header-bottom{
 					font-family: PingFangSC-Regular;
-					font-size: 10px;
+					font-size: 14px;
 					color: #686868;
 					letter-spacing: -0.24px;
 					text-align: justify;
+					padding-top: 3rpx;
+					padding-bottom: 10rpx;
 				}
 			}
 			.find-main-item-center{
@@ -217,13 +220,13 @@
 					align-items: center;
 					.find-main-item-bottom-left-hot{
 						font-family: PingFangSC-Medium;
-						font-size: 10px;
+						font-size: 14px;
 						color: #FE1818;
 						letter-spacing: -0.29px;
 					}
 					.find-main-item-bottom-left-num{
 						font-family: PingFangSC-Medium;
-						font-size: 10px;
+						font-size: 14px;
 						color: #232323;
 						letter-spacing: -0.29px;
 						text-align: justify;
@@ -238,7 +241,7 @@
 					line-height: 62rpx;
 					text-align: center;
 					font-family: PingFangSC-Medium;
-					font-size: 10px;
+					font-size: 14px;
 					color: #FFFFFF;
 					letter-spacing: -0.29px;
 					background-image: linear-gradient(136deg, #FF8D3F 0%, #E86D29 100%);

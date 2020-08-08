@@ -55,6 +55,7 @@ export default {
 	upd_evaluate_advert_display_num: "/nt/article/upd_evaluate_advert_display_num", // 更新评论区广告展现量
 	upd_advert_hits: "/nt/article/upd_advert_hits", // 更新点击量
 	get_all_explain: "/nt/article/get_all_explain", // 返回所有说明以及协议
+	calculate_time: "/t/article/calculate_time", // 根据天数计算广告开始结束时间 type =0 广告 =1 置顶 置顶时传帖子id
 	
 	
 
@@ -70,7 +71,6 @@ export default {
 	clear_my_drafts: "/t/article/clear_my_drafts", // 清空我的草稿箱
 	get_user_by_id: "/nt/user/get_user_by_id", // 根据用户id获取用户详情
 	get_user_list: "/nt/user/get_user_list", // 搜索获取用户
-	
 	upd_user:　"/t/user/upd_user", // 编辑基本信息
 	get_can_push_user: "/t/user/get_can_push_user", // 获取可推送用户
 	get_activity_list: "/nt/user/get_activity_list", // 活动列表（type =0 所有活动 type =1 正在进行中的活动）
@@ -88,6 +88,7 @@ export default {
 	my_wallet_details: "/t/user/my_wallet_details", // 我的钱包明细
 	get_browse_record: "/t/user/get_browse_record", // 查看浏览记录
 	add_draw_apply: "/t/user/add_draw_apply", // 提交提现申请
+	get_follow_list: "/t/user/get_follow_list", // 获取我关注的或关注我的用户列表 type =0 我关注的 =1 关注我的
 
 	
 	

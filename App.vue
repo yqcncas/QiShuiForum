@@ -15,6 +15,7 @@
 			}
 		},
 		onLaunch: function(){
+			plus.screen.lockOrientation('portrait-primary');
 			this.initPosition()
 			this.initMyCity()
 			

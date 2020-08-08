@@ -30,7 +30,7 @@
 					<view class="line-7"></view>
 					<Stick :StickList = "topArtList" @handleStick = "handleStick"></Stick>
 					<view class="line-3"></view>
-					<NavButton :navleft="'最新发布'" :navright="'精华帖'" :navIndex = "navIndex" @handleNavIndex = "handleNavIndex"></NavButton>
+					<NavButton :navleft="'找房'" :navright="'租房'" :navIndex = "navIndex" @handleNavIndex = "handleNavIndex"></NavButton>
 					<view class="line-3"></view>
 				</view>
 			<ArticleMain @ArticleMainClick = "ArticleMainClick" :ArticleList = "artList"></ArticleMain>
@@ -70,7 +70,8 @@
 				topArtList: [],
 				upOption: {
 					use: false
-				}
+				},
+				labelId: 5
 			}
 		},
 		methods: {
@@ -107,7 +108,7 @@
 			async initArtList () {
 				if (!this.hasFlag) return
 				this.pageNum = ++this.pageNum
-				let res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, type: 11, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+				let res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, labelId: this.labelId, type: 11, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
 				console.log(res)
 				res.rows.forEach((item, index) => {
 					item.content = JSON.parse(item.content)
@@ -166,8 +167,10 @@
 				this.artList = []
 				if (index == 0) {
 					this.isCreamFlag = 0
+					this.labelId = 5
 				} else {
 					this.isCreamFlag = 1
+					this.labelId = 6
 				}
 				this.initArtList()
 			},

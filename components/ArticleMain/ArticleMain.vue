@@ -4,9 +4,12 @@
 			<!-- 数据展示 -->
 			<view class="ArticleMain-info-item" v-for="(item, index) in ArticleList" :key = "index" @click="ArticleMainClick(item.id,　item.userId, item)">
 				<!-- 第一条 -->
-				<view class="ArticleMain-info-item-first" v-if="item.pics.length <= 1 && !item.type">
+				<view class="ArticleMain-info-item-first" v-if="item.pics.length <= 1 && !item.type && !item.isGg">
 					<view class="ArticleMain-info-item-first-left">
-						<view class="ArticleMain-info-item-first-left-top u-skeleton-rect">{{item.title}}</view>
+						<view class="ArticleMain-info-item-first-left-top u-skeleton-rect">
+							<image src="../../static/image/huo.png" mode="aspectFill" v-if="item.isCreamFlag"></image>
+							{{item.title}}
+						</view>
 						<view class="ArticleMain-info-item-first-left-bottom" :style="{paddingTop: item.pics.length <= 0 ? '36rpx' : '58rpx'}">
 							<view class="ArticleMain-info-item-first-left-bottom-read u-skeleton-rect">{{item.browseNum}}阅读量</view>
 							<view class="ArticleMain-info-item-first-left-bottom-timer u-skeleton-rect">{{item.createTime}}</view>
@@ -26,7 +29,9 @@
 						<view class="ArticleDetail-footer-main-item-advertising-top-right">广告</view>
 					</view>
 					<view class="ArticleDetail-footer-main-item-advertising-center">
-						<image :src="item.titlePic" mode="aspectFill"></image>
+						<!-- <image :src="item.titlePic" mode="aspectFill"></image> -->
+						<image :src="titlePic" v-if="i < 3" mode="aspectFill" v-for="(titlePic, i) in item.pics" :key = "i"  :class="item.pics.length > 1 ? 'ArticleDetail-footer-main-item-advertising-center-moreImg' : 'ArticleDetail-footer-main-item-advertising-center-Img'"></image>
+						<!-- <image :src="titlePic" mode="aspectFill" v-for="(titlePic, i) in item.pics" :key = "i" class=""></image> -->
 					</view>
 					<view class="ArticleDetail-footer-main-item-advertising-footer">{{item.newcontent}}</view>
 					
@@ -34,8 +39,11 @@
 				
 				
 				<!-- 剩余的 -->
-				<view class="ArticleMain-info-item-else" v-if="item.pics.length > 1">
-					<view class="ArticleMain-info-item-else-top">{{item.title}}</view>
+				<view class="ArticleMain-info-item-else" v-if="item.pics.length > 1 && !item.isGg">
+					<view class="ArticleMain-info-item-else-top">
+					<image src="../../static/image/huo.png" mode="aspectFill" v-if="item.isCreamFlag"></image>
+					{{item.title}}
+					</view>
 					<view class="ArticleMain-info-item-else-center"   v-if="item.pics.length">
 						<image :src="itemImg" mode="aspectFill" v-for="(itemImg, i) in item.pics" :key = "i" v-if = "i < 3"></image>
 					</view>
@@ -121,6 +129,12 @@
 							-webkit-box-orient: vertical;    
 							-webkit-line-clamp: 2;    //控制行数
 							overflow: hidden;
+							display: flex;
+							image{
+								width: 32rpx;
+								height: 32rpx;
+								transform: translateY(4rpx);
+							}
 						}
 						.ArticleMain-info-item-first-left-bottom{
 							display: flex;
@@ -235,9 +249,11 @@
 						overflow: hidden;
 						box-sizing: border-box;
 						image{
-							flex: 1;
+							// flex: 1;
+							// height: 216rpx;
+							
+							
 							// width: 216rpx;
-							height: 216rpx;
 							// margin-right: 16rpx;
 							// margin-top: 20rpx;
 							// box-sizing: border-box;
@@ -245,10 +261,30 @@
 							// 	margin-right: 0;
 							// }
 						}
+						.ArticleDetail-footer-main-item-advertising-center-moreImg{
+							width: 216rpx;
+							// flex: 1;
+							// width: 216rpx;
+							height: 144rpx;
+							margin-right: 16rpx;
+							margin-bottom: 18rpx;
+							box-sizing: border-box;
+							&:nth-child(3n){
+								margin-right: 0;
+							}
+						}
+						.ArticleDetail-footer-main-item-advertising-center-Img{
+							flex: 1;
+							height: 216rpx;
+						}
 					}
 					.ArticleDetail-footer-main-item-advertising-footer{
 						margin-top: 18rpx;
 						box-sizing: border-box;
+						display: -webkit-box;    
+						-webkit-box-orient: vertical;    
+						-webkit-line-clamp: 2;    //控制行数
+						overflow: hidden;
 					}
 				}
 							

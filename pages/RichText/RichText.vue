@@ -16,7 +16,16 @@
 		},
 		onLoad(options) {
 			if (options.RichMain) {
-				this.html = options.RichMain
+				console.log(uni.getStorageSync('RichMainText'))
+				if (uni.getStorageSync('RichMainText')) {
+					console.log('1313213')
+					this.html = uni.getStorageSync('RichMainText')
+					uni.removeStorageSync('RichMainText')
+				} else {
+					this.html = options.RichMain
+				}
+				
+				console.log(this.html)
 				var reg = /<\/?[^>]*>/g
 				this.isRichText =  reg.test(this.html)
 			}

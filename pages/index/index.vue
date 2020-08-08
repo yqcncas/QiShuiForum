@@ -428,6 +428,7 @@
 						url: './ArticleDetail?id=' + item.id + '&userId=' + item.userId
 					})
 				} else {
+					uni.setStorageSync('RichMainText', item.content)
 					uni.navigateTo({
 						url: '../RichText/RichText?RichMain=' + item.content + '&title=' + item.title
 					})
@@ -575,6 +576,7 @@
 			ArticleMainClick (id, userId, item) {
 				// console.log(index)
 				if (item.isGg) {
+					uni.setStorageSync('RichMainText', item.content)
 					uni.navigateTo({
 						url: '../RichText/RichText?RichMain=' + item.content + '&title=' + item.title
 					})
@@ -593,9 +595,15 @@
 				res.data.forEach(item => {
 					item.newcontent = this.filterHTMLTag(item.content)
 					item.isGg = true
+					// 
+					// console.log(JSON.parse(item.pics))
+					if (item.pics.length) {
+						item.pics = JSON.parse(item.pics)
+					}
 				})
 				this.hotTieZiList = res.data
-				
+			
+				console.log(this.hotTieZiList)
 				
 				
 				

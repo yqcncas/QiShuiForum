@@ -403,6 +403,13 @@
 			// 发送
 			async sendMsgFn () {
 				console.log(this.ArtDetailComment)
+				if (this.ArtDetail.evaluateNum != 1) {
+					return uni.showToast({
+						icon: 'none',
+						title: '当前帖子禁止评论'
+					})
+				}
+				
 				if (this.sendMsg.trim() == '') {
 					return uni.showToast({
 						icon: 'none',

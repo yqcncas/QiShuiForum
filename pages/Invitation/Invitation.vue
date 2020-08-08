@@ -4,7 +4,7 @@
 		<!-- 头部导航 -->
 		<view class="Invitation-header">
 			<view class="Invitation-header-top">
-				<swiper class="tieziSwiper" :indicator-dots="true"  style="width:100%;height: 366rpx;">
+<!-- 				<swiper class="tieziSwiper" :indicator-dots="true"  style="width:100%;height: 366rpx;">
 					<swiper-item v-for="(item, index) in navTab" :key = "index">
 						<view class="swiper-item swiper-flex-box">
 							<view class="Invitation-header-top-item" v-for="(it, i) in item" :key = "i" @click="goToPage(i, it.id, it.plateName)">
@@ -14,18 +14,27 @@
 						</view>
 					</swiper-item>
 
-				</swiper>
+				</swiper> -->
 				
-				<!-- <view class="Invitation-header-top-item" v-for="(item, index) in navTab" :key = "index" @click="goToPage(index, item.id, item.plateName)">
+				<view class="Invitation-header-top-item" v-for="(item, index) in navTab" :key = "index" @click="goToPage(index, item.id, item.plateName)">
 					<image :src="item.platePic" mode="aspectFill"></image>
 					<view class="Invitation-header-top-item-text">{{item.plateName}}</view>
-				</view> -->
-				
+				</view>
+				<view class="watchMoreorLittle">
+					<view class="more-box" v-if="watchMoreFlag" @click="handleWatchMoreFlag">
+						查看更多
+						<image src="../../static/image/down.png" mode="aspectFill"></image>
+					</view>
+					<view class="more-box" v-if="!watchMoreFlag" @click="handleWatchMoreFlag">
+						收起
+						<image src="../../static/image/top.png" mode="aspectFill"></image>
+					</view>
+				</view>
 			</view>
 			<view class="line-7"></view>
 		</view>
 		<!-- 置顶 -->
-		<Stick :StickList = "topArtList" @handleStick = "handleStick"></Stick>
+		<!-- <Stick :StickList = "topArtList" @handleStick = "handleStick"></Stick> -->
 		<!-- 底部导航 -->
 		<view class="line-3"></view>
 		<NavButton :navleft="'最新发布'" :navright="'精华帖'" :navIndex = "navIndex" @handleNavIndex = "handleNavIndex"></NavButton>
@@ -42,7 +51,7 @@
 	export default {
 		mixins: [MescrollMixin],
 		onLoad() {
-			console.log(_.chunk([1,2,3,4,5,6,7,8,9,0,12,213,3,4,5,6,1], 8))
+			
 			
 			
 			this.initAllPlate()
@@ -64,7 +73,8 @@
 					toTop: {
 						bottom: 200
 					}
-				}
+				},
+				watchMoreFlag: true
 			}
 		},
 		onReachBottom() {
@@ -82,7 +92,10 @@
 				this.mescroll.endDownScroll()
 				
 			},
-			
+			handleWatchMoreFlag () {
+				this.watchMoreFlag = !this.watchMoreFlag
+				this.initAllPlate()
+			},
 			// 去发布
 			trigger(index) {
 				if (index == 0) {
@@ -101,14 +114,20 @@
 			},
 			// 获取所有版块
 			async initAllPlate () {
+				
 				let res = await this.$fetch(this.$api.getAllPlate, {}, 'POST', 'FORM')
 				console.log(res)
-				// this.navTab = res.data.slice(0, 6)
-				this.navTab = res.data
+				if (this.watchMoreFlag) {
+					this.navTab = res.data.slice(0, 6)
+				} else {
+					this.navTab = res.data
+				}
+				
+				// 
 				this.navTab.splice(4,0,{platePic: '../../static/image/ych/index/8.png' , plateName: '商城'})
 				this.navTab.splice(5,0,{platePic: '../../static/image/ych/index/9.png' , plateName: '广场', id: 'gc'})
-				console.log(_.chunk(this.navTab, 8))
-				this.navTab = _.chunk(this.navTab, 8)
+			
+				// this.navTab = _.chunk(this.navTab, 8)
 			},
 			// 获取文章
 			async initArtList () {
@@ -214,6 +233,22 @@
 						padding-top: 8rpx;
 						padding-bottom: 36rpx;
 						box-sizing: border-box;
+					}
+				}
+				.watchMoreorLittle{
+					width: 100%;
+					padding-bottom: 20rpx;
+					box-sizing: border-box;
+					display: flex;
+					justify-content: center;
+					color: rgb(0, 122, 255);
+					image{
+						width: 32rpx;
+						height: 32rpx;
+					}
+					.more-box{
+						display: flex;
+						align-items: center;
 					}
 				}
 			}

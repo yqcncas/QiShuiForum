@@ -49,7 +49,8 @@
 							{
 								"type": "none",
 								"text": "消息",
-								"fontSize": "16px" 
+								"fontSize": "16px",
+								"width": "70px"
 							}
 						]
 					}
@@ -231,6 +232,12 @@
 			}
 		},
 		{
+			"path": "pages/My/MyFriend",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
 			"path": "pages/index/ArticleDetail",
 			"style": {
 				"navigationStyle": "custom"
@@ -383,8 +390,9 @@
 							{
 								"type": "none",
 								"text": "投放",
-								"fontSize": "16px"
-								 
+								"fontSize": "16px",
+								"width": "70px"
+								
 							}
 						]
 					}
