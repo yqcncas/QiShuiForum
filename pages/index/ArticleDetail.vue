@@ -21,6 +21,7 @@
 							<view class="userInfo-top-name">{{userInfo.userName}}</view>
 							<view class="userInfo-top-level">Lv.{{userInfo.level}}</view>
 							<view class="userInfo-top-bozhu" v-if="userInfo.plateName">{{userInfo.plateName}}板块版主</view>
+							<view class="userInfo-top-pla"  v-for="(pla, i) in ArtDetail.userLabel" :key = "i">{{pla}}</view>
 						</view>
 						<view class="userInfo-bottom">{{ArtDetail.createTime}}</view>
 					</view>
@@ -177,7 +178,8 @@
 				sendCount: 0,
 				guangGaoInfo: {},
 				showShareBoxFlag: false,
-				evaListTotal: 0
+				evaListTotal: 0,
+			
 				
 			}
 		},
@@ -362,6 +364,10 @@
 				console.log(res)
 				res.data.content = JSON.parse(res.data.content)
 				this.ArtDetail = res.data
+				if (this.ArtDetail.userLabel) {
+					this.ArtDetail.userLabel = this.ArtDetail.userLabel.split(',')
+				}
+				console.log(this.ArtDetail)
 				this.evaListTotal = this.ArtDetail.params.evaluatesList.total
 				// console.log(this.ArtDetail.params.evaluatesList.total)
 			
@@ -585,6 +591,19 @@
 								font-size: 8px;
 								color: #FFFFFF;
 								letter-spacing: -0.19px;
+							}
+							.userInfo-top-pla{
+								padding: 0 10rpx;
+								box-sizing: border-box;
+								background-image: linear-gradient(180deg, #F99788 0%, #F05E50 100%);
+								border-radius: 1px;
+								font-family: PingFangSC-Medium;
+								font-size: 8px;
+								color: #FFFFFF;
+								letter-spacing: -0.19px;
+								margin-right: 10rpx;
+								box-sizing: border-box;
+								
 							}
 						}
 						.userInfo-bottom{

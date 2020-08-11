@@ -227,7 +227,7 @@
 					}
 					.Invitation-header-top-item-text{
 						font-family: PingFangSC-Medium;
-						font-size: 10px;
+						font-size: 14px;
 						color: #545454;
 						letter-spacing: -0.29px;
 						padding-top: 8rpx;

@@ -4,8 +4,8 @@
 			<view class="FindDetail-header-top">{{detailInfo.name}}</view>
 			<view class="FindDetail-header-bottom">活动时间：{{detailInfo.createTime}}-{{detailInfo.endTime}}</view>
 		</view>
-		<view class="FindDetail-main">
-			<image :src="detailInfo.titlePic" mode="aspectFill"></image>
+		<view class="FindDetail-main" >
+			<image :src="detailInfo.titlePic" mode="aspectFill" ></image>
 		</view>
 		<view class="FindDetail-center">
 			<scroll-view scroll-y="true" style="height: 700rpx;">
@@ -16,6 +16,7 @@
 			</scroll-view>
 		</view>
 		<view class="join-button" @click="goToApply" :class="{noImg: isActiveing != 0}">{{isActiveing == 0 ? '立即参加' : isActiveing == 1 ? '已过期' : '暂未开始'}}</view>
+		<shareBox :showShareBoxFlag = "showShareBoxFlag" @changeShowBoxFLag = "changeShowBoxFLag" @shareWx = "shareWx"  @shareFre = "shareFre"></shareBox>
 	</view>
 </template>
 
@@ -33,16 +34,61 @@
 		},
 		onNavigationBarButtonTap () {
 			console.log('分享按钮')
-			
+			this.showShareBoxFlag = true
 		},
 		data () {
 			return {
 				id: '',
 				detailInfo: {},
-				isActiveing: 0  // 0正在 1过期 2未开始
+				isActiveing: 0,// 0正在 1过期 2未开始
+				showShareBoxFlag: false,
 			}
 		},
 		methods: {
+			//更改分享显示
+			changeShowBoxFLag (newV) {
+				console.log(newV)
+				this.showShareBoxFlag = newV
+			},
+			// 微信分享
+			shareWx () {
+				
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSceneSession",
+				    type: 0,
+				    href: "https://www.baidu.com/",
+				    title: "汽水论坛分享",
+				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
+					imageUrl: '../../static/qslogo.png',
+					success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
+				this.showShareBoxFlag = false
+			},
+			shareFre () {
+				
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSenceTimeline",
+				    type: 0,
+					href: "https://www.baidu.com/",
+					title: "汽水论坛分享",
+					summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
+				    imageUrl: '../../static/qslogo.png',
+					success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
+				this.showShareBoxFlag = false
+			},
 			async goToApply () {
 				if (this.isActiveing == 0) {
 					let res = await this.$fetch(this.$api.activity_apply, {id: this.id}, 'POST', 'FORM')
@@ -114,7 +160,7 @@
 			}
 			.FindDetail-header-bottom{
 				font-family: PingFangSC-Regular;
-				font-size: 10px;
+				font-size: 14px;
 				color: #686868;
 				letter-spacing: -0.24px;
 			}

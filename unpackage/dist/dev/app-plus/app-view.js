@@ -873,14 +873,16 @@ var render = function() {
                             staticClass: _vm._$g(57, "sc"),
                             attrs: { _i: 57 }
                           }),
-                          _c("NavButton", {
-                            attrs: { _i: 58 },
-                            on: {
-                              handleNavIndex: function($event) {
-                                return _vm.$handleViewEvent($event)
-                              }
-                            }
-                          }),
+                          _vm._$g(58, "i")
+                            ? _c("NavButton", {
+                                attrs: { _i: 58 },
+                                on: {
+                                  handleNavIndex: function($event) {
+                                    return _vm.$handleViewEvent($event)
+                                  }
+                                }
+                              })
+                            : _vm._e(),
                           _c("v-uni-view", {
                             staticClass: _vm._$g(59, "sc"),
                             attrs: { _i: 59 }
@@ -3863,7 +3865,7 @@ if(false) {}
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/api.js */ 13);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "body {\n  width: 100%;\n}\n.Invitation {\n  width: 100%;\n}\n.Invitation .Invitation-header {\n  width: 100%;\n}\n.Invitation .Invitation-header .Invitation-header-top {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-wrap: wrap;\n          flex-wrap: wrap;\n  padding-top: 30rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.Invitation .Invitation-header .Invitation-header-top .swiper-flex-box {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-wrap: wrap;\n          flex-wrap: wrap;\n  padding-top: 30rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.Invitation .Invitation-header .Invitation-header-top .Invitation-header-top-item {\n  width: 25%;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.Invitation .Invitation-header .Invitation-header-top .Invitation-header-top-item uni-image {\n  width: 92rpx;\n  height: 92rpx;\n  border-radius: 50%;\n}\n.Invitation .Invitation-header .Invitation-header-top .Invitation-header-top-item .Invitation-header-top-item-text {\n  font-family: PingFangSC-Medium;\n  font-size: 10px;\n  color: #545454;\n  letter-spacing: -0.29px;\n  padding-top: 8rpx;\n  padding-bottom: 36rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.Invitation .Invitation-header .Invitation-header-top .watchMoreorLittle {\n  width: 100%;\n  padding-bottom: 20rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n          justify-content: center;\n  color: #007aff;\n}\n.Invitation .Invitation-header .Invitation-header-top .watchMoreorLittle uni-image {\n  width: 32rpx;\n  height: 32rpx;\n}\n.Invitation .Invitation-header .Invitation-header-top .watchMoreorLittle .more-box {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n", ""]);
+exports.push([module.i, "body {\n  width: 100%;\n}\n.Invitation {\n  width: 100%;\n}\n.Invitation .Invitation-header {\n  width: 100%;\n}\n.Invitation .Invitation-header .Invitation-header-top {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-wrap: wrap;\n          flex-wrap: wrap;\n  padding-top: 30rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.Invitation .Invitation-header .Invitation-header-top .swiper-flex-box {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-wrap: wrap;\n          flex-wrap: wrap;\n  padding-top: 30rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.Invitation .Invitation-header .Invitation-header-top .Invitation-header-top-item {\n  width: 25%;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.Invitation .Invitation-header .Invitation-header-top .Invitation-header-top-item uni-image {\n  width: 92rpx;\n  height: 92rpx;\n  border-radius: 50%;\n}\n.Invitation .Invitation-header .Invitation-header-top .Invitation-header-top-item .Invitation-header-top-item-text {\n  font-family: PingFangSC-Medium;\n  font-size: 14px;\n  color: #545454;\n  letter-spacing: -0.29px;\n  padding-top: 8rpx;\n  padding-bottom: 36rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.Invitation .Invitation-header .Invitation-header-top .watchMoreorLittle {\n  width: 100%;\n  padding-bottom: 20rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n          justify-content: center;\n  color: #007aff;\n}\n.Invitation .Invitation-header .Invitation-header-top .watchMoreorLittle uni-image {\n  width: 32rpx;\n  height: 32rpx;\n}\n.Invitation .Invitation-header .Invitation-header-top .watchMoreorLittle .more-box {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -10775,7 +10777,21 @@ var render = function() {
           }
         },
         [_vm._v(_vm._$g(10, "t0-0"))]
-      )
+      ),
+      _c("shareBox", {
+        attrs: { _i: 11 },
+        on: {
+          changeShowBoxFLag: function($event) {
+            return _vm.$handleViewEvent($event)
+          },
+          shareWx: function($event) {
+            return _vm.$handleViewEvent($event)
+          },
+          shareFre: function($event) {
+            return _vm.$handleViewEvent($event)
+          }
+        }
+      })
     ],
     1
   )
@@ -11662,7 +11678,7 @@ if(false) {}
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/api.js */ 13);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".FindDetail {\n  padding-top: 32rpx;\n  padding-left: 36rpx;\n  padding-right: 30rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.FindDetail .FindDetail-header .FindDetail-header-top {\n  width: 640rpx;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  font-family: PingFangSC-Medium;\n  font-size: 16px;\n  color: #141414;\n  letter-spacing: -0.39px;\n  text-align: justify;\n  font-weight: bold;\n}\n.FindDetail .FindDetail-header .FindDetail-header-bottom {\n  font-family: PingFangSC-Regular;\n  font-size: 10px;\n  color: #686868;\n  letter-spacing: -0.24px;\n}\n.FindDetail .FindDetail-main {\n  padding-top: 14rpx;\n  padding-bottom: 14rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.FindDetail .FindDetail-main uni-image {\n  width: 684rpx;\n  height: 374rpx;\n}\n.FindDetail .FindDetail-center .FindDetail-center-text {\n  font-family: PingFangSC-Regular;\n  font-size: 14px;\n  color: #141414;\n  letter-spacing: -0.34px;\n}\n.FindDetail .join-button {\n  width: 604rpx;\n  height: 102rpx;\n  background-image: -webkit-linear-gradient(314deg, #FF8D3F 0%, #E86D29 100%);\n  background-image: linear-gradient(136deg, #FF8D3F 0%, #E86D29 100%);\n  border-radius: 4px;\n  overflow: hidden;\n  font-family: PingFangSC-Medium;\n  font-size: 21px;\n  color: #FFFFFF;\n  letter-spacing: 1.19px;\n  text-align: center;\n  line-height: 102rpx;\n  margin: 0 auto;\n  margin-top: 30rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.FindDetail .join-button.noImg {\n  background-image: none;\n  background-color: #c8c9cc;\n}\n", ""]);
+exports.push([module.i, ".FindDetail {\n  padding-top: 32rpx;\n  padding-left: 36rpx;\n  padding-right: 30rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.FindDetail .FindDetail-header .FindDetail-header-top {\n  width: 640rpx;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  font-family: PingFangSC-Medium;\n  font-size: 16px;\n  color: #141414;\n  letter-spacing: -0.39px;\n  text-align: justify;\n  font-weight: bold;\n}\n.FindDetail .FindDetail-header .FindDetail-header-bottom {\n  font-family: PingFangSC-Regular;\n  font-size: 14px;\n  color: #686868;\n  letter-spacing: -0.24px;\n}\n.FindDetail .FindDetail-main {\n  padding-top: 14rpx;\n  padding-bottom: 14rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.FindDetail .FindDetail-main uni-image {\n  width: 684rpx;\n  height: 374rpx;\n}\n.FindDetail .FindDetail-center .FindDetail-center-text {\n  font-family: PingFangSC-Regular;\n  font-size: 14px;\n  color: #141414;\n  letter-spacing: -0.34px;\n}\n.FindDetail .join-button {\n  width: 604rpx;\n  height: 102rpx;\n  background-image: -webkit-linear-gradient(314deg, #FF8D3F 0%, #E86D29 100%);\n  background-image: linear-gradient(136deg, #FF8D3F 0%, #E86D29 100%);\n  border-radius: 4px;\n  overflow: hidden;\n  font-family: PingFangSC-Medium;\n  font-size: 21px;\n  color: #FFFFFF;\n  letter-spacing: 1.19px;\n  text-align: center;\n  line-height: 102rpx;\n  margin: 0 auto;\n  margin-top: 30rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.FindDetail .join-button.noImg {\n  background-image: none;\n  background-color: #c8c9cc;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -16140,14 +16156,25 @@ var render = function() {
                                 },
                                 [_vm._v(_vm._$g(17, "t0-0") + "板块版主")]
                               )
-                            : _vm._e()
+                            : _vm._e(),
+                          _vm._l(_vm._$g(18, "f"), function(pla, i, $20, $30) {
+                            return _c(
+                              "v-uni-view",
+                              {
+                                key: pla,
+                                staticClass: _vm._$g("18-" + $30, "sc"),
+                                attrs: { _i: "18-" + $30 }
+                              },
+                              [_vm._v(_vm._$g("18-" + $30, "t0-0"))]
+                            )
+                          })
                         ],
-                        1
+                        2
                       ),
                       _c(
                         "v-uni-view",
-                        { staticClass: _vm._$g(18, "sc"), attrs: { _i: 18 } },
-                        [_vm._v(_vm._$g(18, "t0-0"))]
+                        { staticClass: _vm._$g(19, "sc"), attrs: { _i: 19 } },
+                        [_vm._v(_vm._$g(19, "t0-0"))]
                       )
                     ],
                     1
@@ -16155,13 +16182,13 @@ var render = function() {
                 ],
                 1
               ),
-              _vm._$g(19, "i")
+              _vm._$g(20, "i")
                 ? _c(
                     "v-uni-view",
                     {
-                      staticClass: _vm._$g(19, "sc"),
-                      style: _vm._$g(19, "s"),
-                      attrs: { _i: 19 },
+                      staticClass: _vm._$g(20, "sc"),
+                      style: _vm._$g(20, "s"),
+                      attrs: { _i: 20 },
                       on: {
                         click: function($event) {
                           return _vm.$handleViewEvent($event)
@@ -16169,23 +16196,23 @@ var render = function() {
                       }
                     },
                     [
-                      _vm._$g(20, "i")
+                      _vm._$g(21, "i")
                         ? _c("v-uni-image", {
                             attrs: {
-                              src: _vm._$g(20, "a-src"),
+                              src: _vm._$g(21, "a-src"),
                               mode: "",
-                              _i: 20
+                              _i: 21
                             }
                           })
                         : _vm._e(),
                       _c(
                         "v-uni-view",
                         {
-                          staticClass: _vm._$g(21, "sc"),
-                          style: _vm._$g(21, "s"),
-                          attrs: { _i: 21 }
+                          staticClass: _vm._$g(22, "sc"),
+                          style: _vm._$g(22, "s"),
+                          attrs: { _i: 22 }
                         },
-                        [_vm._v(_vm._$g(21, "t0-0"))]
+                        [_vm._v(_vm._$g(22, "t0-0"))]
                       )
                     ],
                     1
@@ -16194,52 +16221,52 @@ var render = function() {
             ],
             1
           ),
-          _vm._l(_vm._$g(22, "f"), function(item, index, $20, $30) {
+          _vm._l(_vm._$g(23, "f"), function(item, index, $21, $31) {
             return _c(
               "v-uni-view",
               {
                 key: item,
-                staticClass: _vm._$g("22-" + $30, "sc"),
-                attrs: { _i: "22-" + $30 }
+                staticClass: _vm._$g("23-" + $31, "sc"),
+                attrs: { _i: "23-" + $31 }
               },
               [
-                _vm._$g("23-" + $30, "i")
+                _vm._$g("24-" + $31, "i")
                   ? _c(
                       "v-uni-view",
                       {
-                        staticClass: _vm._$g("23-" + $30, "sc"),
-                        attrs: { _i: "23-" + $30 }
+                        staticClass: _vm._$g("24-" + $31, "sc"),
+                        attrs: { _i: "24-" + $31 }
                       },
-                      [_vm._v(_vm._$g("23-" + $30, "t0-0"))]
+                      [_vm._v(_vm._$g("24-" + $31, "t0-0"))]
                     )
                   : _vm._e(),
                 _c(
                   "v-uni-view",
                   {
-                    staticClass: _vm._$g("24-" + $30, "sc"),
-                    attrs: { _i: "24-" + $30 }
+                    staticClass: _vm._$g("25-" + $31, "sc"),
+                    attrs: { _i: "25-" + $31 }
                   },
-                  [_vm._v(_vm._$g("24-" + $30, "t0-0"))]
+                  [_vm._v(_vm._$g("25-" + $31, "t0-0"))]
                 ),
-                _vm._$g("25-" + $30, "i")
+                _vm._$g("26-" + $31, "i")
                   ? _c(
                       "v-uni-view",
                       {
-                        staticClass: _vm._$g("25-" + $30, "sc"),
-                        attrs: { _i: "25-" + $30 }
+                        staticClass: _vm._$g("26-" + $31, "sc"),
+                        attrs: { _i: "26-" + $31 }
                       },
-                      _vm._l(_vm._$g(26 + "-" + $30, "f"), function(
+                      _vm._l(_vm._$g(27 + "-" + $31, "f"), function(
                         imgItem,
                         i,
-                        $21,
-                        $31
+                        $22,
+                        $32
                       ) {
                         return _c("v-uni-image", {
                           key: imgItem,
                           attrs: {
-                            src: _vm._$g("26-" + $30 + "-" + $31, "a-src"),
+                            src: _vm._$g("27-" + $31 + "-" + $32, "a-src"),
                             mode: "aspectFill",
-                            _i: "26-" + $30 + "-" + $31
+                            _i: "27-" + $31 + "-" + $32
                           },
                           on: {
                             click: function($event) {
@@ -16251,34 +16278,34 @@ var render = function() {
                       1
                     )
                   : _vm._e(),
-                _vm._$g("27-" + $30, "i")
+                _vm._$g("28-" + $31, "i")
                   ? _c(
                       "v-uni-view",
                       {
-                        staticClass: _vm._$g("27-" + $30, "sc"),
-                        attrs: { _i: "27-" + $30 }
+                        staticClass: _vm._$g("28-" + $31, "sc"),
+                        attrs: { _i: "28-" + $31 }
                       },
                       [
                         _c("v-uni-video", {
                           staticStyle: { width: "100%" },
                           attrs: {
-                            src: _vm._$g("28-" + $30, "a-src"),
+                            src: _vm._$g("29-" + $31, "a-src"),
                             controls: true,
-                            _i: "28-" + $30
+                            _i: "29-" + $31
                           }
                         })
                       ],
                       1
                     )
                   : _vm._e(),
-                _vm._$g("29-" + $30, "i")
+                _vm._$g("30-" + $31, "i")
                   ? _c(
                       "v-uni-view",
                       {
-                        staticClass: _vm._$g("29-" + $30, "sc"),
-                        attrs: { _i: "29-" + $30 }
+                        staticClass: _vm._$g("30-" + $31, "sc"),
+                        attrs: { _i: "30-" + $31 }
                       },
-                      [_vm._v(_vm._$g("29-" + $30, "t0-0") + "阅读量")]
+                      [_vm._v(_vm._$g("30-" + $31, "t0-0") + "阅读量")]
                     )
                   : _vm._e()
               ],
@@ -16290,22 +16317,22 @@ var render = function() {
       ),
       _c(
         "v-uni-view",
-        { staticClass: _vm._$g(30, "sc"), attrs: { _i: 30 } },
+        { staticClass: _vm._$g(31, "sc"), attrs: { _i: 31 } },
         [
           _c(
             "v-uni-view",
             {
-              staticClass: _vm._$g(31, "sc"),
-              class: _vm._$g(31, "c"),
-              attrs: { _i: 31 }
+              staticClass: _vm._$g(32, "sc"),
+              class: _vm._$g(32, "c"),
+              attrs: { _i: 32 }
             },
             [
               _c(
                 "v-uni-view",
                 {
-                  staticClass: _vm._$g(32, "sc"),
-                  class: _vm._$g(32, "c"),
-                  attrs: { _i: 32 },
+                  staticClass: _vm._$g(33, "sc"),
+                  class: _vm._$g(33, "c"),
+                  attrs: { _i: 33 },
                   on: {
                     click: function($event) {
                       return _vm.$handleViewEvent($event)
@@ -16317,9 +16344,9 @@ var render = function() {
               _c(
                 "v-uni-view",
                 {
-                  staticClass: _vm._$g(33, "sc"),
-                  class: _vm._$g(33, "c"),
-                  attrs: { _i: 33 },
+                  staticClass: _vm._$g(34, "sc"),
+                  class: _vm._$g(34, "c"),
+                  attrs: { _i: 34 },
                   on: {
                     click: function($event) {
                       return _vm.$handleViewEvent($event)
@@ -16333,14 +16360,14 @@ var render = function() {
           ),
           _c(
             "v-uni-view",
-            { staticClass: _vm._$g(34, "sc"), attrs: { _i: 34 } },
-            _vm._l(_vm._$g(35, "f"), function(item, index, $22, $32) {
+            { staticClass: _vm._$g(35, "sc"), attrs: { _i: 35 } },
+            _vm._l(_vm._$g(36, "f"), function(item, index, $23, $33) {
               return _c(
                 "v-uni-view",
                 {
                   key: item,
-                  staticClass: _vm._$g("35-" + $32, "sc"),
-                  attrs: { _i: "35-" + $32 },
+                  staticClass: _vm._$g("36-" + $33, "sc"),
+                  attrs: { _i: "36-" + $33 },
                   on: {
                     click: function($event) {
                       return _vm.$handleViewEvent($event)
@@ -16351,84 +16378,84 @@ var render = function() {
                   _c(
                     "v-uni-view",
                     {
-                      staticClass: _vm._$g("36-" + $32, "sc"),
-                      attrs: { _i: "36-" + $32 }
+                      staticClass: _vm._$g("37-" + $33, "sc"),
+                      attrs: { _i: "37-" + $33 }
                     },
                     [
                       _c(
                         "v-uni-view",
                         {
-                          staticClass: _vm._$g("37-" + $32, "sc"),
-                          attrs: { _i: "37-" + $32 }
+                          staticClass: _vm._$g("38-" + $33, "sc"),
+                          attrs: { _i: "38-" + $33 }
                         },
                         [
                           _c(
                             "v-uni-view",
                             {
-                              staticClass: _vm._$g("38-" + $32, "sc"),
-                              attrs: { _i: "38-" + $32 }
+                              staticClass: _vm._$g("39-" + $33, "sc"),
+                              attrs: { _i: "39-" + $33 }
                             },
                             [
                               _c("v-uni-image", {
                                 attrs: {
-                                  src: _vm._$g("39-" + $32, "a-src"),
+                                  src: _vm._$g("40-" + $33, "a-src"),
                                   mode: "aspectFill",
-                                  _i: "39-" + $32
+                                  _i: "40-" + $33
                                 }
                               }),
                               _c(
                                 "v-uni-view",
                                 {
-                                  staticClass: _vm._$g("40-" + $32, "sc"),
-                                  attrs: { _i: "40-" + $32 }
+                                  staticClass: _vm._$g("41-" + $33, "sc"),
+                                  attrs: { _i: "41-" + $33 }
                                 },
                                 [
                                   _c(
                                     "v-uni-view",
                                     {
-                                      staticClass: _vm._$g("41-" + $32, "sc"),
-                                      attrs: { _i: "41-" + $32 }
+                                      staticClass: _vm._$g("42-" + $33, "sc"),
+                                      attrs: { _i: "42-" + $33 }
                                     },
                                     [
                                       _c(
                                         "v-uni-view",
                                         {
                                           staticClass: _vm._$g(
-                                            "42-" + $32,
+                                            "43-" + $33,
                                             "sc"
                                           ),
-                                          attrs: { _i: "42-" + $32 }
+                                          attrs: { _i: "43-" + $33 }
                                         },
-                                        [_vm._v(_vm._$g("42-" + $32, "t0-0"))]
+                                        [_vm._v(_vm._$g("43-" + $33, "t0-0"))]
                                       ),
                                       _c(
                                         "v-uni-view",
                                         {
                                           staticClass: _vm._$g(
-                                            "43-" + $32,
+                                            "44-" + $33,
                                             "sc"
                                           ),
-                                          attrs: { _i: "43-" + $32 }
+                                          attrs: { _i: "44-" + $33 }
                                         },
                                         [
                                           _vm._v(
-                                            "Lv." + _vm._$g("43-" + $32, "t0-0")
+                                            "Lv." + _vm._$g("44-" + $33, "t0-0")
                                           )
                                         ]
                                       ),
-                                      _vm._$g("44-" + $32, "i")
+                                      _vm._$g("45-" + $33, "i")
                                         ? _c(
                                             "v-uni-view",
                                             {
                                               staticClass: _vm._$g(
-                                                "44-" + $32,
+                                                "45-" + $33,
                                                 "sc"
                                               ),
-                                              attrs: { _i: "44-" + $32 }
+                                              attrs: { _i: "45-" + $33 }
                                             },
                                             [
                                               _vm._v(
-                                                _vm._$g("44-" + $32, "t0-0") +
+                                                _vm._$g("45-" + $33, "t0-0") +
                                                   "板块版主"
                                               )
                                             ]
@@ -16440,10 +16467,10 @@ var render = function() {
                                   _c(
                                     "v-uni-view",
                                     {
-                                      staticClass: _vm._$g("45-" + $32, "sc"),
-                                      attrs: { _i: "45-" + $32 }
+                                      staticClass: _vm._$g("46-" + $33, "sc"),
+                                      attrs: { _i: "46-" + $33 }
                                     },
-                                    [_vm._v(_vm._$g("45-" + $32, "t0-0"))]
+                                    [_vm._v(_vm._$g("46-" + $33, "t0-0"))]
                                   )
                                 ],
                                 1
@@ -16457,55 +16484,55 @@ var render = function() {
                       _c(
                         "v-uni-view",
                         {
-                          staticClass: _vm._$g("46-" + $32, "sc"),
-                          attrs: { _i: "46-" + $32 }
+                          staticClass: _vm._$g("47-" + $33, "sc"),
+                          attrs: { _i: "47-" + $33 }
                         },
-                        [_vm._v(_vm._$g("46-" + $32, "t0-0"))]
+                        [_vm._v(_vm._$g("47-" + $33, "t0-0"))]
                       ),
-                      _vm._$g("47-" + $32, "i")
+                      _vm._$g("48-" + $33, "i")
                         ? _c(
                             "v-uni-view",
                             {
-                              staticClass: _vm._$g("47-" + $32, "sc"),
-                              attrs: { _i: "47-" + $32 }
+                              staticClass: _vm._$g("48-" + $33, "sc"),
+                              attrs: { _i: "48-" + $33 }
                             },
                             [
-                              _vm._l(_vm._$g(48 + "-" + $32, "f"), function(
+                              _vm._l(_vm._$g(49 + "-" + $33, "f"), function(
                                 comment,
                                 i,
-                                $23,
-                                $33
+                                $24,
+                                $34
                               ) {
                                 return _c(
                                   "v-uni-view",
                                   {
                                     key: comment,
                                     staticClass: _vm._$g(
-                                      "48-" + $32 + "-" + $33,
+                                      "49-" + $33 + "-" + $34,
                                       "sc"
                                     ),
-                                    attrs: { _i: "48-" + $32 + "-" + $33 }
+                                    attrs: { _i: "49-" + $33 + "-" + $34 }
                                   },
                                   [
                                     _vm._v(
-                                      _vm._$g("48-" + $32 + "-" + $33, "t0-0") +
+                                      _vm._$g("49-" + $33 + "-" + $34, "t0-0") +
                                         ": " +
-                                        _vm._$g("48-" + $32 + "-" + $33, "t0-1")
+                                        _vm._$g("49-" + $33 + "-" + $34, "t0-1")
                                     )
                                   ]
                                 )
                               }),
-                              _vm._$g("49-" + $32, "i")
+                              _vm._$g("50-" + $33, "i")
                                 ? _c(
                                     "v-uni-view",
                                     {
-                                      staticClass: _vm._$g("49-" + $32, "sc"),
-                                      attrs: { _i: "49-" + $32 }
+                                      staticClass: _vm._$g("50-" + $33, "sc"),
+                                      attrs: { _i: "50-" + $33 }
                                     },
                                     [
                                       _vm._v(
                                         "共" +
-                                          _vm._$g("49-" + $32, "t0-0") +
+                                          _vm._$g("50-" + $33, "t0-0") +
                                           "条回复>"
                                       )
                                     ]
@@ -16518,8 +16545,8 @@ var render = function() {
                       _c(
                         "v-uni-view",
                         {
-                          staticClass: _vm._$g("50-" + $32, "sc"),
-                          attrs: { _i: "50-" + $32 },
+                          staticClass: _vm._$g("51-" + $33, "sc"),
+                          attrs: { _i: "51-" + $33 },
                           on: {
                             click: function($event) {
                               return _vm.$handleViewEvent($event, {
@@ -16531,12 +16558,12 @@ var render = function() {
                         [
                           _c("v-uni-image", {
                             attrs: {
-                              src: _vm._$g("51-" + $32, "a-src"),
+                              src: _vm._$g("52-" + $33, "a-src"),
                               mode: "",
-                              _i: "51-" + $32
+                              _i: "52-" + $33
                             }
                           }),
-                          _c("v-uni-view", { attrs: { _i: "52-" + $32 } }, [
+                          _c("v-uni-view", { attrs: { _i: "53-" + $33 } }, [
                             _vm._v("回复")
                           ])
                         ],
@@ -16545,12 +16572,12 @@ var render = function() {
                     ],
                     1
                   ),
-                  _vm._$g("53-" + $32, "i")
+                  _vm._$g("54-" + $33, "i")
                     ? _c(
                         "v-uni-view",
                         {
-                          staticClass: _vm._$g("53-" + $32, "sc"),
-                          attrs: { _i: "53-" + $32 },
+                          staticClass: _vm._$g("54-" + $33, "sc"),
+                          attrs: { _i: "54-" + $33 },
                           on: {
                             click: function($event) {
                               return _vm.$handleViewEvent($event, {
@@ -16563,23 +16590,23 @@ var render = function() {
                           _c(
                             "v-uni-view",
                             {
-                              staticClass: _vm._$g("54-" + $32, "sc"),
-                              attrs: { _i: "54-" + $32 }
+                              staticClass: _vm._$g("55-" + $33, "sc"),
+                              attrs: { _i: "55-" + $33 }
                             },
                             [
                               _c(
                                 "v-uni-view",
                                 {
-                                  staticClass: _vm._$g("55-" + $32, "sc"),
-                                  attrs: { _i: "55-" + $32 }
+                                  staticClass: _vm._$g("56-" + $33, "sc"),
+                                  attrs: { _i: "56-" + $33 }
                                 },
-                                [_vm._v(_vm._$g("55-" + $32, "t0-0"))]
+                                [_vm._v(_vm._$g("56-" + $33, "t0-0"))]
                               ),
                               _c(
                                 "v-uni-view",
                                 {
-                                  staticClass: _vm._$g("56-" + $32, "sc"),
-                                  attrs: { _i: "56-" + $32 }
+                                  staticClass: _vm._$g("57-" + $33, "sc"),
+                                  attrs: { _i: "57-" + $33 }
                                 },
                                 [_vm._v("广告")]
                               )
@@ -16589,24 +16616,24 @@ var render = function() {
                           _c(
                             "v-uni-view",
                             {
-                              staticClass: _vm._$g("57-" + $32, "sc"),
-                              attrs: { _i: "57-" + $32 }
+                              staticClass: _vm._$g("58-" + $33, "sc"),
+                              attrs: { _i: "58-" + $33 }
                             },
-                            _vm._l(_vm._$g(58 + "-" + $32, "f"), function(
+                            _vm._l(_vm._$g(59 + "-" + $33, "f"), function(
                               gGPic,
                               i,
-                              $24,
-                              $34
+                              $25,
+                              $35
                             ) {
                               return _c("v-uni-image", {
                                 key: gGPic,
                                 attrs: {
                                   src: _vm._$g(
-                                    "58-" + $32 + "-" + $34,
+                                    "59-" + $33 + "-" + $35,
                                     "a-src"
                                   ),
                                   mode: "aspectFill",
-                                  _i: "58-" + $32 + "-" + $34
+                                  _i: "59-" + $33 + "-" + $35
                                 }
                               })
                             }),
@@ -16615,10 +16642,10 @@ var render = function() {
                           _c(
                             "v-uni-view",
                             {
-                              staticClass: _vm._$g("59-" + $32, "sc"),
-                              attrs: { _i: "59-" + $32 }
+                              staticClass: _vm._$g("60-" + $33, "sc"),
+                              attrs: { _i: "60-" + $33 }
                             },
-                            [_vm._v(_vm._$g("59-" + $32, "t0-0"))]
+                            [_vm._v(_vm._$g("60-" + $33, "t0-0"))]
                           )
                         ],
                         1
@@ -16635,32 +16662,32 @@ var render = function() {
       ),
       _c(
         "v-uni-view",
-        { staticClass: _vm._$g(60, "sc"), attrs: { _i: 60 } },
+        { staticClass: _vm._$g(61, "sc"), attrs: { _i: 61 } },
         [
           _c(
             "v-uni-view",
-            { staticClass: _vm._$g(61, "sc"), attrs: { _i: 61 } },
+            { staticClass: _vm._$g(62, "sc"), attrs: { _i: 62 } },
             [
               _c("v-uni-image", {
-                attrs: { src: _vm._$g(62, "a-src"), mode: "", _i: 62 }
+                attrs: { src: _vm._$g(63, "a-src"), mode: "", _i: 63 }
               })
             ],
             1
           ),
           _c(
             "v-uni-view",
-            { staticClass: _vm._$g(63, "sc"), attrs: { _i: 63 } },
+            { staticClass: _vm._$g(64, "sc"), attrs: { _i: 64 } },
             [
               _c("v-uni-input", {
                 attrs: {
                   "adjust-position": true,
                   type: "text",
-                  focus: _vm._$g(64, "a-focus"),
+                  focus: _vm._$g(65, "a-focus"),
                   "cursor-spacing": "30",
                   placeholder: "我来说两句",
                   "placeholder-style":
                     "font-family: PingFangSC-Regular;font-size: 14px;color: #A9A9A9;",
-                  _i: 64
+                  _i: 65
                 },
                 on: {
                   focus: function($event) {
@@ -16671,9 +16698,9 @@ var render = function() {
                   }
                 },
                 model: {
-                  value: _vm._$g(64, "v-model"),
+                  value: _vm._$g(65, "v-model"),
                   callback: function($$v) {
-                    _vm.$handleVModelEvent(64, $$v)
+                    _vm.$handleVModelEvent(65, $$v)
                   },
                   expression: "sendMsg"
                 }
@@ -16681,36 +16708,36 @@ var render = function() {
             ],
             1
           ),
-          _vm._$g(65, "i")
+          _vm._$g(66, "i")
             ? _c(
                 "v-uni-view",
-                { staticClass: _vm._$g(65, "sc"), attrs: { _i: 65 } },
+                { staticClass: _vm._$g(66, "sc"), attrs: { _i: 66 } },
                 [
                   _c("v-uni-image", {
                     attrs: {
-                      src: _vm._$g(66, "a-src"),
+                      src: _vm._$g(67, "a-src"),
                       mode: "aspectFill",
-                      _i: 66
+                      _i: 67
                     }
                   }),
-                  _vm._$g(67, "i")
+                  _vm._$g(68, "i")
                     ? _c(
                         "v-uni-view",
-                        { staticClass: _vm._$g(67, "sc"), attrs: { _i: 67 } },
-                        [_vm._v(_vm._$g(67, "t0-0"))]
+                        { staticClass: _vm._$g(68, "sc"), attrs: { _i: 68 } },
+                        [_vm._v(_vm._$g(68, "t0-0"))]
                       )
                     : _vm._e()
                 ],
                 1
               )
             : _vm._e(),
-          _vm._$g(68, "i")
+          _vm._$g(69, "i")
             ? _c(
                 "v-uni-view",
-                { staticClass: _vm._$g(68, "sc"), attrs: { _i: 68 } },
+                { staticClass: _vm._$g(69, "sc"), attrs: { _i: 69 } },
                 [
                   _c("v-uni-image", {
-                    attrs: { src: _vm._$g(69, "a-src"), mode: "", _i: 69 },
+                    attrs: { src: _vm._$g(70, "a-src"), mode: "", _i: 70 },
                     on: {
                       click: function($event) {
                         return _vm.$handleViewEvent($event, { stop: true })
@@ -16721,13 +16748,13 @@ var render = function() {
                 1
               )
             : _vm._e(),
-          _vm._$g(70, "i")
+          _vm._$g(71, "i")
             ? _c(
                 "v-uni-view",
                 {
-                  staticClass: _vm._$g(70, "sc"),
-                  style: _vm._$g(70, "s"),
-                  attrs: { _i: 70 },
+                  staticClass: _vm._$g(71, "sc"),
+                  style: _vm._$g(71, "s"),
+                  attrs: { _i: 71 },
                   on: {
                     touchend: function($event) {
                       return _vm.$handleViewEvent($event, {
@@ -16744,7 +16771,7 @@ var render = function() {
         1
       ),
       _c("shareBox", {
-        attrs: { _i: 71 },
+        attrs: { _i: 72 },
         on: {
           changeShowBoxFLag: function($event) {
             return _vm.$handleViewEvent($event)
@@ -16849,7 +16876,7 @@ if(false) {}
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/api.js */ 13);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".ArticleDetail {\n  width: 100%;\n}\n.ArticleDetail .ArticleDetail-title {\n  width: 100%;\n  padding-left: 40rpx;\n  padding-right: 36rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  padding-top: var(--status-bar-height);\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.ArticleDetail .ArticleDetail-title .back-img {\n  position: relative;\n}\n.ArticleDetail .ArticleDetail-title .back-img::after {\n  position: absolute;\n  content: '';\n  left: -30rpx;\n  top: -30rpx;\n  right: -30rpx;\n  bottom: -30rpx;\n}\n.ArticleDetail .ArticleDetail-title .back-img .back {\n  width: 18rpx;\n  height: 34rpx;\n}\n.ArticleDetail .ArticleDetail-title .ArticleDetail-title-center {\n  font-family: PingFangSC-Medium;\n  font-size: 18px;\n  color: #242424;\n  letter-spacing: 0.07px;\n  padding-left: 280rpx;\n  padding-right: 256rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-title .like {\n  width: 44rpx;\n  height: 44rpx;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n          justify-content: space-between;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  padding-top: 16rpx;\n  padding-right: 34rpx;\n  padding-bottom: 18rpx;\n  padding-left: 32rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left uni-image {\n  width: 92rpx;\n  height: 92rpx;\n  border-radius: 50%;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo {\n  padding-left: 32rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  padding-bottom: 8rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-name {\n  font-family: PingFangSC-Medium;\n  font-size: 14px;\n  color: #141414;\n  letter-spacing: -0.34px;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-level {\n  font-family: PingFangSC-Medium;\n  font-size: 12px;\n  color: #FF7B30;\n  letter-spacing: -0.24px;\n  background: #FFFFFF;\n  border: 1px solid #FF7B30;\n  border-radius: 1px;\n  padding: 0 6rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  margin: 0 16rpx;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-bozhu {\n  padding: 0 10rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#F99788), to(#F05E50));\n  background-image: -webkit-linear-gradient(top, #F99788 0%, #F05E50 100%);\n  background-image: linear-gradient(180deg, #F99788 0%, #F05E50 100%);\n  border-radius: 1px;\n  font-family: PingFangSC-Medium;\n  font-size: 8px;\n  color: #FFFFFF;\n  letter-spacing: -0.19px;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-bottom {\n  font-family: PingFangSC-Regular;\n  font-size: 12px;\n  color: #686868;\n  letter-spacing: -0.24px;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-right {\n  height: 40rpx;\n  padding: 0 14rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  background: #FFFFFF;\n  border: 1px solid #FF7B30;\n  border-radius: 10px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-right uni-image {\n  width: 20rpx;\n  height: 20rpx;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-right .ArticleDetail-center-top-right-text {\n  font-family: PingFangSC-Medium;\n  font-size: 14px;\n  color: #FF7B30;\n  letter-spacing: -0.34px;\n  padding-left: 6rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main {\n  padding-left: 36rpx;\n  padding-right: 34rpx;\n  padding-bottom: 30rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-title {\n  font-family: PingFangSC-Medium;\n  font-size: 16px;\n  color: #141414;\n  letter-spacing: -0.39px;\n  font-weight: bold;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-center {\n  font-family: PingFangSC-Regular;\n  font-size: 16px;\n  color: #141414;\n  letter-spacing: -0.34px;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-img-box {\n  padding-top: 10rpx;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-wrap: wrap;\n          flex-wrap: wrap;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-img-box uni-image {\n  width: 216rpx;\n  height: 216rpx;\n  margin-right: 16rpx;\n  margin-top: 10rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-img-box uni-image:nth-child(3n) {\n  margin-right: 0;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-img-box uni-image:nth-child(1) {\n  margin-top: 0;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-img-box uni-image:nth-child(2) {\n  margin-top: 0;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-img-box uni-image:nth-child(3) {\n  margin-top: 0;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-footer {\n  font-family: PingFangSC-Regular;\n  font-size: 12px;\n  color: #686868;\n  letter-spacing: -0.24px;\n  text-align: end;\n}\n.ArticleDetail .ArticleDetail-footer {\n  padding-bottom: 120rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-top {\n  width: 100%;\n  height: 82rpx;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  border-top: 1rpx solid #F4F4F4;\n  border-bottom: 10rpx solid #f4f4f4;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  background-color: #fff;\n  -webkit-transition: 0.3s;\n  transition: 0.3s;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-top.stick {\n  position: -webkit-sticky;\n  position: sticky;\n  top: var(--status-bar-height);\n  background-color: #fff;\n  border-bottom: 0;\n  z-index: 99;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-top .ArticleDetail-footer-top-item {\n  width: 50%;\n  text-align: center;\n  line-height: 82rpx;\n  border-right: 1rpx solid #F4F4F4;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  position: relative;\n  font-family: PingFangSC-Medium;\n  font-size: 14px;\n  color: #3F3F3F;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-top .ArticleDetail-footer-top-item::after {\n  content: '';\n  width: 0;\n  height: 0;\n  position: absolute;\n  left: 50%;\n  bottom: 15rpx;\n  -webkit-transform: translateX(-50%);\n          transform: translateX(-50%);\n  border-bottom: 6rpx solid #FF682D;\n  -webkit-transition: all 0.3s;\n  transition: all 0.3s;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-top .ArticleDetail-footer-top-item.active {\n  color: #FF682D;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-top .ArticleDetail-footer-top-item.active::after {\n  width: 28%;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item {\n  border-bottom: 6rpx solid #F4F4F4;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item:last-child {\n  border-bottom: 0;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n          justify-content: space-between;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  padding-top: 16rpx;\n  padding-right: 34rpx;\n  padding-bottom: 18rpx;\n  padding-left: 32rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left uni-image {\n  width: 92rpx;\n  height: 92rpx;\n  border-radius: 50%;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo {\n  padding-left: 32rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  padding-bottom: 8rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-name {\n  font-family: PingFangSC-Medium;\n  font-size: 14px;\n  color: #141414;\n  letter-spacing: -0.34px;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-level {\n  font-family: PingFangSC-Medium;\n  font-size: 12px;\n  color: #FF7B30;\n  letter-spacing: -0.24px;\n  background: #FFFFFF;\n  border: 1px solid #FF7B30;\n  border-radius: 1px;\n  padding: 0 6rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  margin: 0 16rpx;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-bozhu {\n  padding: 0 10rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#F99788), to(#F05E50));\n  background-image: -webkit-linear-gradient(top, #F99788 0%, #F05E50 100%);\n  background-image: linear-gradient(180deg, #F99788 0%, #F05E50 100%);\n  border-radius: 1px;\n  font-family: PingFangSC-Medium;\n  font-size: 8px;\n  color: #FFFFFF;\n  letter-spacing: -0.19px;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-bottom {\n  font-family: PingFangSC-Regular;\n  font-size: 12px;\n  color: #686868;\n  letter-spacing: -0.24px;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-center {\n  padding-left: 156rpx;\n  padding-right: 34rpx;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-footer {\n  padding: 12rpx;\n  padding-bottom: 20rpx;\n  background-color: #F0F0F0;\n  border-radius: 3px;\n  overflow: hidden;\n  margin-left: 156rpx;\n  margin-right: 34rpx;\n  margin-top: 16rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-footer .ArticleDetail-footer-main-footer-item {\n  font-family: PingFangSC-Regular;\n  font-size: 12px;\n  color: #141414;\n  letter-spacing: -0.29px;\n  padding-bottom: 10rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-footer .ArticleDetail-footer-main-footer-item-button {\n  font-family: PingFangSC-Medium;\n  font-size: 12px;\n  color: #141414;\n  letter-spacing: -0.29px;\n  font-weight: bold;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising {\n  padding-top: 20rpx;\n  padding-left: 36rpx;\n  padding-left: 34rpx;\n  padding-bottom: 26rpx;\n  border-top: 14rpx solid #f4f4f4;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-top {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-top .ArticleDetail-footer-main-item-advertising-top-left {\n  font-family: PingFangSC-Medium;\n  font-size: 14px;\n  color: #141414;\n  letter-spacing: -0.34px;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-top .ArticleDetail-footer-main-item-advertising-top-right {\n  font-family: PingFangSC-Medium;\n  font-size: 8px;\n  color: #FF7B30;\n  letter-spacing: -0.19px;\n  border: 1px solid #FF7B30;\n  border-radius: 1px;\n  padding: 0 10rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  margin-left: 16rpx;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-center {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-wrap: wrap;\n          flex-wrap: wrap;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-center uni-image {\n  width: 216rpx;\n  height: 216rpx;\n  margin-right: 16rpx;\n  margin-top: 20rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-center uni-image:nth-child(3n) {\n  margin-right: 0;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-footer {\n  margin-top: 18rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .chat-img {\n  text-align: end;\n  padding-right: 34rpx;\n  padding-top: 20rpx;\n  padding-bottom: 20rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-pack: end;\n  -webkit-justify-content: flex-end;\n          justify-content: flex-end;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.ArticleDetail .ArticleDetail-footer .chat-img uni-image {\n  width: 32rpx;\n  height: 32rpx;\n  margin-right: 12rpx;\n}\n.ArticleDetail .ArticleDetail-submit {\n  width: 100%;\n  height: 108rpx;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n          justify-content: space-between;\n  padding-left: 32rpx;\n  padding-right: 34rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  position: fixed;\n  bottom: 0;\n  background-color: #fff;\n  z-index: 99;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-left uni-image {\n  width: 68rpx;\n  height: 68rpx;\n  border-radius: 50%;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-center {\n  width: 474rpx;\n  height: 68rpx;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  background: #EFEFEF;\n  border-radius: 17px;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-center uni-input {\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n          flex: 1;\n  padding: 0 32rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  font-size: 14px;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-right-chat {\n  position: relative;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-right-chat uni-image {\n  width: 42rpx;\n  height: 42rpx;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-right-chat .ArticleDetail-submit-right-chat-number {\n  position: absolute;\n  right: -4rpx;\n  top: -20rpx;\n  font-family: PingFangSC-Regular;\n  font-size: 12px;\n  color: #FFFFFF;\n  letter-spacing: -0.17px;\n  background: #FF1414;\n  border-radius: 4px;\n  padding: 0 2rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-right-share uni-image {\n  width: 42rpx;\n  height: 42rpx;\n}\n.ArticleDetail .sendButton {\n  height: 100%;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n          justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n", ""]);
+exports.push([module.i, ".ArticleDetail {\n  width: 100%;\n}\n.ArticleDetail .ArticleDetail-title {\n  width: 100%;\n  padding-left: 40rpx;\n  padding-right: 36rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  padding-top: var(--status-bar-height);\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.ArticleDetail .ArticleDetail-title .back-img {\n  position: relative;\n}\n.ArticleDetail .ArticleDetail-title .back-img::after {\n  position: absolute;\n  content: '';\n  left: -30rpx;\n  top: -30rpx;\n  right: -30rpx;\n  bottom: -30rpx;\n}\n.ArticleDetail .ArticleDetail-title .back-img .back {\n  width: 18rpx;\n  height: 34rpx;\n}\n.ArticleDetail .ArticleDetail-title .ArticleDetail-title-center {\n  font-family: PingFangSC-Medium;\n  font-size: 18px;\n  color: #242424;\n  letter-spacing: 0.07px;\n  padding-left: 280rpx;\n  padding-right: 256rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-title .like {\n  width: 44rpx;\n  height: 44rpx;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n          justify-content: space-between;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  padding-top: 16rpx;\n  padding-right: 34rpx;\n  padding-bottom: 18rpx;\n  padding-left: 32rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left uni-image {\n  width: 92rpx;\n  height: 92rpx;\n  border-radius: 50%;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo {\n  padding-left: 32rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  padding-bottom: 8rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-name {\n  font-family: PingFangSC-Medium;\n  font-size: 14px;\n  color: #141414;\n  letter-spacing: -0.34px;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-level {\n  font-family: PingFangSC-Medium;\n  font-size: 12px;\n  color: #FF7B30;\n  letter-spacing: -0.24px;\n  background: #FFFFFF;\n  border: 1px solid #FF7B30;\n  border-radius: 1px;\n  padding: 0 6rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  margin: 0 16rpx;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-bozhu {\n  padding: 0 10rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#F99788), to(#F05E50));\n  background-image: -webkit-linear-gradient(top, #F99788 0%, #F05E50 100%);\n  background-image: linear-gradient(180deg, #F99788 0%, #F05E50 100%);\n  border-radius: 1px;\n  font-family: PingFangSC-Medium;\n  font-size: 8px;\n  color: #FFFFFF;\n  letter-spacing: -0.19px;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-pla {\n  padding: 0 10rpx;\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#F99788), to(#F05E50));\n  background-image: -webkit-linear-gradient(top, #F99788 0%, #F05E50 100%);\n  background-image: linear-gradient(180deg, #F99788 0%, #F05E50 100%);\n  border-radius: 1px;\n  font-family: PingFangSC-Medium;\n  font-size: 8px;\n  color: #FFFFFF;\n  letter-spacing: -0.19px;\n  margin-right: 10rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-bottom {\n  font-family: PingFangSC-Regular;\n  font-size: 12px;\n  color: #686868;\n  letter-spacing: -0.24px;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-right {\n  height: 40rpx;\n  padding: 0 14rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  background: #FFFFFF;\n  border: 1px solid #FF7B30;\n  border-radius: 10px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-right uni-image {\n  width: 20rpx;\n  height: 20rpx;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-top .ArticleDetail-center-top-right .ArticleDetail-center-top-right-text {\n  font-family: PingFangSC-Medium;\n  font-size: 14px;\n  color: #FF7B30;\n  letter-spacing: -0.34px;\n  padding-left: 6rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main {\n  padding-left: 36rpx;\n  padding-right: 34rpx;\n  padding-bottom: 30rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-title {\n  font-family: PingFangSC-Medium;\n  font-size: 16px;\n  color: #141414;\n  letter-spacing: -0.39px;\n  font-weight: bold;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-center {\n  font-family: PingFangSC-Regular;\n  font-size: 16px;\n  color: #141414;\n  letter-spacing: -0.34px;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-img-box {\n  padding-top: 10rpx;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-wrap: wrap;\n          flex-wrap: wrap;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-img-box uni-image {\n  width: 216rpx;\n  height: 216rpx;\n  margin-right: 16rpx;\n  margin-top: 10rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-img-box uni-image:nth-child(3n) {\n  margin-right: 0;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-img-box uni-image:nth-child(1) {\n  margin-top: 0;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-img-box uni-image:nth-child(2) {\n  margin-top: 0;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-img-box uni-image:nth-child(3) {\n  margin-top: 0;\n}\n.ArticleDetail .ArticleDetail-center .ArticleDetail-center-main .ArticleDetail-center-main-footer {\n  font-family: PingFangSC-Regular;\n  font-size: 12px;\n  color: #686868;\n  letter-spacing: -0.24px;\n  text-align: end;\n}\n.ArticleDetail .ArticleDetail-footer {\n  padding-bottom: 120rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-top {\n  width: 100%;\n  height: 82rpx;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  border-top: 1rpx solid #F4F4F4;\n  border-bottom: 10rpx solid #f4f4f4;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  background-color: #fff;\n  -webkit-transition: 0.3s;\n  transition: 0.3s;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-top.stick {\n  position: -webkit-sticky;\n  position: sticky;\n  top: var(--status-bar-height);\n  background-color: #fff;\n  border-bottom: 0;\n  z-index: 99;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-top .ArticleDetail-footer-top-item {\n  width: 50%;\n  text-align: center;\n  line-height: 82rpx;\n  border-right: 1rpx solid #F4F4F4;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  position: relative;\n  font-family: PingFangSC-Medium;\n  font-size: 14px;\n  color: #3F3F3F;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-top .ArticleDetail-footer-top-item::after {\n  content: '';\n  width: 0;\n  height: 0;\n  position: absolute;\n  left: 50%;\n  bottom: 15rpx;\n  -webkit-transform: translateX(-50%);\n          transform: translateX(-50%);\n  border-bottom: 6rpx solid #FF682D;\n  -webkit-transition: all 0.3s;\n  transition: all 0.3s;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-top .ArticleDetail-footer-top-item.active {\n  color: #FF682D;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-top .ArticleDetail-footer-top-item.active::after {\n  width: 28%;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item {\n  border-bottom: 6rpx solid #F4F4F4;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item:last-child {\n  border-bottom: 0;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n          justify-content: space-between;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  padding-top: 16rpx;\n  padding-right: 34rpx;\n  padding-bottom: 18rpx;\n  padding-left: 32rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left uni-image {\n  width: 92rpx;\n  height: 92rpx;\n  border-radius: 50%;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo {\n  padding-left: 32rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  padding-bottom: 8rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-name {\n  font-family: PingFangSC-Medium;\n  font-size: 14px;\n  color: #141414;\n  letter-spacing: -0.34px;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-level {\n  font-family: PingFangSC-Medium;\n  font-size: 12px;\n  color: #FF7B30;\n  letter-spacing: -0.24px;\n  background: #FFFFFF;\n  border: 1px solid #FF7B30;\n  border-radius: 1px;\n  padding: 0 6rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  margin: 0 16rpx;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-top .userInfo-top-bozhu {\n  padding: 0 10rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#F99788), to(#F05E50));\n  background-image: -webkit-linear-gradient(top, #F99788 0%, #F05E50 100%);\n  background-image: linear-gradient(180deg, #F99788 0%, #F05E50 100%);\n  border-radius: 1px;\n  font-family: PingFangSC-Medium;\n  font-size: 8px;\n  color: #FFFFFF;\n  letter-spacing: -0.19px;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-center-top .ArticleDetail-center-top-left .userInfo .userInfo-bottom {\n  font-family: PingFangSC-Regular;\n  font-size: 12px;\n  color: #686868;\n  letter-spacing: -0.24px;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-center {\n  padding-left: 156rpx;\n  padding-right: 34rpx;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-footer {\n  padding: 12rpx;\n  padding-bottom: 20rpx;\n  background-color: #F0F0F0;\n  border-radius: 3px;\n  overflow: hidden;\n  margin-left: 156rpx;\n  margin-right: 34rpx;\n  margin-top: 16rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-footer .ArticleDetail-footer-main-footer-item {\n  font-family: PingFangSC-Regular;\n  font-size: 12px;\n  color: #141414;\n  letter-spacing: -0.29px;\n  padding-bottom: 10rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-footer .ArticleDetail-footer-main-footer-item-button {\n  font-family: PingFangSC-Medium;\n  font-size: 12px;\n  color: #141414;\n  letter-spacing: -0.29px;\n  font-weight: bold;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising {\n  padding-top: 20rpx;\n  padding-left: 36rpx;\n  padding-left: 34rpx;\n  padding-bottom: 26rpx;\n  border-top: 14rpx solid #f4f4f4;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-top {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-top .ArticleDetail-footer-main-item-advertising-top-left {\n  font-family: PingFangSC-Medium;\n  font-size: 14px;\n  color: #141414;\n  letter-spacing: -0.34px;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-top .ArticleDetail-footer-main-item-advertising-top-right {\n  font-family: PingFangSC-Medium;\n  font-size: 8px;\n  color: #FF7B30;\n  letter-spacing: -0.19px;\n  border: 1px solid #FF7B30;\n  border-radius: 1px;\n  padding: 0 10rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  margin-left: 16rpx;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-center {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-wrap: wrap;\n          flex-wrap: wrap;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-center uni-image {\n  width: 216rpx;\n  height: 216rpx;\n  margin-right: 16rpx;\n  margin-top: 20rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-center uni-image:nth-child(3n) {\n  margin-right: 0;\n}\n.ArticleDetail .ArticleDetail-footer .ArticleDetail-footer-main .ArticleDetail-footer-main-item-advertising .ArticleDetail-footer-main-item-advertising-footer {\n  margin-top: 18rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-footer .chat-img {\n  text-align: end;\n  padding-right: 34rpx;\n  padding-top: 20rpx;\n  padding-bottom: 20rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-pack: end;\n  -webkit-justify-content: flex-end;\n          justify-content: flex-end;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n.ArticleDetail .ArticleDetail-footer .chat-img uni-image {\n  width: 32rpx;\n  height: 32rpx;\n  margin-right: 12rpx;\n}\n.ArticleDetail .ArticleDetail-submit {\n  width: 100%;\n  height: 108rpx;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n          justify-content: space-between;\n  padding-left: 32rpx;\n  padding-right: 34rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  position: fixed;\n  bottom: 0;\n  background-color: #fff;\n  z-index: 99;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-left uni-image {\n  width: 68rpx;\n  height: 68rpx;\n  border-radius: 50%;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-center {\n  width: 474rpx;\n  height: 68rpx;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n  background: #EFEFEF;\n  border-radius: 17px;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-center uni-input {\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n          flex: 1;\n  padding: 0 32rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  font-size: 14px;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-right-chat {\n  position: relative;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-right-chat uni-image {\n  width: 42rpx;\n  height: 42rpx;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-right-chat .ArticleDetail-submit-right-chat-number {\n  position: absolute;\n  right: -4rpx;\n  top: -20rpx;\n  font-family: PingFangSC-Regular;\n  font-size: 12px;\n  color: #FFFFFF;\n  letter-spacing: -0.17px;\n  background: #FF1414;\n  border-radius: 4px;\n  padding: 0 2rpx;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n}\n.ArticleDetail .ArticleDetail-submit .ArticleDetail-submit-right-share uni-image {\n  width: 42rpx;\n  height: 42rpx;\n}\n.ArticleDetail .sendButton {\n  height: 100%;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n          justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n          align-items: center;\n}\n", ""]);
 // Exports
 module.exports = exports;
 

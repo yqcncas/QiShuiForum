@@ -102,7 +102,7 @@
 							<view class="line-7" ></view>
 							<Stick></Stick>
 							<view class="line-3"></view>
-							<NavButton :navleft="'最新发布'" :navright="'精华帖'" :navIndex = "tabIndex" @handleNavIndex = "handleNavTabIndex"></NavButton>
+							<NavButton v-if="tabShow" :navleft="'最新发布'" :navright="'精华帖'" :navIndex = "tabIndex" @handleNavIndex = "handleNavTabIndex"></NavButton>
 							<view class="line-3"></view>
 						</view>
 					</view>
@@ -274,7 +274,8 @@
 					native: true
 				},
 				canPush: true,
-				showFab: true
+				showFab: true,
+				tabShow: true
 			}
 		},
 		components: {
@@ -417,8 +418,13 @@
 					})
 					this.bannerList = res.data
 				}
-				
+				console.log(id)
 				console.log(res)
+				if (id == 'guangchang') {
+					this.tabShow = false
+				} else {
+					this.tabShow = true
+				}
 			},
 			// 轮播图点击
 			goToArt (item) {
