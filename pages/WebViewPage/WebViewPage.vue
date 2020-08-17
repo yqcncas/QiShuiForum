@@ -1,16 +1,19 @@
 <template>
-	<web-view :src="goUrl"></web-view>	
+	<view>
+		<web-view :src="goUrl"></web-view>	
+	</view>
 </template>
 
 <script>
 	export default {
-		onLoad (options) {
-			this.goUrl = options.goUrl
-		},
 		 data () {
 			 return {
 				 goUrl: ''
 			 }
+		 },
+		 onLoad (options) {
+		 	this.goUrl = options.goUrl
+		 
 		 }
 	}
 </script>

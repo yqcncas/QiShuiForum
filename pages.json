@@ -436,10 +436,10 @@
 		{
 			"path": "pages/WebViewPage/WebViewPage",
 			"style": {
-				"navigationBarTitleText": "",
-				"app-plus":{
-					"titleNView": false
-				}
+				// "navigationBarTitleText": "",
+				// "app-plus":{
+				// 	"titleNView": false
+				// }
 			}
 		}
 	],
