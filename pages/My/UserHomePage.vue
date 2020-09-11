@@ -1,7 +1,7 @@
 <template>
 	<view class="userhome-page" v-if="showLoadingFlag">
 		<view class="userhome-page-header">
-			<view class="back" style="position: absolute; left:30rpx; top: 30rpx;" @click="goBack">
+			<view class="back" style="position: absolute; left:40rpx; top: 70rpx;" @click="goBack">
 				<image src="../../static/image/ych/back.png" mode="aspectFill" style="width: 18rpx; height: 34rpx;"></image>
 			</view>
 			<view class="user-avatar">
@@ -39,7 +39,7 @@
 							<view class="tiezi-item-header-right-bottom">{{item.createTime}}</view>
 						</view>
 					</view>
-					<view class="tiezi-item-header-r">
+					<view class="tiezi-item-header-r" v-if="isMe" @click.stop="deleteArt(item.id, index)">
 						<image src="../../static/image/ych/index/delete.png" mode="aspectFill"></image>
 					</view>
 				</view>
@@ -57,7 +57,7 @@
 					
 				</view>
 				<view class="share-box">
-					<view class="share-left" @click.stop="handleShareFlag">
+					<view class="share-left" @click.stop="handleShareFlag(item.id)">
 						<image src="../../static/image/ych/my/23.png" mode=""></image>
 						<view class="share-left-text">分享</view>
 					</view>
@@ -109,13 +109,41 @@
 				userInfoList: {},
 				isMe: false,
 				showShareBoxFlag: false,
-				currentIndex: 0
+				currentIndex: 0,
+				ArtId: 0
 			}
 		},
 		onReachBottom () {
 			this.initMyArtilce()
 		},
 		methods: {
+			deleteArt (id, index) {
+				console.log(id)
+				uni.showModal({
+				    title: '提示',
+				    content: '确定删除该帖子么',
+				    success: async (res)=> {
+				        if (res.confirm) {
+				            console.log('用户点击确定');
+							let msg = await this.$fetch(this.$api.del_article, {id: id}, "POST", 'FORM')
+							console.log(msg)
+							uni.showToast({
+								icon: 'none',
+								title: msg.msg
+							})
+							if (msg.code == 0) {
+								this.HomePageList.splice(index, 1)
+								this.HomePageListTotal--
+								if (this.HomePageListTotal <= 0) {
+									this.HomePageListTotal = 0
+								}
+							}
+				        } else if (res.cancel) {
+				            console.log('用户点击取消');
+				        }
+				    }
+				});
+			},
 			goBack () {
 				uni.navigateBack({
 					delta: 1
@@ -128,7 +156,9 @@
 				})
 			},
 			// 分享
-			handleShareFlag () {
+			handleShareFlag (id) {
+				console.log(id)
+				this.ArtId = id
 				this.showShareBoxFlag = true
 			},
 			//更改分享显示
@@ -143,7 +173,8 @@
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
-				    href: "https://www.baidu.com/",
+				    href: "https://qsw-h5.bajiaostar.xyz/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
+				    			
 				    title: "汽水论坛分享",
 				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
 					imageUrl: '../../static/qslogo.png',
@@ -162,7 +193,8 @@
 				    provider: "weixin",
 				    scene: "WXSenceTimeline",
 				    type: 0,
-					href: "https://www.baidu.com/",
+					href: "https://qsw-h5.bajiaostar.xyz/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
+								
 					title: "汽水论坛分享",
 					summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
 				    imageUrl: '../../static/qslogo.png',
@@ -293,7 +325,7 @@
 				width: 100%;
 				display: flex;
 				// justify-content: center;
-				padding-left: 336rpx;
+				padding-left: 328rpx;
 				
 				align-items: center;
 				// padding-top: 18rpx;
@@ -336,7 +368,7 @@
 					display: flex;
 					align-items: center;
 					font-family: PingFangSC-Regular;
-					font-size: 12px;
+					font-size: 14px;
 					color: #141414;
 					letter-spacing: -0.29px;
 					&:nth-child(2){
@@ -353,7 +385,7 @@
 				width: 100%;
 				padding: 0 30rpx;
 				font-family: PingFangSC-Regular;
-				font-size: 12px;
+				font-size: 14px;
 				color: #6A6A6A;
 				letter-spacing: -0.29px;
 				padding-top: 14rpx;

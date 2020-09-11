@@ -52,14 +52,29 @@
 		mixins: [MescrollMixin],
 		onLoad() {
 			
-			
+			if (uni.getStorageSync('userId')) {
+				this.userId = uni.getStorageSync('userId')
+			}
+			if (uni.getStorageSync('adcode')) {
+				this.adcode = uni.getStorageSync('adcode')
+			}
 			
 			this.initAllPlate()
 			this.initArtList()
 			this.initTopArt()
 		},
+		onShow() {
+			
+		},
+		onTabItemTap (e) {
+			if (uni.getStorageSync('adcode')) {
+				this.adcode = uni.getStorageSync('adcode')
+			}
+			this.downCallback()
+		},
 		data () {
 			return {
+				userId: '',
 				navTab: [], 
 				navIndex: 0,
 				isCreamFlag: 0,
@@ -74,7 +89,8 @@
 						bottom: 200
 					}
 				},
-				watchMoreFlag: true
+				watchMoreFlag: true,
+				adcode: ''
 			}
 		},
 		onReachBottom() {
@@ -133,7 +149,8 @@
 			async initArtList () {
 				if (!this.hasFlag) return
 				this.pageNum = ++this.pageNum
-				let res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+				console.log(this.adcode)
+				let res = await this.$fetch(this.$api.artivle_list, {adcode: this.adcode, isCreamFlag: this.isCreamFlag, pageNum: this.pageNum, pageSize: this.pageSize, userId: this.userId}, 'POST', 'FORM')
 				console.log(res)
 				res.rows.forEach((item, index) => {
 					item.content = JSON.parse(item.content)
@@ -141,6 +158,12 @@
 					item.isGg = false
 				})
 				this.artList = [...this.artList, ...res.rows]
+				let obj = {};
+				// 要去重的数组
+				this.artList = this.artList.reduce((cur,next) => {
+				    obj[next.id] ? "" : obj[next.id] = true && cur.push(next);
+				    return cur;
+				},[]) //设置cur默认类型为数组，并且初始值为空的数组
 				this.hasFlag = this.pageNum * this.pageSize < res.total
 			},
 			handleNavIndex (index) {

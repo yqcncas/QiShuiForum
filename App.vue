@@ -44,10 +44,33 @@
 				})
 			}
 			
+			console.log(uni.getSystemInfoSync().screenHeight)
+			let myScreenHeight = uni.getSystemInfoSync().screenHeight
+			let firstPageType = ""
+			
+			this.$fetch(this.$api.get_property_by_type, {type: 5}, "POST", 'FORM').then(res => {
+				console.log(res)
+				if (myScreenHeight <= res.data.picIn) {
+					firstPageType = "picIn"
+				} else if (res.data.picIn < myScreenHeight && myScreenHeight <= res.data.picLarge) {
+					firstPageType = "picLarge"
+				}else if (res.data.picLarge < myScreenHeight && myScreenHeight <= res.data.picMin) {
+					firstPageType = "picMin"
+				}else if (res.data.picMin < myScreenHeight && myScreenHeight <= res.data.picSmall) {
+					firstPageType = "picSmall"
+				}else {
+					firstPageType = "titlePic"
+				}
+			})
+			
 			
 			this.$fetch(this.$api.getadvertlist, {type: 0}, 'POST', 'FORM').then((res) => {
-				console.log(res)
-				uni.setStorageSync('startImg', res.data[0].titlePic)
+				if (res.data[0][firstPageType])  {
+					uni.setStorageSync('startImg', res.data[0][firstPageType])
+				} else {
+					uni.setStorageSync('startImg', res.data[0].titlePic)
+				}
+				
 			})
 			
 			
@@ -155,10 +178,21 @@
 				    type: 'gcj02',
 					geocode: true,
 				    success: (res) => {
-						console.log(res)
+						// console.log(res)
 						// let location = res.longitude + ',' + res.latitude
-						uni.setStorageSync('city', res.address.city)
+						uni.setStorageSync('city', res.address.district)
 						uni.setStorageSync('cityCode', res.address.cityCode)
+						
+						uni.request({
+						   url: 'https://restapi.amap.com/v3/geocode/regeo?output=JSON&location=' + res.longitude + ',' + res.latitude +
+						   	'&key=a88aa9fb1f935caab43d092a6c3a2449&radius=1000&extensions=all',
+							method: "GET",
+						    success: (response) => {
+						        // console.log(response);
+								// this.adcode = response.data.regeocode.addressComponent.adcode
+								uni.setStorageSync('adcode', response.data.regeocode.addressComponent.adcode)
+						    }
+						});
 						
 				    }
 				});
@@ -168,11 +202,12 @@
 </script>
 
 <style lang="scss">
+	
 	/* #ifndef APP-PLUS-NVUE */
 	
 	/* 注意要写在第一行，同时给style标签加入lang="scss"属性 */
+	@import 'static/iconfont.css';
 	@import "uview-ui/index.scss";
-	
 	// page::after {
 	// 	content: "";
 	// 	position: fixed;
@@ -190,6 +225,7 @@
 		width: 100%;
 		// height: 100%;
 	}
+	
 	::-webkit-scrollbar {
 	    display: none;  
 	    width: 0 !important;  

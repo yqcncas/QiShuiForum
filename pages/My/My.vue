@@ -3,7 +3,7 @@
 		<scroll-view scroll-y="true"  style="height: 100vh;">
 			
 		
-		<view class="my-header" @click="goToMyHomePage">
+<!-- 		<view class="my-header" @click="goToMyHomePage">
 			<view class="my-header-left">
 				<view class="user-avatar">
 					<image :src="usreInfo.avatar ? usreInfo.avatar :'../../static/image/ych/avatar.png'" mode="aspectFill"></image>
@@ -63,6 +63,61 @@
 				</view>
 			</view>
 		</view>
+	 -->
+		<view class="new-my-header-box">
+			<view class="new-my-header-box-top">
+				<view class="new-my-header-box-avatar" @click="goToMyHomePage">
+					<image :src="usreInfo.avatar ? usreInfo.avatar :'../../static/image/ych/avatar.png'" mode="aspectFill"></image>
+					<view class="new-my-header-box-level">Lv.{{usreInfo.level}}</view>
+				</view>
+				<view class="new-my-header-box-info" @click="goToMyInfo(usreInfo)">
+					<image src="../../static/image/ych/my/1.png" mode="aspectFill" v-if="usreInfo.sex == 0"></image>
+					<image src="../../static/image/ych/my/2.png" mode="aspectFill" v-if="usreInfo.sex == 1"></image>
+					<view class="new-my-header-box-info-name">{{usreInfo.userName ? usreInfo.userName: '未登录'}}</view>
+				</view>
+				<view class="new-my-header-box-sign" @click="goToMyInfo(usreInfo)">{{usreInfo.gxSign ? usreInfo.gxSign : '还没有个性签名，快去编辑吧！' }}</view>
+				<view class="new-my-header-box-status" @click="goToMyHomePage">
+					<view class="new-my-header-box-status-item">
+						<view class="new-my-header-box-status-item-top">{{usreInfo.integral}}</view>
+						<view class="new-my-header-box-status-item-bottom">积分</view>
+					</view>
+					<view class="new-my-header-box-status-item">
+						<view class="new-my-header-box-status-item-top">{{usreInfo.followNum}}</view>
+						<view class="new-my-header-box-status-item-bottom">关注</view>
+					</view>
+					<view class="new-my-header-box-status-item">
+						<view class="new-my-header-box-status-item-top">{{usreInfo.fanceNum}}</view>
+						<view class="new-my-header-box-status-item-bottom">粉丝</view>
+					</view>
+					<view class="new-my-header-box-status-item">
+						<view class="new-my-header-box-status-item-top">{{usreInfo.articleNum}}</view>
+						<view class="new-my-header-box-status-item-bottom">动态</view>
+					</view>
+				</view>
+				<view class="new-my-header-box-top-userPage" @click="goToMyHomePage">
+					<view class="my-header-right-text">个人主页</view>
+					<image src="../../static/image/ych/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view class="new-my-header-box-bottom">
+				<view class="new-my-header-box-bottom-box">
+					<view class="new-my-header-box-bottom-item" @click="goToMyInfo(usreInfo)">
+						<image src="../../static/image/ych/newMy/4.png" mode="aspectFill"></image>
+						<view class="new-my-header-box-bottom-item-text">编辑资料</view>
+					</view>
+					<view class="new-my-header-box-bottom-item" @click="goToSign">
+						<image src="../../static/image/ych/newMy/5.png" mode="aspectFill"></image>
+						<view class="new-my-header-box-bottom-item-text">每日签到</view>
+					</view>
+					<view class="new-my-header-box-bottom-item" @click="goToMyWallet">
+					<image src="../../static/image/ych/newMy/6.png" mode="aspectFill"></image>
+					<view class="new-my-header-box-bottom-item-text">钱包</view>
+					</view>
+				</view>
+			</view>
+			
+		</view>
+	 
 		<view class="my-main">
 			<view class="my-main-top">
 				<view class="my-main-top-line-box">
@@ -108,10 +163,14 @@
 					<image src="../../static/image/ych/my/14.png" mode="aspectFill"></image>
 					<view>设置</view>
 				</view>
-				<view class="my-main-item" @click="goToCheerBag">
-					<image src="../../static/image/ych/my/15.png" mode="aspectFill"></image>
-					<view>加油包充值</view>
+				<view class="my-main-item" @click="goToRichText">
+					<image src="../../static/image/ych/my/32.png" mode="aspectFill"></image>
+					<view>客服中心</view>
 				</view>
+			<!-- 	<view class="my-main-item" @click="goToCheerBag">
+					<image src="../../static/image/ych/my/15.png" mode="aspectFill"></image>
+					<view>我的加油包</view>
+				</view> -->
 			</view>
 		
 			<view class="my-main-top two">
@@ -154,16 +213,30 @@
 	export default {
 		onShow() {
 			this.initMyInfo()
+			this.$fetch(this.$api.get_new_version, {type: 1}, "GET", "FORM")
 		},
 		data () {
 			return {
 				usreInfo: {}
 			}
 		},
-		onNavigationBarButtonTap () {
-			uni.navigateTo({
-				url: '../Message/Message'
-			})
+		onNavigationBarButtonTap (e) {
+			console.log(e)
+			if (e.index == 0) {
+				uni.navigateTo({
+					url: '../Message/Message'
+				})
+			} else if (e.index == 1) {
+				uni.scanCode({
+				    onlyFromCamera: true,
+				    success:  async (res) => {
+			
+						let msg = await this.$fetch(this.$api.write_off_goods, {code: res.result}, "POST", 'FORM')
+						console.log(msg)
+				    }
+				});
+			}
+			
 		},
 		methods: {
 			// 个人信息
@@ -174,6 +247,11 @@
 				res.data.user.integral = res.data.integral
 				res.data.user.surplusPosts = res.data.surplusPosts
 				res.data.user.totalConsum = res.data.totalConsum
+			
+				res.data.user.fanceNum = res.data.fanceNum
+				res.data.user.articleNum = res.data.articleNum
+				
+				res.data.user.followNum = res.data.followNum
 				
 				this.usreInfo = res.data.user
 				console.log(this.usreInfo)
@@ -287,6 +365,11 @@
 					url: '../MyWallet/Particulars?type=' + 1
 				}) 
 			},
+			goToRichText () {
+				uni.navigateTo({
+					url: '../RichText/RichText?id=' + 20
+				})
+			}
 		}
 	}
 </script>
@@ -523,7 +606,7 @@
 				display: flex;
 				
 				flex-wrap: wrap;
-				padding-bottom: 20rpx;
+				padding-bottom: 90rpx;
 				.my-main-item{
 					width: 25%;
 					
@@ -562,6 +645,144 @@
 						font-size: 10px;
 						color: #545454;
 						letter-spacing: -0.29px;
+					}
+				}
+			}
+		}
+		.new-my-header-box{
+			width: 100%;
+			height: 580rpx;
+			// background: #f40;
+			.new-my-header-box-top{
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				background-image: linear-gradient(180deg, #dfbf00 0%, #ff7300 100%);
+				position: relative;
+				.new-my-header-box-avatar{
+					position: relative;
+					padding-top: 25rpx;
+					image{
+						width: 210rpx;
+						height: 210rpx;
+					}
+					.new-my-header-box-level{
+						position: absolute;
+						bottom: -10rpx;
+						left: 50%;
+						transform: translateX(-50%);
+						height: 40rpx;
+						line-height: 40rpx;
+						padding: 14rpx;
+						border-radius: 10rpx;
+						font-size: 12px;
+						border: 4rpx solid #74b7ec;
+						box-sizing: border-box;
+						color: #FFFFFF;
+						background-color: #2786cd;
+						display: flex;
+						align-items: center;
+					}
+				}
+				.new-my-header-box-info{
+					display: flex;
+					align-items: center;
+					padding-top: 20rpx;
+					box-sizing: border-box;
+					transform: translateX(-16rpx);
+					image{
+						width: 32rpx;
+						height: 32rpx;
+						margin-right:12rpx;
+						box-sizing: border-box;
+					}
+					.new-my-header-box-info-name{
+						font-weight: bold;
+					}
+					
+				}
+				.new-my-header-box-sign{
+					font-family: PingFangSC-Regular;
+					font-size: 12px;
+					color: #141414;
+					letter-spacing: -0.29px;
+					text-align: justify;
+					padding-top: 10rpx;
+					font-weight: bold;
+				}
+				.new-my-header-box-status{
+					width: 100%;
+					padding-top: 20rpx;
+					padding-bottom: 60rpx;
+					box-sizing: border-box;
+					display: flex;
+					align-items: center;
+					.new-my-header-box-status-item{
+						flex: 1;
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						justify-content: center;
+						.new-my-header-box-status-item-top{
+							font-weight: bold;
+							padding-bottom: 5rpx;
+						}
+					}
+				}
+				.new-my-header-box-top-userPage{
+					position: absolute;
+					right: 30rpx;
+					top: 30rpx;
+					display: flex;
+					align-items: center;
+					.my-header-right-text{
+						font-family: PingFangSC-Medium;
+						font-size: 12px;
+						color: #545454;
+						letter-spacing: -0.29px;
+						text-align: justify;
+						padding-right: 10rpx;
+						box-sizing: border-box;
+					}
+					image{
+						width: 16rpx;
+						height: 28rpx;
+					}
+				}
+			}
+			.new-my-header-box-bottom{
+				width: 100%;
+				height: 120rpx;
+				padding: 0 30rpx;
+				// transform: translateY(-80rpx);
+				
+				.new-my-header-box-bottom-box{
+					width: 100%;
+					height: 120rpx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					border-radius: 30rpx;
+					box-sizing: border-box;
+					overflow: hidden;
+					box-shadow: 2px 2px 7px 7px rgba(0,0,0,0.07);
+					transform: translateY(-45rpx);
+					position: relative;
+					
+					background-color: #fff;
+					z-index: 999;
+				}
+				.new-my-header-box-bottom-item{
+					flex: 1;
+					width: 100%;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					image{
+						width: 60rpx;
+						height: 60rpx;
 					}
 				}
 			}

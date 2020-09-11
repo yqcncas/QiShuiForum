@@ -4,7 +4,7 @@
 			<view class="HouseConsult-item-left">姓名*</view>
 			<input type="text" v-model="userName" placeholder="请输入您的姓名" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;" />
 		</view>
-		<view class="HouseConsult-item">
+		<view class="HouseConsult-item"  :class="{pdb: type == 12}">
 			<view class="HouseConsult-item-left">联系电话*</view>
 			<input type="number" maxlength="11" v-model="userPhone" placeholder="请输入您的联系电话" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;" />
 		</view>
@@ -28,7 +28,7 @@
 		<view class="else-consult">
 			<view class="else-consult-title">其他咨询</view>
 			<view class="else-consult-box">
-				<textarea v-model="elseConsult" placeholder="多行输入" placeholder-style="font-size: 14px;color: #A3A3A3;"/>
+				<textarea v-model="elseConsult" placeholder="请输入其他咨询的内容" placeholder-style="font-size: 14px;color: #A3A3A3;"/>
 			</view>
 		</view>
 		<view class="consult-button" @click="submitForm">提 交</view>
@@ -81,7 +81,7 @@
 							})
 						}, 500)
 					}
-				} else {
+				} else if (this.type == 1){
 					// 汽车
 					if (this.userName.trim() == '' || this.yixiangCar.trim() == '') {
 						return uni.showToast({
@@ -90,6 +90,26 @@
 						})
 					}
 					let res = await this.$fetch(this.$api.car_consult, {intentionCar: this.yixiangCar, name: this.userName, mobile: this.userPhone, remark: this.elseConsult}, "POST", 'JSON')
+					console.log(res)
+					uni.showToast({
+						icon: 'none',
+						title: res.msg
+					})
+					if (res.code == 0) {
+						setTimeout(() => {
+							uni.navigateBack({
+								delta: 1
+							})
+						}, 500)
+					}
+				} else {
+					if (this.userName.trim() == '') {
+						return uni.showToast({
+							icon: 'none',
+							title: '请检查信息是否填写正确'
+						})
+					}
+					let res = await this.$fetch(this.$api.decorate_consult, {name: this.userName, mobile: this.userPhone, remark: this.elseConsult}, "POST", 'JSON')
 					console.log(res)
 					uni.showToast({
 						icon: 'none',
@@ -122,10 +142,13 @@
 		.HouseConsult-item{
 			padding-left: 36rpx;
 			padding-right: 36rpx;
-			padding-top: 56rpx;
+			padding-top: 36rpx;
 			box-sizing: border-box;
 			display: flex;
 			align-items: center;
+			&.pdb{
+				padding-bottom: 20rpx;
+			}
 			&:nth-child(1){
 				padding-top: 26rpx;
 			}

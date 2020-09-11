@@ -47,10 +47,16 @@
 					"titleNView": {
 						"buttons": [
 							{
-								"type": "none",
-								"text": "消息",
-								"fontSize": "16px",
-								"width": "70px"
+								"text": "\ue60d",
+								"fontSrc": "/static/iconfont.ttf",
+								"width":"40px",
+								"fontSize":"24px"
+							},
+							{
+								"text": "\ue608",
+								"fontSrc": "/static/iconfont.ttf",
+								"width":"40px",
+								"fontSize":"24px"
 							}
 						]
 					}
@@ -106,7 +112,7 @@
 		{
 			"path": "pages/My/MyCheerBag",
 			"style": {
-				"navigationBarTitleText": "加油包充值"
+				"navigationBarTitleText": "我的加油包"
 			}
 		},
 		{
@@ -137,6 +143,12 @@
 			"path": "pages/HotHouse/HotCar",
 			"style": {
 				"navigationBarTitleText": "热卖车款"
+			}
+		},
+		{
+			"path": "pages/HotHouse/HotJiaZhuang",
+			"style": {
+				"navigationBarTitleText": "热门装潢"
 			}
 		},
 		{

@@ -1,6 +1,7 @@
 <template>
 	<view class="HotHouse">
 		<HotMain :title = "'热卖楼盘'" @handleHotItem = "handleHotItem" :HotMainArr = "HotMainArr"></HotMain>
+		<u-empty mode="list" v-if = "noList"></u-empty>
 	</view>
 </template>
 
@@ -18,7 +19,8 @@
 				pageNum: 0,
 				pageSize: 10,
 				hasFlag: true,
-				HotMainArr: []
+				HotMainArr: [],
+				noList: false
 			}
 		},
 		methods: {
@@ -33,6 +35,9 @@
 				let res = await this.$fetch(this.$api.hot_plate, {pageNum: this.pageNum, pageSize: this.pageSize, type: 1}, "POST", 'FORM')
 				console.log(res)
 				this.HotMainArr = [...this.HotMainArr, ...res.rows]
+				if (res.total <= 0) {
+					this.noList = true
+				}
 				this.hasFlag = this.pageNum * this.pageSize < res.total
 			}
 		},

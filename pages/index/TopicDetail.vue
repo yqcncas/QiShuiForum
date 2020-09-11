@@ -103,10 +103,10 @@
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
-				    href: "http://uniapp.dcloud.io/",
-				    title: "uni-app分享",
-				    summary: "我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！",
-				    imageUrl: "https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png",
+				    href: "https://qsw-h5.bajiaostar.xyz/#/?code=" + uni.getStorageSync('userId'),
+				    title: "汽水论坛分享",
+				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
+				    imageUrl: '../../static/qslogo.png',
 				    success: function (res) {
 				        console.log("success:" + JSON.stringify(res));
 				    },
@@ -121,10 +121,10 @@
 				    provider: "weixin",
 				    scene: "WXSenceTimeline",
 				    type: 0,
-				    href: "http://uniapp.dcloud.io/",
-				    title: "uni-app分享",
-				    summary: "我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！",
-				    imageUrl: "https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png",
+				    href: "https://qsw-h5.bajiaostar.xyz/#/?code=" + uni.getStorageSync('userId'),
+				    title: "汽水论坛分享",
+				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
+				    imageUrl: '../../static/qslogo.png',
 				    success: function (res) {
 				        console.log("success:" + JSON.stringify(res));
 				    },

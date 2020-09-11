@@ -1,8 +1,8 @@
 <template>
 	<view class="sign">
 		<view class="sign-header">
-			<image :src="signTitle.titlePic ? signTitle.titlePic : ''" mode="aspectFill" class="banner" @click = "goToRichPage"></image>
-			<image src="../../static/image/ych/my/25.png" mode="aspectFill" class="share" @click = "handleShareFlag"></image>
+			<image :src="signTitle.titlePic ? signTitle.titlePic : '../../static/qslogo.png'" mode="aspectFill" class="banner" @click = "goToRichPage"></image>
+			<image src="../../static/image/ych/my/25.png" mode="aspectFill" class="share" @click.stop = "handleShareFlag"></image>
 		</view>
 		<view class="sign-main">
 			<view class="sign-main-title">连续签到：{{signNum}}天</view>
@@ -14,16 +14,31 @@
 			</view>
 			<view class="sign-button" @click="signFn">签到</view>
 		</view>
-		<shareBox :showShareBoxFlag = "showShareBoxFlag" @changeShowBoxFLag = "changeShowBoxFLag" @shareWx = "shareWx"  @shareFre = "shareFre"></shareBox>
+		<!-- <shareBox :showShareBoxFlag = "showShareBoxFlag" @changeShowBoxFLag = "changeShowBoxFLag" @shareWx = "shareWx"  @shareFre = "shareFre"></shareBox> -->
+			<u-popup v-model="showShareBoxFlag" mode="center">
+				 <wm-poster :imgSrc="canvasPic" :QrSrc="qrCode" :Title="title" @success = "canvasSuccess"></wm-poster>
+				<view class="share-box" v-if="weixinCanvas">
+					
+					<image src="../../static/image/ych/share/1.png" mode="aspectFill" @click="shareCanvasWx"></image>
+					<image src="../../static/image/ych/share/2.png" mode="aspectFill" @click="shareCanvasFriend"></image>
+				</view>
+			</u-popup>
+		
 	</view>
 </template>
 
 <script>
+	import baseURL from '../../config/index.js'
+	import wmPoster from "@/components/wm-poster/wm-poster.vue"
 	export default {
 		onLoad() {
+			this.getQrcode()
 			this.initFindHeaderImg()
 			this.initBytype()
 			this.initYesterdaySign()
+		},
+		components: {
+			wmPoster
 		},
 		data () {
 			return {
@@ -32,14 +47,56 @@
 				yesterday: {},
 				today: {},
 				signNum: 0,
-				signTitle: {}
+				signTitle: {},
+				weixinCanvas: '',
+				qrCode: '',
+				canvasPic: '',
+				title: ''
 			}
 		},
 		methods: {
+			async getQrcode(){
+				let res = await this.$fetch(this.$api.get_user_qrcode, {}, "GET", 'FORM')
+				this.qrCode = baseURL + res.data.path
+				this.canvasPic = res.data.pic ? res.data.pic : '../../static/qslogo.png'
+				this.title = res.data.title ? res.data.title : '汽水网'
+			},
 			goToRichPage () {
 				uni.navigateTo({
 					url: '../RichText/RichText?RichMain=' + this.signTitle.content + "&title=" + this.signTitle.title
 				})
+			},
+			canvasSuccess (res) {
+				this.weixinCanvas = res.tempFilePath
+				console.log(this.weixinCanvas)
+			},
+			shareCanvasWx () {
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSceneSession",
+				    type: 2,
+				    imageUrl: this.weixinCanvas,
+				    success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
+			},
+			shareCanvasFriend () {
+				uni.share({
+				    provider: "weixin",
+				    scene: "WXSenceTimeline",
+				    type: 2,
+				    imageUrl: this.weixinCanvas,
+				    success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
 			},
 			// 昨日是否签到
 			async initYesterdaySign () {
@@ -104,10 +161,10 @@
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
-				    href: "http://uniapp.dcloud.io/",
-				    title: "uni-app分享",
-				    summary: "我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！",
-				    imageUrl: "https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png",
+				    href: "https://qsw-h5.bajiaostar.xyz/#/?code=" + uni.getStorageSync('userId'),
+				    title: "汽水论坛分享",
+				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
+				    imageUrl: '../../static/qslogo.png',
 				    success: function (res) {
 				        console.log("success:" + JSON.stringify(res));
 				    },
@@ -122,10 +179,10 @@
 				    provider: "weixin",
 				    scene: "WXSenceTimeline",
 				    type: 0,
-				    href: "http://uniapp.dcloud.io/",
-				    title: "uni-app分享",
-				    summary: "我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！",
-				    imageUrl: "https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png",
+				    href: "https://qsw-h5.bajiaostar.xyz/#/?code=" + uni.getStorageSync('userId'),
+				    title: "汽水论坛分享",
+				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
+				    imageUrl: '../../static/qslogo.png',
 				    success: function (res) {
 				        console.log("success:" + JSON.stringify(res));
 				    },
@@ -226,6 +283,19 @@
 				font-size: 21px;
 				color: #FFFFFF;
 				letter-spacing: 1.19px;
+			}
+		}
+		.share-box{
+			width: 100%;
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			position: relative;
+			bottom: 60rpx;
+			image{
+				width: 90rpx;
+				height: 90rpx;
+				margin-right: 30rpx;
 			}
 		}
 	}

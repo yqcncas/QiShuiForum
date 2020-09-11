@@ -13,12 +13,18 @@
 			<view class="login-text-left" @click="goToRegister">立即注册</view>
 			<view class="login-text-right" @click="goToForgetPwd">忘记密码</view>
 		</view>
+		<view class="login-xieyi">
+			<u-radio-group v-model="xieyiFlag">
+				<u-radio shape="circle" name = "xieyi" @change="radioChange" >登录即同意<span class = "xieyiMain" @click.stop = "goToRichText(17)">《用户协议》</span>和<span class = "xieyiMain"  @click.stop = "goToRichText(18)">《隐私政策》</span></u-radio>
+			</u-radio-group>
+		</view>
 		<view class="else-login">
-			<view class="else-login-top">使用第三方登录</view>
-			<view class="else-login-bottom">
-				<image src="../../static/image/ych/Login/1.png" mode="aspectFill"></image>
+			<view class="else-login-top"  v-if="phonePlatform == 'android'">使用第三方登录</view>
+			<view class="else-login-bottom"  v-if="phonePlatform == 'android'">
+				<!-- <image src="../../static/image/ych/Login/1.png" mode="aspectFill"></image> -->
 				<image src="../../static/image/ych/Login/2.png" mode="aspectFill" @click="wxLogin"></image>
 			</view>
+		
 		</view>
 	</view>
 </template>
@@ -27,11 +33,13 @@
 	const dcRichAlert = uni.requireNativePlugin('ZWM-BJXMapView');
 	export default {
 		onLoad () {
+			// console.log(uni.getSystemInfoSync().platform == 'android')
+			this.phonePlatform = uni.getSystemInfoSync().platform
 			if (uni.getStorageSync('setStorageSync')) {
 				this.phone = uni.getStorageSync('setStorageSync')
 			}
 			this.cid = plus.push.getClientInfo().clientid
-			console.log(this.cid)
+			
 			this.timer = setInterval(() => {
 				if (uni.getStorageSync('elseLogin')) {
 					
@@ -53,10 +61,35 @@
 				password: '',
 				cid: '',
 				timer: null,
-				openId: ''
+				openId: '',
+				phonePlatform: '',
+				xieyiFlag: 'xieyi',
+				clickCount: 0
 			}
 		},
+		onBackPress() {
+			uni.switchTab({
+				url: '../index/index'
+			})
+			return true
+		},
 		methods: {
+			
+			radioChange(e) {
+				
+				if (this.clickCount % 2 == 0) {
+					this.xieyiFlag = ''
+				} else {
+					this.xieyiFlag = 'xieyi'
+				}
+				this.clickCount += 1
+			},
+			// 去富文本
+			goToRichText (id) {
+				uni.navigateTo({
+					url: '../RichText/RichText?id=' + id
+				})
+			},
 			// 切换到手机验证码登录
 			usePhoneLogin () {
 				uni.navigateTo({
@@ -89,6 +122,10 @@
 						title: '请输入密码'
 					})
 				}
+				if (this.xieyiFlag != 'xieyi') return uni.showToast({icon: 'none',title: '请仔细阅读用户协议'})
+						
+						
+					
 				let res = await this.$fetch(this.$api.login, {checkCode: this.password, loginName: this.phone, loginType: 0}, "POST", 'FORM')
 				console.log(res)
 				uni.showToast({
@@ -115,7 +152,7 @@
 					
 					setTimeout(() => {
 						uni.switchTab({
-							url: '../index/index'
+							url: '../My/My'
 						})
 					}, 500)
 					
@@ -150,7 +187,7 @@
 						
 						setTimeout(() => {
 							uni.switchTab({
-								url: '../index/index'
+								url: '../My/My'
 							})
 						}, 500)
 					}
@@ -219,13 +256,22 @@
 			display: flex;
 			justify-content: space-between;
 			padding-top: 22rpx;
-			padding-bottom: 424rpx;
+			// padding-bottom: 424rpx;
 			box-sizing: border-box;
 			view{
 				font-family: PingFangSC-Regular;
 				font-size: 14px;
 				color: #2C2C2C;
 				letter-spacing: 0.04px;
+			}
+		}
+		.login-xieyi{
+			width: 100%;
+			text-align: center;
+			margin:  0 auto;
+			padding-top: 30rpx;
+			span{ 
+				color: #2979ff;
 			}
 		}
 		.else-login{

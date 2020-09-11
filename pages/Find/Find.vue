@@ -2,7 +2,7 @@
 	<view class="find">
 		<mescroll-body ref="mescrollRef"  @down="downCallback" :up="upOption">
 			<view class="find-header">
-				<image :src="findHeader.titlePic" mode="aspectFill" @click = "goToRichPage"></image>
+				<image :src="findHeader.titlePic ? findHeader.titlePic : '../../static/qslogo.png'" mode="aspectFill" @click = "goToRichPage"></image>
 				<view class="find-header-bottom" @click="goToHistory">
 					<view class="find-header-bottom-left">
 						<image src="../../static/image/ych/my/24.png" mode=""></image>
@@ -83,6 +83,13 @@
 				let res = await this.$fetch(this.$api.get_activity_list, {pageNum: this.pageNum, pageSize: this.pageSize, type: 1}, 'POST', 'FORM')
 				console.log(res)
 				this.findList = [...this.findList, ...res.rows]
+				let obj = {};
+				// 要去重的数组
+				this.findList = this.findList.reduce((cur,next) => {
+				    obj[next.id] ? "" : obj[next.id] = true && cur.push(next);
+				    return cur;
+				},[]) //设置cur默认类型为数组，并且初始值为空的数组
+
 				this.hasFlag = this.pageNum * this.pageSize < res.total
 			},
 			// 全部活动
@@ -180,7 +187,7 @@
 				box-sizing: border-box;
 				.find-main-item-header-top{
 					font-family: PingFangSC-Medium;
-					font-size: 14px;
+					font-size: 16px;
 					color: #141414;
 					letter-spacing: -0.34px;
 					text-align: justify;
@@ -192,8 +199,8 @@
 					color: #686868;
 					letter-spacing: -0.24px;
 					text-align: justify;
-					padding-top: 3rpx;
-					padding-bottom: 10rpx;
+					padding-top: 6rpx;
+					padding-bottom: 20rpx;
 				}
 			}
 			.find-main-item-center{

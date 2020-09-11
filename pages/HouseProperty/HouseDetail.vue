@@ -1,10 +1,13 @@
 <template>
 	<view class="HouseDetail">
 		<view class="HouseDetail-header">
-			<image :src="HouseDetailHeader.titlePic" mode="aspectFill"></image>
+			<!-- <image :src="HouseDetailHeader.titlePic" mode="aspectFill"></image> -->
+			<u-image width="100%" height="378rpx" :src="HouseDetailHeader.titlePic" :fade="true" duration="450">
+				<u-loading slot="loading"></u-loading>
+			</u-image>
 		</view>
 		<view class="HouseDetail-center" @click="goToRichText">
-			<view class="HouseDetail-center-bg" :style="{backgroundImage: type == 1 ? `url(../../static/image/ych/Market/4.png)` : `url(../../static/image/ych/Market/5.png)`}">
+			<view class="HouseDetail-center-bg" :style="{backgroundImage: type == 1 ? `url(../../static/image/ych/Market/4.png)` : type == 2 ? `url(../../static/image/ych/Market/5.png)`: `url(../../static/image/ych/Market/6.png)`}">
 				<view class="HouseDetail-center-bg-title">{{HouseDetailHeader.title}}</view>
 				<view class="HouseDetail-center-bg-main">{{HouseDetailHeader.brief}}</view>
 			</view>
@@ -40,6 +43,7 @@
 				// uni.navigateTo({
 				// 	url: '../index/ArticleDetail'
 				// })
+				uni.setStorageSync('RichMainText', item.content)
 				uni.navigateTo({
 					url: '../RichText/RichText?RichMain=' + item.content + '&title=' + item.title
 				})

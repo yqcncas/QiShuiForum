@@ -10,8 +10,10 @@
 			<view class="like-img-box" v-if="ArtDetail.createTime" @click="collectionArt(ArtDetail)">
 				<image src="../../static/image/ych/index/19.png" mode="aspectFill" class="like" v-if="showFollow && !ArtDetail.params.collection" ></image>
 				<image src="../../static/image/ych/index/20.png" mode="aspectFill" class="like" v-if="showFollow && ArtDetail.params.collection"></image>
+				<image src="../../static/image/more.png" mode="aspectFill" style="width: 48rpx;height: 48rpx;margin-left: 20rpx;" @click.stop = "handleShowMore(ArtDetail.id)"></image>
 			</view>
 		</view>
+		<view class="ArticleDetail-news-title">{{ArtDetail.title}}</view>
 		<view class="ArticleDetail-center">
 			<view class="ArticleDetail-center-top">
 				<view class="ArticleDetail-center-top-left" @click="goToMyHomePage(userInfo.userId)">
@@ -32,20 +34,31 @@
 				
 				</view>
 			</view>
-			<view class="ArticleDetail-center-main" v-for="(item, index ) in ArtDetail.content" :key = "index">
+			
+		<!-- 	<view class="ArticleDetail-center-main" v-for="(item, index ) in ArtDetail.content" :key = "index">
 				<view class="ArticleDetail-center-main-title" v-if="index == 0">{{ArtDetail.title}}</view>
 				<view class="ArticleDetail-center-main-center">{{item.content}}</view>
 				<view class="ArticleDetail-center-main-img-box" v-if="ArtDetail.isVideo == 0">
 					<image :src="imgItem" mode="aspectFill" v-for="(imgItem, i) in item.pic" :key = "i" @click = "showImgBig(imgItem, item.pic)"></image>
-					<!-- <image src="../../static/logo.png" mode="aspectFill"></image>
-					<image src="../../static/logo.png" mode="aspectFill"></image>
-					<image src="../../static/logo.png" mode="aspectFill"></image> -->
+		
 				</view>
 				<view class="ArticleDetail-center-main-img-box" v-if="ArtDetail.isVideo == 1">
 					<video :src="item.pic[0]" controls style="width: 100%;"></video>
 				</view>
-				<view class="ArticleDetail-center-main-footer" v-if="index == ArtDetail.content.length - 1" >{{ArtDetail.browseNum}}阅读量</view>
-			</view>
+				
+				<view class="ArticleDetail-center-main-footer-box" v-if="ArtDetail.location">
+					<view class="ArticleDetail-center-main-footer-left" style="margin-top: 10rpx;" v-if="index == ArtDetail.content.length - 1">
+						<view class="ArticleDetail-center-main-footer-left-box">
+							<image src="../../static/image/location.png" mode="aspectFill"></image>
+							{{ArtDetail.location}}</view>
+						</view>
+					
+					<view class="ArticleDetail-center-main-footer" style="transform: translateY(10rpx);" v-if="index == ArtDetail.content.length - 1" >{{ArtDetail.browseNum}}阅读量</view>
+				</view>
+				
+			</view> -->
+			
+		<jyf-parser :html="ArtDetail.richText" ref="article"></jyf-parser>
 		</view>
 		<view class="ArticleDetail-footer">
 			<view class="ArticleDetail-footer-top" :class="{stick: stickFlag}">
@@ -77,13 +90,24 @@
 							<view class="ArticleDetail-footer-main-footer-item-button" v-if="item.replyCount > 2">共{{item.replyCount}}条回复></view>
 						</view>
 						<!-- <view class="chat-img" @click.stop="handleInputFocus(item.params[index].articleId, item.params[index].articleId.id, 1)"> -->
-						<view class="chat-img" @click.stop="handleInputFocus(item, index)">
-							<image src="../../static/image/ych/index/23.png" mode=""></image>
-							<view>回复</view>
+						<view class="chat-box">
+							<view class="chat-dianzan" @click.stop = "updatePrise(item.id, item)">
+								<image :class="{startAnimation: item.shaked}" :src="item.status == 1 ? '../../static/image/ych/index/27.png' : '../../static/image/ych/index/28.png'" mode="aspectFill"></image>
+								<!-- <image src="" mode="aspectFill"></image> -->
+								<view class="chat-dianzan-text">点赞</view>
+							</view>
+							<view class="chat-img" @click.stop="handleInputFocus(item, index)">
+								<image src="../../static/image/ych/index/23.png" mode=""></image>
+								<view>回复</view>
+							</view>
+							<view class="chat-img" style="font-size: 14px;">
+								{{item.floor}}楼
+							</view>
 						</view>
+					
 					</view>
 					
-					<view class="ArticleDetail-footer-main-item-advertising" v-if="index == 5" @click.stop="goToRichText">
+					<view class="ArticleDetail-footer-main-item-advertising" v-if="index == 5 && guangGaoInfo != undefined" @click.stop="goToRichText">
 						<view class="ArticleDetail-footer-main-item-advertising-top">
 							<view class="ArticleDetail-footer-main-item-advertising-top-left">{{guangGaoInfo.advert.title}}</view>
 							<view class="ArticleDetail-footer-main-item-advertising-top-right">广告</view>
@@ -119,21 +143,39 @@
 				</view>
 				<view class="sendButton" @touchend.prevent.stop="sendMsgFn"  v-if="SendButtonFlag" :style="{color: sendMsg.trim() == '' ? '#c8c9cc' : '#ff9900' }">发送</view>
 		</view>
+		<u-popup v-model="showMore" mode="bottom" border-radius="14" height="200rpx">
+			<view class="showMoreBox">
+				<view class="showMoreBox-item" @click="jubao">
+					<image src="../../static/image/ych/showMore/1.png" mode="aspectFill"></image>
+					<view>举报此条动态</view>
+				</view>
+				<view class="showMoreBox-item" @click="pingbi">
+					<image src="../../static/image/ych/showMore/2.png" mode="aspectFill"></image>
+					<view>屏蔽此条动态</view>
+				</view>
+			</view>
+		</u-popup>
 		
 		<shareBox :showShareBoxFlag = "showShareBoxFlag" @changeShowBoxFLag = "changeShowBoxFLag" @shareWx = "shareWx"  @shareFre = "shareFre"></shareBox>
 	</view>
 </template>
 
 <script>
+	import jyfParser from "@/components/jyf-parser/jyf-parser";
 	export default {
+		components: {
+		    jyfParser
+		},
 		onLoad(options) {
+			// this.$scope.$getAppWebview().setStyle({
+			//   softinputNavBar: 'none'
+			// })
 			this.ArtId = options.id
 			this.userId = options.userId
 			if (options.TopArtType) {
 				this.TopArtType = options.TopArtType // 判断是普通点进 还是话题进 1话题
 			}
 			if (options.index != undefined) {
-				console.log('12313')
 				this.TopArtIndex = options.index
 			}
 			let userId = uni.getStorageSync('userId')
@@ -179,7 +221,9 @@
 				guangGaoInfo: {},
 				showShareBoxFlag: false,
 				evaListTotal: 0,
-			
+				handleId: '',
+				showMore: false
+				
 				
 			}
 		},
@@ -204,6 +248,48 @@
 			this.initArtDetail()
 		},
 		methods: {
+			handleShowMore (id, index) {
+				this.showMore = !this.showMore
+				this.handleId = id
+				// this.handleIndex = index
+			},
+			jubao () {
+				uni.showToast({
+					icon: 'success',
+					title: '举报成功'
+				})
+				this.showMore = false
+			},
+			// 点赞
+			async updatePrise (id, item) {
+				let res = await this.$fetch(this.$api.upd_praise_status, {id: id}, 'POST', 'FORM')
+				console.log(res)
+				
+				if (item.status) {
+					item.status = 0
+					item.shaked = false
+				} else {
+					item.status = 1
+					item.shaked = true
+				}
+				uni.showToast({
+					icon: 'none',
+					title: res.msg
+				})
+			},
+			async pingbi () {
+				let res = await this.$fetch(this.$api.article_shield, {articleId: this.handleId}, "POST", 'FORM')
+				
+				uni.showToast({
+					icon: 'none',
+					title: res.msg
+				})
+				if (res.code == 0) {
+					this.showMore = false
+					// this.ArticleList.splice(this.handleIndex, 1)
+					
+				}
+			},
 			// 分享
 			handleShareFlag () {
 				this.showShareBoxFlag = true
@@ -215,15 +301,17 @@
 			},
 			// 微信分享
 			shareWx () {
-				
+				let content = this.filterHTMLTag(this.ArtDetail.richText)
+				content = content.slice(0, 30)
 				uni.share({
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
-				    href: "https://www.baidu.com/",
-				    title: "汽水论坛分享",
-				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
-					imageUrl: '../../static/qslogo.png',
+				    href: "https://qsw-h5.bajiaostar.xyz/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
+			
+				    title: this.ArtDetail.title,
+				    summary: content,
+				    imageUrl: '../../static/qslogo.png',
 					success: function (res) {
 				        console.log("success:" + JSON.stringify(res));
 				    },
@@ -234,15 +322,17 @@
 				this.showShareBoxFlag = false
 			},
 			shareFre () {
-				
+				let content = this.filterHTMLTag(this.ArtDetail.richText)
+				content = content.slice(0, 30)
 				uni.share({
 				    provider: "weixin",
 				    scene: "WXSenceTimeline",
 				    type: 0,
-					href: "https://www.baidu.com/",
-					title: "汽水论坛分享",
-					summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
-				    imageUrl: '../../static/qslogo.png',
+					href: "https://qsw-h5.bajiaostar.xyz/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
+								
+					title: this.ArtDetail.title,
+					summary: this.ArtDetail.title,
+					imageUrl: '../../static/qslogo.png',
 					success: function (res) {
 				        console.log("success:" + JSON.stringify(res));
 				    },
@@ -258,6 +348,7 @@
 
 				let index = this.$u.random(0, res.data.length -1)
 				this.guangGaoInfo = res.data[index]
+				console.log(this.guangGaoInfo)
 				this.guangGaoInfo.advert.newContent = this.guangGaoInfo.advert.content
 				this.guangGaoInfo.advert.content = this.filterHTMLTag(this.guangGaoInfo.advert.content)
 				this.guangGaoInfo.advert.pics = JSON.parse(this.guangGaoInfo.advert.pics)
@@ -373,6 +464,7 @@
 			
 				this.ArtDetailComment = [...this.ArtDetailComment, ...res.data.params.evaluatesList.rows]
 				console.log(this.ArtDetailComment)
+				
 				this.ArtDetailComment.forEach(async (item) => {
 					if (item.replyCount > 0) {
 						let msg = await this.$fetch(this.$api.reply_list, {evaluatesId: item.id, pageNum: 1, pageSize: 2}, 'POST', 'FORM')
@@ -408,8 +500,8 @@
 			},
 			// 发送
 			async sendMsgFn () {
-				console.log(this.ArtDetailComment)
-				if (this.ArtDetail.evaluateNum != 1) {
+				console.log(this.ArtDetail)
+				if (this.ArtDetail.evaluateSwitch != 1) {
 					return uni.showToast({
 						icon: 'none',
 						title: '当前帖子禁止评论'
@@ -431,6 +523,7 @@
 				} else {
 					res = await this.$fetch(this.$api.evaluate, {articleId: this.ArtId, content: this.sendMsg, pushUserId: ''}, 'POST', 'FORM')
 				}
+				console.log(res)
 				uni.hideLoading()
 				uni.showToast({
 					icon: 'none',
@@ -448,7 +541,8 @@
 					if (this.type == 1) {
 						this.ArtDetailComment[this.currentIndex].params.unshift({
 							content: this.sendMsg,
-							userName: uni.getStorageSync('userName')
+							userName: uni.getStorageSync('userName'),
+							
 						})
 						this.ArtDetailComment[this.currentIndex].params = this.ArtDetailComment[this.currentIndex].params.splice(0, 2)
 						this.ArtDetailComment[this.currentIndex].replyCount += 1 
@@ -457,7 +551,9 @@
 						if (this.tabIndex == 0) {
 							let nowDayTimer = this.$dayjs().format('YYYY-MM-DD HH:mm:ss')
 							console.log(nowDayTimer)
+							console.log(this.ArtDetailComment[0])
 							this.ArtDetailComment.unshift({
+								id: res.data,
 								articleId: this.ArtId,
 								content: this.sendMsg,
 								userId: this.userId,
@@ -467,7 +563,10 @@
 								level: uni.getStorageSync('userLevel') ? uni.getStorageSync('userLevel') : 1,
 								plateName: uni.getStorageSync('plateName'),
 								params: [],
-								createTime: nowDayTimer
+								createTime: nowDayTimer,
+								floor: this.ArtDetailComment[0].floor + 1,
+								status: 0,
+								shaked: false
 							})
 							this.sendMsg = ''
 						} else {
@@ -498,6 +597,30 @@
 <style lang="less">
 	.ArticleDetail{
 		width: 100%;
+		.showMoreBox{
+			width: 100%;
+			height: 100%;
+			padding: 30rpx;
+			box-sizing: border-box;
+			display: flex;
+			align-items: center;
+			.showMoreBox-item{
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				margin-right: 30rpx;
+				box-sizing: border-box;
+				image{
+					width: 48rpx;
+					height: 48rpx;
+					// margin-bottom: 20rpx;
+				}
+				view{
+					padding-top: 20rpx;
+				}
+			}
+		}
 		.ArticleDetail-title{
 			// height: 86rpx;
 			width: 100%;
@@ -506,6 +629,7 @@
 			box-sizing: border-box;
 			padding-top: var(--status-bar-height);
 			display: flex;
+			justify-content: space-between;
 			align-items: center;
 			.back-img{
 				position: relative;
@@ -528,8 +652,10 @@
 				font-size: 18px;
 				color: #242424;
 				letter-spacing: 0.07px;
-				padding-left: 280rpx;
-				padding-right: 256rpx;
+				flex: 1;
+				
+				padding-left: 286rpx;
+				// padding-right: 256rpx;
 				box-sizing: border-box;
 			}
 			.like{
@@ -538,7 +664,20 @@
 			}
 	
 		}
+		.ArticleDetail-news-title{
+			font-size: 20px;
+			font-weight: bold;
+			padding-left: 32rpx;
+			padding-right: 32rpx;
+
+			display: -webkit-box;    
+			-webkit-box-orient: vertical;    
+			-webkit-line-clamp: 2;    //控制行数
+			overflow: hidden;
+			box-sizing: border-box;
+		}
 		.ArticleDetail-center{
+			padding-top: 10rpx;
 			.ArticleDetail-center-top{
 				display: flex;
 				justify-content: space-between;
@@ -680,13 +819,39 @@
 						}
 					}
 				}
-				.ArticleDetail-center-main-footer{
-					font-family: PingFangSC-Regular;
-					font-size: 12px;
-					color: #686868;
-					letter-spacing: -0.24px;
-					text-align: end;
+				.ArticleDetail-center-main-footer-box{
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					.ArticleDetail-center-main-footer-left{
+						display: inline-block;
+						padding: 0 28rpx;
+						background: #909399;
+						border-radius: 24rpx;
+						font-family: PingFangSC-Regular;
+						font-size: 14px;
+						color: #FFFFFF;
+						letter-spacing: -0.34px;
+						.ArticleDetail-center-main-footer-left-box{
+							display: flex;
+							align-items: center;
+							image{
+								width: 32rpx;
+								height: 32rpx;
+								margin-right: 10rpx;
+							}
+						}
+					}
+					
+					.ArticleDetail-center-main-footer{
+						font-family: PingFangSC-Regular;
+						font-size: 12px;
+						color: #686868;
+						letter-spacing: -0.24px;
+						text-align: end;
+					}
 				}
+				
 			}
 		}
 		.ArticleDetail-footer{
@@ -894,21 +1059,46 @@
 				}
 			
 			}
-			.chat-img{
-				text-align: end;
-				padding-right: 34rpx;
-				padding-top: 20rpx;
-				padding-bottom: 20rpx;
-				box-sizing: border-box;
+			.chat-box{
 				display: flex;
-				justify-content: flex-end;
 				align-items: center;
-				image{
-					width: 32rpx;
-					height: 32rpx;
-					margin-right: 12rpx;
+				justify-content: flex-end;
+				.chat-dianzan{
+					display: flex;
+					align-items: center;
+					.chat-dianzan-text{
+						padding-right: 34rpx;
+						
+					}
+					
+					image{
+						width: 32rpx;
+						height: 32rpx;
+						margin-right: 12rpx;
+						animation: shaked 2s linear 0s 1 alternate;
+						animation-play-state:paused;
+						&.startAnimation{
+							animation-play-state:running;
+						}
+					}
+				}
+				.chat-img{
+					text-align: end;
+					padding-right: 34rpx;
+					padding-top: 20rpx;
+					padding-bottom: 20rpx;
+					box-sizing: border-box;
+					display: flex;
+					justify-content: flex-end;
+					align-items: center;
+					image{
+						width: 32rpx;
+						height: 32rpx;
+						margin-right: 12rpx;
+					}
 				}
 			}
+			
 		}	
 		.ArticleDetail-submit{
 			width: 100%;
@@ -983,5 +1173,25 @@
 			align-items: center;
 			
 		}
+		
+	}
+</style>
+<style>
+	@keyframes shaked{
+		10% {
+		    transform: rotate(15deg);
+		  }
+		  20% {
+		    transform: rotate(-10deg);
+		  }
+		  30% {
+		    transform: rotate(5deg);
+		  }
+		  40% {
+		    transform: rotate(-5deg);
+		  }
+		  50%,100% {
+		    transform: rotate(0deg);
+		  } 
 	}
 </style>

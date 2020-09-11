@@ -31,14 +31,16 @@
 					buttonColor: '#007AFF'
 				},
 				content: [{
+						iconPath: '../../static/image/2.png',
 						text: '长文',
 						active: false
 					},
+					// {
+					// 	text: '短文',
+					// 	active: false
+					// },
 					{
-						text: '短文',
-						active: false
-					},
-					{
+						iconPath: '../../static/image/3.png',
 						text: '视频',
 						active: false
 					}
@@ -52,7 +54,7 @@
 				if (e.index == 0) {
 					this.$emit("trigger", 0)
 				} else if (e.index == 1) {
-					this.$emit("trigger", 1)
+					this.$emit("trigger", 2)
 				} else {
 					this.$emit("trigger", 2)
 				}

@@ -3,19 +3,32 @@
 		<view class="ArticleMain-info">
 			<!-- 数据展示 -->
 			<view class="ArticleMain-info-item" v-for="(item, index) in ArticleList" :key = "index" @click="ArticleMainClick(item.id,　item.userId, item)">
+				<view class="more-box" v-if="!item.isGg" style="width: 100%;text-align: right;"> 
+					<image src="../../static/image/more.png" mode="aspectFill" style="width: 48rpx;height: 32rpx;" @click.stop = "handleShowMore(item.id, index)"></image>
+				</view>
 				<!-- 第一条 -->
-				<view class="ArticleMain-info-item-first" v-if="item.pics.length <= 1 && !item.type && !item.isGg">
+				<view class="ArticleMain-info-item-first" v-if=" !item.type && !item.isGg">
 					<view class="ArticleMain-info-item-first-left">
 						<view class="ArticleMain-info-item-first-left-top u-skeleton-rect">
-							<image src="../../static/image/huo.png" mode="aspectFill" v-if="item.isCreamFlag"></image>
+							<image src="../../static/image/huo.png" mode="aspectFill" v-if="item.isCreamFlag" style="width: 32rpx; height: 32rpx;"></image>
 							{{item.title}}
+						</view>
+						<view class="ArticleMain-info-item-onlyImg"   v-if="item.recommendType == 2">
+							<image :src="item.pics[0]" mode="aspectFill" style="width: 100%; height: 144rpx;"></image>
+						</view>
+						<view class="ArticleMain-info-item-moreImg"   v-if="item.recommendType == 3">
+							<image :src="itemImg" style="" mode="aspectFill" v-for="(itemImg, i) in item.pics" :key = "i"  v-if = "i < 3"></image>
 						</view>
 						<view class="ArticleMain-info-item-first-left-bottom" :style="{paddingTop: item.pics.length <= 0 ? '36rpx' : '58rpx'}">
 							<view class="ArticleMain-info-item-first-left-bottom-read u-skeleton-rect">{{item.browseNum}}阅读量</view>
 							<view class="ArticleMain-info-item-first-left-bottom-timer u-skeleton-rect">{{item.createTime}}</view>
 						</view>
+						
 					</view>
-					<view class="ArticleMain-info-item-first-right" v-if="item.isVideo == 0 && item.pics.length">
+					<view class="ArticleMain-info-item-first-right" v-if="item.recommendType == 1 && item.isVideo == 0 && item.pics.length">
+						<image :src="item.pics[0]" mode="aspectFill"></image>
+					</view>
+					<view class="ArticleMain-info-item-first-right" v-if="item.recommendType == 0 && item.isVideo == 0 && item.pics.length">
 						<image :src="item.pics[0]" mode="aspectFill"></image>
 					</view>
 					<view class="ArticleMain-info-item-first-right" v-if="item.isVideo == 1 && item.content[0].pic.length">
@@ -24,24 +37,28 @@
 				</view>
 				
 				<view class="ArticleDetail-footer-main-item-advertising" v-if="item.isGg">
-					<view class="ArticleDetail-footer-main-item-advertising-top">
-						<view class="ArticleDetail-footer-main-item-advertising-top-left">{{item.title}}</view>
-						<view class="ArticleDetail-footer-main-item-advertising-top-right">广告</view>
+					<view class="hotAdvertType-box">
+						<view class="ArticleDetail-footer-main-item-advertising-top">
+							<view class="ArticleDetail-footer-main-item-advertising-top-left">{{item.title}}</view>
+							<view class="ArticleDetail-footer-main-item-advertising-top-right">广告</view>
+						</view>
+						<view class="ArticleDetail-footer-main-item-advertising-center">
+									
+							<image :src="titlePic" v-if="item.hotAdvertType != 1" mode="aspectFill" v-for="(titlePic, i) in item.pics" :key = "i"  :class="item.pics.length > 1 ? 'ArticleDetail-footer-main-item-advertising-center-moreImg' : 'ArticleDetail-footer-main-item-advertising-center-Img'"></image>
+										
+						</view>
+						<view class="ArticleDetail-footer-main-item-advertising-footer">{{item.newcontent}}</view>
 					</view>
-					<view class="ArticleDetail-footer-main-item-advertising-center">
-						<!-- <image :src="item.titlePic" mode="aspectFill"></image> -->
-						<image :src="titlePic" v-if="i < 3" mode="aspectFill" v-for="(titlePic, i) in item.pics" :key = "i"  :class="item.pics.length > 1 ? 'ArticleDetail-footer-main-item-advertising-center-moreImg' : 'ArticleDetail-footer-main-item-advertising-center-Img'"></image>
-						<!-- <image :src="titlePic" mode="aspectFill" v-for="(titlePic, i) in item.pics" :key = "i" class=""></image> -->
-					</view>
-					<view class="ArticleDetail-footer-main-item-advertising-footer">{{item.newcontent}}</view>
-					
+						
+						
+						<image v-if="item.hotAdvertType == 1" :src="item.pics[0]" mode="aspectFill" class="hotAdvertTypeOnly"></image>
 				</view>
 				
 				
 				<!-- 剩余的 -->
-				<view class="ArticleMain-info-item-else" v-if="item.pics.length > 1 && !item.isGg">
+			<!-- 	<view class="ArticleMain-info-item-else" v-if="item.pics.length > 1 && !item.isGg">
 					<view class="ArticleMain-info-item-else-top">
-					<image src="../../static/image/huo.png" mode="aspectFill" v-if="item.isCreamFlag"></image>
+					<image src="../../static/image/huo.png" mode="aspectFill" v-if="item.isCreamFlag" style="width: 32rpx; height: 32rpx;"></image>
 					{{item.title}}
 					</view>
 					<view class="ArticleMain-info-item-else-center"   v-if="item.pics.length">
@@ -51,10 +68,23 @@
 						<view class="ArticleMain-info-item-else-bottom-left">{{item.browseNum}}阅读量</view>
 						<view class="ArticleMain-info-item-else-bottom-right">{{item.createTime}}</view>
 					</view>
-				</view>
+				</view> -->
 			</view>
 			<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
 		</view>
+		
+		<u-popup v-model="showMore" mode="bottom" border-radius="14" height="200rpx">
+			<view class="showMoreBox">
+				<view class="showMoreBox-item" @click="jubao">
+					<image src="../../static/image/ych/showMore/1.png" mode="aspectFill"></image>
+					<view>举报此条动态</view>
+				</view>
+				<view class="showMoreBox-item" @click="pingbi">
+					<image src="../../static/image/ych/showMore/2.png" mode="aspectFill"></image>
+					<view>屏蔽此条动态</view>
+				</view>
+			</view>
+		</u-popup>
 		
 	</view>
 </template>
@@ -63,12 +93,39 @@
 	export default {
 		data () {
 			return {
-				
+				showMore: false,
+				handleId: '',
+				handleIndex: 0
 			}
 		},
 		methods: {
 			ArticleMainClick (index, userId, item) {
 				this.$emit('ArticleMainClick', index, userId, item)
+			},
+			handleShowMore (id, index) {
+				this.showMore = !this.showMore
+				this.handleId = id
+				this.handleIndex = index
+			},
+			jubao () {
+				uni.showToast({
+					icon: 'success',
+					title: '举报成功'
+				})
+				this.showMore = false
+			},
+			async pingbi () {
+				let res = await this.$fetch(this.$api.article_shield, {articleId: this.handleId}, "POST", 'FORM')
+				console.log(res)
+				uni.showToast({
+					icon: 'none',
+					title: res.msg
+				})
+				if (res.code == 0) {
+					this.showMore = false
+					this.ArticleList.splice(this.handleIndex, 1)
+					
+				}
 			}
 		},
 		props:{
@@ -118,8 +175,28 @@
 						display: flex;
 						flex-direction: column;
 						justify-content: space-between;
+						.ArticleMain-info-item-moreImg{
+							width: 100%;
+							display: flex;
+							// justify-content: space-between;
+							flex-wrap: wrap;
+							padding-top: 10rpx;
+							box-sizing: border-box;
+							image{
+								width: 212rpx;
+								// flex: 1;
+								// width: 216rpx;
+								height: 144rpx;
+								margin-right: 16rpx;
+								margin-bottom: 18rpx;
+								box-sizing: border-box;
+								&:nth-child(3n){
+									margin-right: 0;
+								}
+							}
+						}
 						.ArticleMain-info-item-first-left-top{
-							width: 412rpx;
+							// width: 412rpx;
 							font-family: PingFangSC-Medium;
 							font-size: 17px;
 							color: #141414;
@@ -219,7 +296,15 @@
 					// border-top: 3rpx solid #f4f4f4;
 					border-bottom: 1rpx solid #D8D8D8;
 					box-sizing: border-box;
-					
+					display: flex;
+					align-items: center;
+					// justify-content: space-between;
+					.hotAdvertType-box{
+						flex: 1;
+					}
+					.hotAdvertTypeOnly{
+						width: 250rpx;						height: 166rpx;
+					}
 					.ArticleDetail-footer-main-item-advertising-top{
 						display: flex;
 						align-items: center;
@@ -288,6 +373,30 @@
 					}
 				}
 							
+			}
+		}
+		.showMoreBox{
+			width: 100%;
+			height: 100%;
+			padding: 30rpx;
+			box-sizing: border-box;
+			display: flex;
+			align-items: center;
+			.showMoreBox-item{
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				margin-right: 30rpx;
+				box-sizing: border-box;
+				image{
+					width: 48rpx;
+					height: 48rpx;
+					// margin-bottom: 20rpx;
+				}
+				view{
+					padding-top: 20rpx;
+				}
 			}
 		}
 	}

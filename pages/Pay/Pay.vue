@@ -5,7 +5,7 @@
 				<view class="pay-header-box-left">支付金额</view>
 				<view class="pay-header-box-right">¥{{price}}</view>
 			</view>
-			<view style="padding-top: 20rpx;" v-if="type == 1 || type == 2">*预计投放时间为: {{tfstartTime}} - {{tfendTime}}</view>
+			<view style="padding-top: 20rpx;font-size: 16px;" v-if="type == 1 || type == 2">*预计投放时间为: {{tfstartTime}} - {{tfendTime}}</view>
 		</view>
 		<view class="pay-way">
 			<view class="pay-way-title">支付方式</view>
@@ -39,11 +39,20 @@
 			
 		</view>
 		<view class="pay-button" @click="payButton">确认支付</view>
+		
+		<u-popup v-model="mianzeBox" mode="center" border-radius="14" width = "70%" height = "50%">
+			<view class="mianzeBox-title">广告说明</view>
+			<jyf-parser :html="payContent" ref="article"></jyf-parser>
+		</u-popup>
 	</view>
 </template>
 
 <script>
+	import jyfParser from "@/components/jyf-parser/jyf-parser";
 	export default {
+		components: {
+		    jyfParser
+		},
 		onLoad(options) {
 			if (options.id) {
 				this.id = options.id
@@ -62,6 +71,7 @@
 				this.day = options.day
 				this.title = options.title
 				this.pics = options.pics
+				this.mianzeBox = true
 				this.calculateTime()
 			}
 			if (this.type == 3) {
@@ -82,7 +92,9 @@
 				pics: [],
 				num: 0,
 				tfstartTime: '',
-				tfendTime: ''
+				tfendTime: '',
+				payContent: '是否确认支付',
+				mianzeBox: false
 			}
 		},
 		methods: {
@@ -93,6 +105,8 @@
 				let res
 				if (this.type == 2) {
 					res = await this.$fetch(this.$api.calculate_time, {day: this.day, type: 0}, "POST", 'FORM')
+					let msg = await this.$fetch(this.$api.get_all_explain, {}, 'GET', 'FROM')
+					this.payContent = msg.data[5].content
 				} else {
 					res = await this.$fetch(this.$api.calculate_time, {day: this.day, type: 1, articleId: this.id}, "POST", 'FORM')
 				}
@@ -352,6 +366,13 @@
 			left: 50%;
 			transform: translateX(-50%);
 			bottom: 30rpx;
+		}
+		.mianzeBox-title{
+			font-size: 16px;
+			font-weight: bold;
+			text-align: center;
+			padding-top: 20rpx;
+			padding-bottom: 20rpx;
 		}
 	}
 </style>

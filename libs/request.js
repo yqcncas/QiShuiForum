@@ -68,7 +68,7 @@ export default (url, data, method = 'POST', contentType = 'json', headers = {}) 
 							title: res.data.msg
 						})
 						setTimeout(() => {
-							uni.redirectTo({
+							uni.navigateTo({
 								url:'/pages/Login/Login'
 							})
 						}, 1500)
@@ -88,9 +88,11 @@ export default (url, data, method = 'POST', contentType = 'json', headers = {}) 
 					}
 					
 				} else if (parseInt(res.statusCode) === 401) {
+					// uni.removeStorageSync('token')
 					// 请求401时	
 					throw Error(`请求接口${baseUrl}${url},请求所传参数${JSON.stringify(data)};后端返回401`);
 				} else if (parseInt(res.statusCode) === 500) {
+					// uni.removeStorageSync('token')
 					// 	请求500时				
 					throw Error(`请求接口${baseUrl}${url},请求所传参数${JSON.stringify(data)};后端返回500`)
 				} else {

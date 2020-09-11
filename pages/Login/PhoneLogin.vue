@@ -53,7 +53,7 @@
 						this.getYzmTimer--
 					}
 				}, 1000)
-				var pubblicData=jsencrypt.setEncrypt(this.$api.publiukey,this.phone);
+				var pubblicData = jsencrypt.setEncrypt(this.$api.publiukey,this.phone);
 				
 				console.log(pubblicData);
 				let res = await this.$fetch(this.$api.mobilecode, {mobile: pubblicData}, "POST", 'FORM')
@@ -95,7 +95,7 @@
 					
 					setTimeout(() => {
 						uni.switchTab({
-							url: '../index/index'
+							url: '../My/My'
 						})
 					}, 500)
 					

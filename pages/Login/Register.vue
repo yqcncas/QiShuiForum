@@ -132,20 +132,21 @@
 					})
 				}
 				let res = await this.$fetch(this.$api.register, {birthday: this.birthday, checkCode: this.yzm, cid: this.cid, id: this.openId, inviteCode: '', loginType: this.loginType, mobile: this.phone, nickName: this.userName, password: this.userPwd, sex: this.sex}, 'POST', 'FORM')
-				console.log(res)
+		
 				uni.showToast({
 					icon: 'none',
 					title: res.msg
 				})
 				if (res.code == 0) {
 					let res
+					let dataType = res.data
 					if (this.openId) {
-						console.log(this.loginType)
-						res = await this.$fetch(this.$api.login, {loginName: this.openId ,loginType: this.loginType}, "POST", 'FORM')
+						
+						res = await this.$fetch(this.$api.login, {loginName: this.openId ,loginType: dataType}, "POST", 'FORM')
 					} else {
-						res = await this.$fetch(this.$api.login, {loginName: this.phone, checkCode: this.userPwd, loginType: this.loginType}, "POST", 'FORM')
+						res = await this.$fetch(this.$api.login, {loginName: this.phone, checkCode: this.userPwd, loginType: dataType}, "POST", 'FORM')
 					}
-					console.log(res)
+				
 					uni.setStorageSync('token', res.data.token)
 					uni.setStorageSync('userId', res.data.userId)
 					uni.setStorageSync('loginUserAccount', this.phone)
@@ -161,7 +162,7 @@
 					
 					setTimeout(() => {
 						uni.switchTab({
-							url: '../index/index'
+							url: '../My/My'
 						})
 					}, 500)
 					

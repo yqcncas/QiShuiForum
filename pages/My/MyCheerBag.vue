@@ -20,7 +20,7 @@
 			<view class="MyCheerBag-residue-right">{{userInfo.surplusPosts}}条</view>
 		</view>
 		<view class="line-7"></view>
-		<view class="MyCheerBag-buy">
+		<!-- <view class="MyCheerBag-buy">
 			<view class="MyCheerBag-buy-top">选择购买数量</view>
 			<view class="MyCheerBag-buy-center">
 				<view class="MyCheerBag-buy-center-item" @click="handleCurrentIndex(index)" :class="{active: currengIndex == index}" v-for="(item ,index) in CheerBagList" :key = "index">
@@ -35,12 +35,12 @@
 				<input type="number" @input="changeInput" v-model="buyNum" placeholder="输入购买数量" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #BEBEBE;" />
 			</view>
 		</view>
-		<view class="line-3"></view>
-		<view class="pay-money-box">
+		<view class="line-3"></view> -->
+<!-- 		<view class="pay-money-box">
 			<view class="pay-text">需要支付金额</view>
 			<view class="pay-money">{{payPrice}}元</view>
 		</view>
-		<view class="submit-pay" @click="goToPayMoney">立即购买</view>
+		<view class="submit-pay" @click="goToPayMoney">立即购买</view> -->
 		
 <!-- 		<u-popup v-model="showPayPopFlag" mode="bottom" border-radius="14">
 				<view class="popupPay-header">

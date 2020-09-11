@@ -37,6 +37,10 @@
 						<image src="../../static/image/ych/index/car2.png" mode="aspectFill" @click = "goToHotCar"></image>
 						<image src="../../static/image/ych/index/car1.png" mode="aspectFill" @click = "goToHouseConsult(1)"></image>
 					</view>
+					<view class="car-banner" v-if="type == 12">
+						<image src="../../static/image/ych/index/jiazhuang1.png" mode="aspectFill" @click = "goToHotJiaZhuang"></image>
+						<image src="../../static/image/ych/index/jiazhuang2.png" mode="aspectFill" @click = "goToHouseConsult(12)"></image>
+					</view>
 					
 					<view class="line-3"></view>
 					<view class="HouseProperty-center-zhiding"  @click="gotoTopArt">我要置顶</view>
@@ -49,6 +53,7 @@
 				</view>
 				<ArticleMain @ArticleMainClick = "ArticleMainClick" :ArticleList = "artList"></ArticleMain>
 		</view>
+		<Fab @trigger = "trigger" ></Fab>
 		<u-action-sheet :list="sharelist" v-model="shareShow" @click="shareItemClick"></u-action-sheet>
 		</mescroll-body>
 	</view>
@@ -61,6 +66,12 @@
 		onLoad(options) {
 			this.type = options.type
 			this.title = options.title
+			if (uni.getStorageSync('userId')) {
+				this.userId = uni.getStorageSync('userId')
+			}
+			if (uni.getStorageSync('adcode')) {
+				this.adcode = uni.getStorageSync('adcode')
+			}
 			console.log(this.type)
 			if (this.type == 4 ) {
 				this.navLeft = "出售"
@@ -84,6 +95,7 @@
 		},
 		data () {
 			return {
+				userId: '',
 				navIndex: 0,
 				title: '房产',
 				navLeft: '最新发布',
@@ -107,10 +119,27 @@
 					fontSize: 28
 				}],
 				shareShow: false,
-				labelId: ''
+				labelId: '',
+				adcode: ''
 			}
 		},
 		methods: {
+			// 去发布
+			trigger(index) {
+				if (index == 0) {
+					uni.navigateTo({
+						url: '../index/Publish?type=' + 0
+					})
+				} else if (index == 1) {
+					uni.navigateTo({
+						url: '../index/Publish?type=' + 1
+					})
+				} else {
+					uni.navigateTo({
+						url: '../index/Publish?type=' + 2
+					})
+				}
+			},
 			downCallback () {
 				this.pageNum = 0
 				this.pageSize = 10
@@ -138,9 +167,9 @@
 				this.pageNum = ++this.pageNum
 				let res
 				if (this.type != 'gc') {
-					res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, labelId: this.labelId,type: this.type, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+					res = await this.$fetch(this.$api.artivle_list, {adcode:this.adcode, isCreamFlag: this.isCreamFlag, labelId: this.labelId,type: this.type, pageNum: this.pageNum, pageSize: this.pageSize, userId: this.userId}, 'POST', 'FORM')
 				} else {
-					res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+					res = await this.$fetch(this.$api.artivle_list, {adcode:this.adcode, isCreamFlag: this.isCreamFlag, pageNum: this.pageNum, pageSize: this.pageSize, userId: this.userId}, 'POST', 'FORM')
 				}
 				console.log(res)
 				
@@ -171,6 +200,11 @@
 			goToHotCar () {
 				uni.navigateTo({
 					url: '../HotHouse/HotCar'
+				})
+			},
+			goToHotJiaZhuang () {
+				uni.navigateTo({
+					url: '../HotHouse/HotJiaZhuang'
 				})
 			},
 			// 底部导航切换
@@ -221,7 +255,7 @@
 				})
 			},
 			async initTopArt() {
-				let res = await this.$fetch(this.$api.top_list, {type: this.type}, "POST", 'FORM')
+				let res = await this.$fetch(this.$api.top_list, {type: this.type, adcode:this.adcode}, "POST", 'FORM')
 				this.topArtList = res.data
 			},
 			// 置顶文章跳转
@@ -402,5 +436,13 @@
 				}
 			}
 		}
+	}
+</style>
+<style>
+	.uni-fab__circle{
+		transform: scale(0.6);
+	}
+	.uni-fab{
+		transform: scale(0.9);
 	}
 </style>

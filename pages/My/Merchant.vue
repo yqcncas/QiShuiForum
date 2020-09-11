@@ -132,8 +132,8 @@
 					right: -20rpx;
 				}
 				image{
-					width: 32rpx;
-					height: 32rpx;
+					width: 42rpx;
+					height: 42rpx;
 				}
 			}
 		}

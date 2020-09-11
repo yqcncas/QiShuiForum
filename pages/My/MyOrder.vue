@@ -128,6 +128,7 @@
 					justify-content: space-between;
 					align-items: center;
 					.my-order-item-right-top-left{
+						flex: 1;
 						font-family: PingFangSC-Medium;
 						font-size: 16px;
 						color: #545454;

@@ -9,7 +9,7 @@
 			<swiper style="height: calc(100vh - 84rpx);" :current="cuttentIndex" @change="swiperChange">
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: calc(100vh - 84rpx);" @scrolltolower = "lower">
-						<view class="Advertising-item" v-for="(item, index) in AdvertisingList" :key = "index" @click="goToRichText(item.newContent, item.title, item.pics)">
+						<view class="Advertising-item" v-for="(item, index) in AdvertisingList" :key = "index" @click="goToRichText(item.newContent, item.title, item.pics, item.id)">
 							<view class="Advertising-item-top">
 								<view class="Advertising-item-left">
 									<image :src="item.pics[0]" mode="aspectFill"></image>
@@ -32,7 +32,7 @@
 				
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: calc(100vh - 84rpx);" @scrolltolower = "lower">
-						<view class="Advertising-item" v-for="(item, index) in AdvertisingList" :key = "index" @click="goToRichText(item.newContent, item.title, item.pics)">
+						<view class="Advertising-item" v-for="(item, index) in AdvertisingList" :key = "index" @click="goToRichText(item.newContent, item.title, item.pics, item.id)">
 							<view class="Advertising-item-top">
 								<view class="Advertising-item-left">
 									<image :src="item.pics[0]" mode="aspectFill"></image>
@@ -107,9 +107,10 @@
 				this.handleCurrentIndex(e.detail.current)
 			},
 			// 去富文本
-			goToRichText (content, title, pics) {
+			goToRichText (content, title, pics, id) {
+				uni.setStorageSync('RichMainText', content)
 				uni.navigateTo({
-					url: '../RichText/RichText?RichMain=' + content + '&title=' + title + '&pics=' + JSON.stringify(pics)
+					url: '../RichText/RichText?RichMain=' + content + '&title=' + title + '&pics=' + JSON.stringify(pics) + '&type=' + 1 + '&adid=' + id
 				})
 			},
 			// 数据列表

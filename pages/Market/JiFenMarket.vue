@@ -13,7 +13,10 @@
 					<scroll-view scroll-y="true" style="height: calc(100vh - 98rpx);" @scrolltolower = "lower">
 						<view class="market-list-main">
 							<view class="market-list-item" v-for="(item, index) in jfList" :key = "index" @click="goToShopDetail(0, item.id)">
-								<image :src="item.goodsPic" mode="aspectFill"></image>
+								<!-- <image :src="item.goodsPic" mode="aspectFill"></image> -->
+								<u-image :src="item.goodsPic" :fade="true" duration="450">
+									<u-loading slot="loading"></u-loading>
+								</u-image>
 								<view class="market-list-item-bottom">
 									<view class="market-list-item-bottom-top">{{item.goodsName}}</view>
 									<view class="market-list-item-bottom-footer">
@@ -34,7 +37,10 @@
 					<scroll-view scroll-y="true" style="height: calc(100vh - 98rpx);" @scrolltolower = "lower">
 						<view class="market-list-main">
 							<view class="market-list-item" v-for="(item, index) in qGList" :key = "index" @click="goToShopDetail(1, item.id)">
-								<image :src="item.goodsPic" mode="aspectFill"></image>
+								<!-- <image :src="item.goodsPic" mode="aspectFill"></image> -->
+								<u-image :src="item.goodsPic" :fade="true" duration="450">
+									<u-loading slot="loading"></u-loading>
+								</u-image>
 								<view class="market-list-item-bottom">
 									<view class="market-list-item-bottom-top">{{item.goodsName}}</view>
 									<view class="market-list-item-bottom-footer">

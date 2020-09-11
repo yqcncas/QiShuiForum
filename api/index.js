@@ -26,6 +26,7 @@ export default {
 	getCurrentUser: "/t/user/get_current_user", // 获取当前用户
 	forget_pwd: "/nt/user/forget_pwd", // 忘记密码
 	im_register: "/t/user/im_register", // 极光注册
+	get_user_qrcode: "/t/user/get_user_qrcode", // 获取邀请二维码以及用户信息
 	
 	
 	
@@ -44,6 +45,7 @@ export default {
 	collection: "/t/article/collection", // 收藏或取消(relationId 关联id 文章就传文章id type(0商品 1文章))
 	house_consult: "/nt/article/house_consult", // 房产咨询
 	car_consult: "/nt/article/car_consult", // 汽车咨询
+	decorate_consult: "/nt/article/decorate_consult", // 汽车咨询
 	hot_plate: "/nt/article/hot_plate", // 热点板块
 	hot_special_detail: "/nt/article/hot_special_detail", //热点详情
 	hot_detail: "/nt/article/hot_detail", // 热点板块详情
@@ -56,9 +58,10 @@ export default {
 	upd_advert_hits: "/nt/article/upd_advert_hits", // 更新点击量
 	get_all_explain: "/nt/article/get_all_explain", // 返回所有说明以及协议
 	calculate_time: "/t/article/calculate_time", // 根据天数计算广告开始结束时间 type =0 广告 =1 置顶 置顶时传帖子id
-	
-	
-
+	article_shield: "/t/article/article_shield", // 屏蔽
+	del_article: "/t/article/del_article", // 文章删除
+	upd_praise_status: "/t/article/upd_praise_status", // 评价点赞
+	get_advert_by_id: "/nt/article/get_advert_by_id", // 富文本详情
 	
 	
 	
@@ -126,7 +129,10 @@ export default {
 	my_write_off_order: "/t/goods/my_write_off_order", // 我核销的订单
 	my_collection_list: '/t/article/my_collection_list', // 我的收藏列表
 	
-	
+	/**
+	 * 更新
+	 */
+	get_new_version: "nt/user/get_new_version", // 版本更新
 	
 	
 }

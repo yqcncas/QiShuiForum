@@ -1,6 +1,6 @@
 <template>
 	<view class="share-box" v-if = "showShareBoxFlag">
-		<u-popup v-model="showShareBoxFlag" mode="bottom" border-radius="14">
+		<u-popup v-model="showShareBoxFlag" mode="bottom" border-radius="14" style = "z-index: 999;">
 			<view class="share-box-wrapper">
 				<view class="share-box-wrapper-left" @click="shareWx">
 					<image src="../../static/image/ych/share/1.png" mode="aspectFill"></image>
@@ -35,6 +35,7 @@
 </script>
 
 <style lang="less">
+	
 	.share-box-wrapper{
 		display: flex;
 		align-items: center;

@@ -1,7 +1,7 @@
 <template>
 	<view class="shareMoney">
 		<view class="shareMoney-header">
-			<image :src="signTitle.titlePic"  mode="aspectFill"></image>
+			<image :src="signTitle.titlePic ?signTitle.titlePic : '../../static/qslogo.png'"  mode="aspectFill"></image>
 		</view>
 		<view class="shareMoney-center">
 			<view class="shareMoney-center-left">
@@ -20,16 +20,30 @@
 				<view class="shar-list-item-right">{{item.type == 12 ? '-' : '+'}}{{item.amount}}</view>
 			</view>
 		</view>
-		<shareBox :showShareBoxFlag = "showShareBoxFlag" @changeShowBoxFLag = "changeShowBoxFLag" @shareWx = "shareWx"  @shareFre = "shareFre"></shareBox>
+		<u-popup v-model="showShareBoxFlag" mode="center" border-radius="14" style = "padding-bottom: 30rpx;">
+			<image :src="qrCode" mode="aspectFill" class="qrcode"></image>
+			<view class="save-box" >
+				<view class="saveImg" @click="save">保存至相册</view>
+			</view>
+		</u-popup>
+		
+		<!-- <shareBox :showShareBoxFlag = "showShareBoxFlag" @changeShowBoxFLag = "changeShowBoxFLag" @shareWx = "shareWx"  @shareFre = "shareFre"></shareBox> -->
+	
+		
 	</view>
 </template>
 
 <script>
+	import baseURL from '../../config/index.js'
 	export default {
+		onLoad() {
+			this.getQrcode()
+		},
 		onShow() {
 			this.initMyInfo()
 			this.initFindHeaderImg()
 			this.initParticulars()
+			
 		},
 		data () {
 			return {
@@ -40,6 +54,7 @@
 				hasFlag: true,
 				ParticularsList: [],
 				showShareBoxFlag: false,
+				qrCode: ''
 			}
 		},
 		onNavigationBarButtonTap () {
@@ -50,6 +65,10 @@
 				uni.navigateTo({
 					url: '../Withdraw/Withdraw?money=' + this.usreInfo.amount
 				})
+			},
+			async getQrcode(){
+				let res = await this.$fetch(this.$api.get_user_qrcode, {}, "GET", 'FORM')
+				this.qrCode = baseURL + res.data.path
 			},
 			// 个人信息
 			async initMyInfo () {
@@ -94,7 +113,7 @@
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
-				    href: "https://www.baidu.com/",
+				    href: "https://qsw-h5.bajiaostar.xyz/#/?code=" + uni.getStorageSync('userId'),
 				    title: "汽水论坛分享",
 				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
 					imageUrl: "../../static/qslogo.png",
@@ -113,7 +132,7 @@
 				    provider: "weixin",
 				    scene: "WXSenceTimeline",
 				    type: 0,
-					href: "https://www.baidu.com/",
+					href: "https://qsw-h5.bajiaostar.xyz/#/?code=" + uni.getStorageSync('userId'),
 					title: "汽水论坛分享",
 					summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
 					imageUrl: '../../static/qslogo.png',
@@ -126,6 +145,31 @@
 				});
 				this.showShareBoxFlag = false
 			},
+			save() {
+				
+				uni.downloadFile({
+						url: this.qrCode,
+						success: (res) =>{
+							if (res.statusCode === 200){
+								uni.saveImageToPhotosAlbum({
+									filePath: res.tempFilePath,
+									success: function() {
+										uni.showToast({
+											title: "保存成功",
+											icon: "none"
+										});
+									},
+									fail: function() {
+										uni.showToast({
+											title: "保存失败，请稍后重试",
+											icon: "none"
+										});
+									}
+								});
+							}
+						}
+					})
+			}
 		}
 	}
 </script>
@@ -210,5 +254,25 @@
 				}
 			}
 		}
+		.qrcode{
+			padding: 60rpx 20rpx;
+		}
+		.save-box{
+			padding-bottom: 30rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			.saveImg{
+				width: 500rpx;
+				height: 80rpx;
+				line-height: 80rpx;
+				text-align: center;
+				background-image: linear-gradient(180deg, #3EDCDF 0%, #1DB7BC 100%);
+				border-radius: 17.5px;
+				color: #FFFFFF;
+			}
+		}
+	
+		
 	}
 </style>

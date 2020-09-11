@@ -52,12 +52,23 @@
 				</view>
 			</view>
 		</view>
+		<view class="setting-item" @click="update">
+			<view class="setting-item-left">检查更新</view>
+			<view class="setting-item-right">
+			<!-- 	<view class="setting-item-right-box">
+					<image src="../../static/image/ych/right.png" mode="aspectFill"></image>
+				</view> -->
+			</view>
+		</view>
 		
 		<view class="exit-button" @click="exit">退出当前帐号</view>
 	</view>
 </template>
 
 <script>
+	// #ifdef APP-PLUS
+	import APPUpdate from "@/js_sdk/zhouWei-APPUpdate/APPUpdate";
+	// #endif
 	export default {
 		onLoad(options) {
 			this.phoneNumber = options.phone
@@ -71,6 +82,11 @@
 			}
 		},
 		methods:{
+			update () {
+				 // #ifdef APP-PLUS
+				  APPUpdate()
+				    // #endif
+			},
 			// 退出
 			exit () {
 				uni.showModal({

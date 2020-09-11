@@ -59,6 +59,7 @@
 			<view @click="addCountUp" v-if="type == 0" class="addArt">添加原文</view>
 			<view @click="handlehuatiFlag" class="addArt">添加话题</view>
 			<image src="../../static/image/ych/index/26.png" mode="aspectFill" @click = "handleAtFlag">
+			<image src="../../static/image/location.png" mode="aspectFill" @click = "handleLocation">
 		</view>
 		<view class="tag-wrapper" v-if="huatiArr.length">
 			<view class="tag-box" v-for="item in huatiArr" :key = "item.id">
@@ -71,6 +72,14 @@
 				<u-tag :text="item.userName" type="success"  closeable @close="AtTagClick(item.userId)" />
 			</view>
 		</view>
+		<view class="location-box" v-if="locationName">
+			<view class="location-wrap">
+				<view class="location-box-name">{{locationName}}</view>
+				<image src="../../static/image/1.png" mode="aspectFill" @click = "clearLocation"></image>
+			</view>
+			
+		</view>
+		
 		
 
 		<u-popup v-model="huatiBoxFlag" mode="bottom" border-radius="14" height="400px">
@@ -110,6 +119,9 @@
 			}
 			if (this.type == 0) {
 				this.pageHeader = '发布长文'
+			}
+			if (uni.getStorageSync('adcode')) {
+				this.adcode = uni.getStorageSync('adcode')
 			}
 			this.initGetAllBankuai()
 			this.initQNToken()
@@ -157,7 +169,9 @@
 				AtFlag: false,
 				AtList: [],
 				AtUserList: [],
-				showUserList: []
+				showUserList: [],
+				locationName: '',
+				adcode: ''
 			}
 		},
 		methods: {
@@ -194,6 +208,11 @@
 				console.log(this.imgList)
 
 				
+			},
+			// 清除地址
+			clearLocation () {
+				this.locationName = '',
+				this.adcode = ''
 			},
 			//　删除图片
 			onRemove(index, lists) {
@@ -241,7 +260,41 @@
 				if (uni.getStorageSync('userId')) {
 					this.userId = uni.getStorageSync('userId')
 				}
-				let res = await this.$fetch(this.$api.add_article, {content: JSON.stringify(this.submitArr), isVideo: this.videoFlag, pics: JSON.stringify(this.imgList), pushUserId: this.AtUserList, title: this.artTitle, type: this.activePickerId, labelIds: this.huatiArrIds, twoPlateType: this.showPickerFenleiId}, "POST", 'FORM')
+				
+				console.log(this.submitArr)
+				let RichText = ''
+				let RichPicArr = []
+				
+				
+					
+				
+				this.submitArr.forEach((item, index) => {
+					RichPicArr[index] = []
+					
+						if (item.pic.length){
+							item.pic.forEach((i) => {
+								if (this.type == 0) {
+									RichPicArr[index].push(`<img src = ${i} ></img>`)
+								} else {
+									RichPicArr[index].push(`<video src = ${i} controls style="width: 100%;"></video>`)
+								}
+							})
+							if (RichPicArr.length) {
+								RichPicArr[index] = RichPicArr[index].join(',')
+							}
+							RichText += `<p>${item.content}</p><p>${RichPicArr[index]}</p>`
+							// console.log(RichPicArr)
+							// RichText += `<p>${item.content}</p>`
+							RichText = RichText.replace(/,/g, ' ')
+							console.log(RichText)
+						} else {
+							RichText += `<p>${item.content}</p>`
+						}
+					
+				})
+				console.log(RichText)
+				
+				let res = await this.$fetch(this.$api.add_article, {richText: RichText,content: JSON.stringify(this.submitArr), isVideo: this.videoFlag, pics: JSON.stringify(this.imgList), pushUserId: this.AtUserList, title: this.artTitle, type: this.activePickerId, labelIds: this.huatiArrIds, twoPlateType: this.showPickerFenleiId, location: this.locationName, adcode: this.adcode}, "POST", 'FORM')
 				console.log(res)
 				uni.hideLoading()
 				uni.showToast({
@@ -458,6 +511,34 @@
 					}
 				})
 				console.log(this.AtUserList)
+			},
+			handleLocation () {
+				uni.chooseLocation({
+				    success: (res) =>{
+						console.log(res)
+						
+						if (res.name == '地图位置') {
+							console.log('1111')
+							this.locationName = res.address
+						} else {
+							this.locationName = res.name
+						}
+						
+						
+						uni.request({
+						   url: 'https://restapi.amap.com/v3/geocode/regeo?output=JSON&location=' + res.longitude + ',' + res.latitude +
+						   	'&key=a88aa9fb1f935caab43d092a6c3a2449&radius=1000&extensions=all',
+							method: "GET",
+						    success: (response) => {
+						        console.log(response);
+								this.adcode = response.data.regeocode.addressComponent.adcode
+						    }
+						});
+						
+						
+						
+				    }
+				});
 			}
 			
 		}
@@ -648,6 +729,29 @@
 				justify-content: center;
 				align-items: center;
 			}
+		}
+		.location-box{
+			display: inline-block;
+			padding: 0 28rpx;
+			background: #909399;
+			border-radius: 24rpx;
+			font-family: PingFangSC-Regular;
+			font-size: 14px;
+			color: #FFFFFF;
+			letter-spacing: -0.34px;
+			margin-left: 36rpx;
+			margin-right: 36rpx;
+			.location-wrap{
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				image{
+					width: 32rpx;
+					height: 32rpx;
+					margin-left: 10rpx;
+				}
+			}
+			
 		}
 	}
 </style>

@@ -34,7 +34,10 @@
 			</view>
 			<view class="market-list-main">
 				<view class="market-list-item" v-for="(item, index) in marketList" :key = "index"  @click="goToShopDetail(item.id)">
-					<image :src="item.goodsPic" mode="aspectFill"></image>
+					<!-- <image :src="item.goodsPic" mode="aspectFill"></image> -->
+					<u-image :src="item.goodsPic" :fade="true" duration="450">
+						<u-loading slot="loading"></u-loading>
+					</u-image>
 					<view class="market-list-item-bottom">
 						<view class="market-list-item-bottom-top">{{item.goodsName}}</view>
 						<view class="market-list-item-bottom-footer">
