@@ -9,7 +9,7 @@
 			<swiper style="height: calc(100vh - 84rpx);" :current="cuttentIndex" @change="swiperChange">
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: calc(100vh - 84rpx);" @scrolltolower = "lower">
-						<view class="Advertising-item" v-for="(item, index) in AdvertisingList" :key = "index" @click="goToRichText(item.newContent, item.title, item.pics, item.id)">
+						<view class="Advertising-item" v-for="(item, index) in AdvertisingList" :key = "index" @click="goToRichText(item.newContent, item.title, item.pics, item.articleId, item.userId)">
 							<view class="Advertising-item-top">
 								<view class="Advertising-item-left">
 									<image :src="item.pics[0]" mode="aspectFill"></image>
@@ -32,7 +32,7 @@
 				
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: calc(100vh - 84rpx);" @scrolltolower = "lower">
-						<view class="Advertising-item" v-for="(item, index) in AdvertisingList" :key = "index" @click="goToRichText(item.newContent, item.title, item.pics, item.id)">
+						<view class="Advertising-item" v-for="(item, index) in AdvertisingList" :key = "index" @click="goToRichText(item.newContent, item.title, item.pics, item.articleId, item.userId)">
 							<view class="Advertising-item-top">
 								<view class="Advertising-item-left">
 									<image :src="item.pics[0]" mode="aspectFill"></image>
@@ -107,10 +107,13 @@
 				this.handleCurrentIndex(e.detail.current)
 			},
 			// 去富文本
-			goToRichText (content, title, pics, id) {
-				uni.setStorageSync('RichMainText', content)
+			goToRichText (content, title, pics, id, userId) {
+				// uni.setStorageSync('RichMainText', content)
+				// uni.navigateTo({
+				// 	url: '../RichText/RichText?RichMain=' + content + '&title=' + title + '&pics=' + JSON.stringify(pics) + '&type=' + 1 + '&adid=' + id
+				// })
 				uni.navigateTo({
-					url: '../RichText/RichText?RichMain=' + content + '&title=' + title + '&pics=' + JSON.stringify(pics) + '&type=' + 1 + '&adid=' + id
+					url: '../index/ArticleDetail?id=' + id + '&userId=' + userId
 				})
 			},
 			// 数据列表
@@ -120,12 +123,12 @@
 				let res = await this.$fetch(this.$api.my_ads, {pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
 				console.log(res)
 				this.AdvertisingList = [...this.AdvertisingList, ...res.rows]
+				this.hasFlag = this.pageNum * this.pageSize < res.total
 				this.AdvertisingList.forEach(item => {
 					item.pics = JSON.parse(item.pics)
 					item.newContent = item.content
-					item.content = this.filterHTMLTag(item.content)
+					// item.content = this.filterHTMLTag(item.content)
 				}) 
-				this.hasFlag = this.pageNum * this.pageSize < res.total
 			},
 			filterHTMLTag (msg) {
 			    var msg = msg.replace(/<\/?[^>]*>/g, ''); //去除HTML Tag

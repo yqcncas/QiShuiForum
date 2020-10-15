@@ -34,10 +34,11 @@
 			<view class="Publish-center-title">
 				<input type="text" v-model="artTitle"  maxlength="28" placeholder="输入标题(28字以内)" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;" />
 			</view>
-			<view class="Publish-addBox" v-for="(item, index) in addCount" :key = "index">
+			<view class="Publish-addBox" v-for="(item, index) in submitArr.length" :key = "index">
 			
 			<view class="Publish-center-main" >
 				<textarea v-model="submitArr[index].content" placeholder="输入内容" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;"/>
+				<view class="delete-box" @click.stop="deleteFn(index)" v-if="index > 0">删除</view>
 			</view>
 			<view class="add-main">
 				<view class="add-main-title">
@@ -49,14 +50,15 @@
 					<image src="../../static/image/ych/Advertising/1.png" mode="aspectFill" class="addImg" v-if="type == 2 && !videoSrc" @click = "uploadVideo"></image>
 					<video :src="videoSrc" controls v-if="videoSrc"></video>
 					<view class="uploadImg" v-if="type != 2">
-						<u-upload :action="action" :file-list="fileList" @on-uploaded="onUploaded" :form-data = "QNtoken" max-count="9"  @on-remove="onRemove"></u-upload>
+						<u-upload  ref="uUpload" :action="action" :file-list="fileList" @on-list-change = "onListChange" @on-uploaded="onUploaded" :form-data = "QNtoken" max-count="9"  @on-remove="onRemove"></u-upload>
 					</view>	
 				</view>
+				<!-- <view class="line-7" style="width: 100%;height:7rpx;background-color: #f7f7f7;margin-top: 7rpx;" v-if="submitArr.length > 1"></view> -->
 			</view>
 			</view>
 		</view>
 		<view class="publish-add-main">
-			<view @click="addCountUp" v-if="type == 0" class="addArt">添加原文</view>
+			<view @click="addCountUp" v-if="type == 0 && submitArr.length < 2" class="addArt">添加原文</view>
 			<view @click="handlehuatiFlag" class="addArt">添加话题</view>
 			<image src="../../static/image/ych/index/26.png" mode="aspectFill" @click = "handleAtFlag">
 			<image src="../../static/image/location.png" mode="aspectFill" @click = "handleLocation">
@@ -191,16 +193,55 @@
 				this.addCount = ++this.addCount
 				
 			},
+			onListChange (lists, name) {
+				console.log(lists)
+				console.log(name)
+			},
+			// 删除
+			deleteFn (index) {
+				// console.log(this.$refs.uUpload)
+				// this.$refs.uUpload.clear();
+				// console.log(this.submitArr)
+				// // this.submitArr[1] = 
+				// this.$set(this.submitArr, 1, this.submitArr[2])
+				// console.log(this.submitArr)
+				
+				// if (this.submitArr[index].pic.length) {
+				// 	return uni.showToast({
+				// 		icon: 'none',
+				// 		title: '请先删除内容图片后再操作'
+				// 	})
+				// }
+				// uni.showModal({
+				//     title: '提示',
+				//     content: '是否确定删除',
+				//     success:  (res) => {
+				//         if (res.confirm) {
+						
+							this.submitArr.splice(index, 1)
+				// 			// console.log(this.submitArr)
+					
+							
+				// 			// console.log(this.imgList)
+				// 			// this.addCount = --this.addCount
+						
+				//         } else if (res.cancel) {
+				//             console.log('用户点击取消');
+				//         }
+				//     }
+				// });
+
+			},
 			//单组内容图片
 			addSubMitArrImg (index) {
 				this.choiceImgIndex = index
 			},
 			// 图片上传
 			onUploaded (lists) {
+				console.log(lists)
 				this.imgList = []
 				this.submitArr[this.choiceImgIndex].pic = []
 				lists.forEach(item => {
-					console.log(item)
 					this.imgList.push(this.$api.baseLocation + item.response.hash)
 					this.submitArr[this.choiceImgIndex].pic.push(this.$api.baseLocation + item.response.hash)
 				})
@@ -282,19 +323,24 @@
 							if (RichPicArr.length) {
 								RichPicArr[index] = RichPicArr[index].join(',')
 							}
-							RichText += `<p>${item.content}</p><p>${RichPicArr[index]}</p>`
+							RichText += `<p style = "padding-bottom: 20rpx">${item.content}</p><p>${RichPicArr[index]}</p>`
 							// console.log(RichPicArr)
 							// RichText += `<p>${item.content}</p>`
 							RichText = RichText.replace(/,/g, ' ')
 							console.log(RichText)
 						} else {
-							RichText += `<p>${item.content}</p>`
+							RichText += `<p style = "padding-bottom: 20rpx">${item.content}</p>`
 						}
 					
 				})
-				console.log(RichText)
+				console.log(this.submitArr[0].pic)
 				
-				let res = await this.$fetch(this.$api.add_article, {richText: RichText,content: JSON.stringify(this.submitArr), isVideo: this.videoFlag, pics: JSON.stringify(this.imgList), pushUserId: this.AtUserList, title: this.artTitle, type: this.activePickerId, labelIds: this.huatiArrIds, twoPlateType: this.showPickerFenleiId, location: this.locationName, adcode: this.adcode}, "POST", 'FORM')
+				if (!this.submitArr[0].pic.length) {
+					this.submitArr[0].pic = []
+				}
+				
+				// let res = await this.$fetch(this.$api.add_article, {richText: RichText,content: JSON.stringify(this.submitArr), isVideo: this.videoFlag, pics: JSON.stringify(this.imgList), pushUserId: this.AtUserList, title: this.artTitle, type: this.activePickerId, labelIds: this.huatiArrIds, twoPlateType: this.showPickerFenleiId, location: this.locationName, adcode: this.adcode}, "POST", 'FORM')
+				let res = await this.$fetch(this.$api.add_article, {richText: RichText,content: JSON.stringify(this.submitArr), isVideo: this.videoFlag, pics: JSON.stringify(this.submitArr[0].pic), pushUserId: this.AtUserList, title: this.artTitle, type: this.activePickerId, labelIds: this.huatiArrIds, twoPlateType: this.showPickerFenleiId, location: this.locationName, adcode: this.adcode}, "POST", 'FORM')
 				console.log(res)
 				uni.hideLoading()
 				uni.showToast({
@@ -646,13 +692,21 @@
 				}
 			}
 			.Publish-center-main{
-				padding: 26rpx 36rpx;
+				// padding: 26rpx 36rpx;
+				padding: 45rpx 36rpx;
 				height: 380rpx;
 				border-bottom: 6rpx solid #f4f4f4;
 				box-sizing: border-box;
+				position: relative;
 				textarea{
 					width: 100%;
 					font-size: 14px;
+				}
+				.delete-box{
+					position: absolute;
+					right: 25rpx;
+					top: 5rpx;
+					
 				}
 			}
 			.add-main{
@@ -661,6 +715,7 @@
 				padding-left: 36rpx;
 				padding-right: 36rpx;
 				box-sizing: border-box;
+				border-bottom: 4rpx solid #f7f7f7;
 				.add-main-title{
 					width: 100%;
 					display: flex;
@@ -684,6 +739,7 @@
 			display: flex;
 			align-items: center;
 			padding-bottom: 30rpx;
+			margin-top: 20rpx;
 			.addArt{
 				display: inline-block;
 				padding: 0 28rpx;

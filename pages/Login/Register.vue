@@ -132,14 +132,16 @@
 					})
 				}
 				let res = await this.$fetch(this.$api.register, {birthday: this.birthday, checkCode: this.yzm, cid: this.cid, id: this.openId, inviteCode: '', loginType: this.loginType, mobile: this.phone, nickName: this.userName, password: this.userPwd, sex: this.sex}, 'POST', 'FORM')
-		
+ 				console.log(res)
+				let dataType = res.data
 				uni.showToast({
 					icon: 'none',
 					title: res.msg
 				})
 				if (res.code == 0) {
 					let res
-					let dataType = res.data
+					console.log(res)
+					
 					if (this.openId) {
 						
 						res = await this.$fetch(this.$api.login, {loginName: this.openId ,loginType: dataType}, "POST", 'FORM')
@@ -157,12 +159,12 @@
 					
 					let imUserName = ImMsg[0].username
 												
-					dcRichAlert.logIn({username: imUserName,password: imUserName}, result => {console.log(result)});
+					dcRichAlert.logIn({username: imUserName, password: imUserName}, result => {console.log(result)});
 					
-					
+					uni.setStorageSync('loginSuccess', true)
 					setTimeout(() => {
 						uni.switchTab({
-							url: '../My/My'
+							url: '../index/index'
 						})
 					}, 500)
 					

@@ -1,5 +1,5 @@
 <script>
-	// const dcRichAlert = uni.requireNativePlugin('ZWM-BJXMapView');
+	// 满哥插件引入
 	let dcRichAlert
 	let dcRichLogin
 	if (uni.getSystemInfoSync().platform == 'android') {
@@ -8,6 +8,7 @@
 		dcRichAlert = uni.requireNativePlugin('ZWM-BJXJobView');
 		dcRichLogin = uni.requireNativePlugin('ZWM-BJXMapView');
 	}
+	
 	export default {
 		data () {
 			return {
@@ -19,7 +20,7 @@
 			this.initPosition()
 			this.initMyCity()
 			
-			
+			// 连接极光
 			 dcRichLogin.JmessageManagerInit({
 				appKey:'67438bad79ab28487215a722'
 				},
@@ -27,9 +28,7 @@
 					console.log(result)
 				});
 				
-				
-			
-			console.log('App Launch')
+			// 调用
 			if (uni.getSystemInfoSync().platform == 'android') {
 				dcRichLogin.addNewMessageReceiver({}, result => {
 					console.log(result)
@@ -43,6 +42,8 @@
 					uni.setStorageSync('newMessageFlag', true)
 				})
 			}
+			
+			// 调用结束
 			
 			console.log(uni.getSystemInfoSync().screenHeight)
 			let myScreenHeight = uni.getSystemInfoSync().screenHeight
@@ -178,9 +179,19 @@
 				    type: 'gcj02',
 					geocode: true,
 				    success: (res) => {
-						// console.log(res)
+						let city = res.address.district
+						if (res.address.district.includes('市')) {
+							city = res.address.district.replace('市', '')
+						} else if (res.address.district.includes('区')) {
+							city = res.address.district.replace('区', '')
+						} else if (res.address.district.includes('县')) {
+							city = res.address.district.replace('县', '')
+						}
+						
 						// let location = res.longitude + ',' + res.latitude
-						uni.setStorageSync('city', res.address.district)
+						console.log(city)
+						uni.setStorageSync('city', city)
+						uni.setStorageSync('cityName', res.address.district)
 						uni.setStorageSync('cityCode', res.address.cityCode)
 						
 						uni.request({
@@ -188,7 +199,7 @@
 						   	'&key=a88aa9fb1f935caab43d092a6c3a2449&radius=1000&extensions=all',
 							method: "GET",
 						    success: (response) => {
-						        // console.log(response);
+						        console.log(response);
 								// this.adcode = response.data.regeocode.addressComponent.adcode
 								uni.setStorageSync('adcode', response.data.regeocode.addressComponent.adcode)
 						    }

@@ -49,9 +49,11 @@
 			this.initBanner()
 			this.initTopArt()
 			this.initArtList()
+			 if (uni.getStorageSync('adcode')) {				this.adcode = uni.getStorageSync('adcode')			}
 		},
 		data () {
 			return {
+				adcode: '',
 				navIndex: 0,
 				title: '找租房',
 				sharelist: [{
@@ -100,7 +102,7 @@
 			},
 			
 			async initBanner () {
-				let res = await this.$fetch(this.$api.getrotationchart, {plateTypeId: 11}, 'POST', 'FORM')
+				let res = await this.$fetch(this.$api.getrotationchart, {adcode: this.adcode, plateTypeId: 11}, 'POST', 'FORM')
 				console.log(res)
 				this.bannerList = res.data
 			},
@@ -108,7 +110,7 @@
 			async initArtList () {
 				if (!this.hasFlag) return
 				this.pageNum = ++this.pageNum
-				let res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, labelId: this.labelId, type: 11, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+				let res = await this.$fetch(this.$api.artivle_list, {isCreamFlag: this.isCreamFlag, twoPlateType: this.labelId, type: 11, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
 				console.log(res)
 				res.rows.forEach((item, index) => {
 					item.content = JSON.parse(item.content)

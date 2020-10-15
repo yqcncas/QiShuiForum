@@ -35,6 +35,7 @@
 			<!-- <view class="line-3" v-if="index != 10"></view> -->
 		</view>
 		<shareBox :showShareBoxFlag = "showShareBoxFlag" @changeShowBoxFLag = "changeShowBoxFLag" @shareWx = "shareWx"  @shareFre = "shareFre"></shareBox>
+		<Fab @trigger = "trigger"></Fab>
 	</view>
 </template>
 
@@ -69,6 +70,21 @@
 			}
 		},
 		methods: {
+			trigger(index) {
+				if (index == 0) {
+					uni.navigateTo({
+						url: './Publish?type=' + 0
+					})
+				} else if (index == 1) {
+					uni.navigateTo({
+						url: './Publish?type=' + 1
+					})
+				} else {
+					uni.navigateTo({
+						url: './Publish?type=' + 2
+					})
+				}
+			},
 			async initTopicDetal() {
 				if (!this.hasFlag) return
 				this.pageNum = ++this.pageNum
@@ -277,5 +293,21 @@
 			}
 		}
 				
+	}
+</style>
+<style>
+	.uni-fab__circle{
+		transform: scale(0.6);
+	}
+	.uni-fab{
+		transform: scale(0.9);
+	}
+	::-webkit-scrollbar {
+	    display: none;  
+	    width: 0 !important;  
+	    height: 0 !important;  
+	    -webkit-appearance: none;  
+	    color: transparent;
+	    background: transparent;  
 	}
 </style>

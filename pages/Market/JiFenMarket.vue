@@ -69,8 +69,14 @@
 		onLoad() {
 			this.JFduihuanFn()
 		},
+		onShow() {
+			if (uni.getStorageSync('adcode')) {
+				this.adcode = uni.getStorageSync('adcode')
+			}
+		},
 		data () {
 			return {
+				adcode: '',
 				tabIndex: 0,
 				hasFlag: true,
 				pageNum: 0,
@@ -112,7 +118,7 @@
 			async JFduihuanFn () {
 				if (!this.hasFlag) return
 				this.pageNum = ++this.pageNum
-				let res = await this.$fetch(this.$api.goods_list, {type: 1, goodsStatus: 1, boutiqueFlag: 0, pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
+				let res = await this.$fetch(this.$api.goods_list, {adcode: this.adcode, type: 1, goodsStatus: 1, boutiqueFlag: 0, pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
 				this.jfList = [...this.jfList, ...res.rows]
 				console.log(this.jfList)
 				this.hasFlag = this.pageNum * this.pageSize < res.total
@@ -120,7 +126,7 @@
 			async XianShiQGFn() {
 				if (!this.qGhasFlag) return
 				this.qgPageNum = ++this.qgPageNum
-				let res = await this.$fetch(this.$api.goods_list, {type: 0, goodsStatus: 1, boutiqueFlag: 0, pageNum: this.qgPageNum, pageSize: this.pageSize}, "POST", 'FORM')
+				let res = await this.$fetch(this.$api.goods_list, {adcode: this.adcode, type: 0, goodsStatus: 1, boutiqueFlag: 0, pageNum: this.qgPageNum, pageSize: this.pageSize}, "POST", 'FORM')
 				this.qGList = [...this.qGList, ...res.rows]
 				console.log(this.qGList)
 				let obj = {};

@@ -10,6 +10,7 @@
 			</view>
 		</view>
 		<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
+		<!-- <Fab @trigger = "trigger"></Fab> -->
 	</view>
 </template>
 
@@ -32,6 +33,21 @@
 					url: './TopicDetail?id=' + id + '&name=' + name + '&titlePic=' + titlePic + '&articleNum=' + articleNum
 				})
 			},
+			// trigger(index) {
+			// 	if (index == 0) {
+			// 		uni.navigateTo({
+			// 			url: './Publish?type=' + 0
+			// 		})
+			// 	} else if (index == 1) {
+			// 		uni.navigateTo({
+			// 			url: './Publish?type=' + 1
+			// 		})
+			// 	} else {
+			// 		uni.navigateTo({
+			// 			url: './Publish?type=' + 2
+			// 		})
+			// 	}
+			// },
 			async huatiList () {
 				if (!this.hasFlag) return 
 				this.pageNum = ++this.pageNum

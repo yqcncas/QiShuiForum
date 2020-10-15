@@ -4,7 +4,7 @@
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/Start/Start",
+			"path": "pages/Start/Starts",
 			"style": {
 				// "navigationBarTitleText": "uni-app",
 				"titleNView": "false"
@@ -42,25 +42,28 @@
 		{
 			"path": "pages/My/My",
 			"style": {
-				"navigationBarTitleText": "我的",
-				"app-plus": {
-					"titleNView": {
-						"buttons": [
-							{
-								"text": "\ue60d",
-								"fontSrc": "/static/iconfont.ttf",
-								"width":"40px",
-								"fontSize":"24px"
-							},
-							{
-								"text": "\ue608",
-								"fontSrc": "/static/iconfont.ttf",
-								"width":"40px",
-								"fontSize":"24px"
-							}
-						]
-					}
-				}
+				// "navigationBarTitleText": "我的",
+				// "app-plus": {
+				// 	"titleNView": {
+				// 		"buttons": [
+				// 			{
+				// 				"text": "\ue60d",
+				// 				"fontSrc": "/static/iconfont.ttf",
+				// 				"width":"40px",
+				// 				"fontSize":"24px"
+				// 			},
+				// 			{
+				// 				"text": "\ue608",
+				// 				"fontSrc": "/static/iconfont.ttf",
+				// 				"width":"40px",
+				// 				"fontSize":"24px"
+				// 			}
+				// 		]
+				// 	}
+				// }
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "black" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+				
 			}
 		},
 		{
@@ -252,6 +255,15 @@
 		{
 			"path": "pages/index/ArticleDetail",
 			"style": {
+				"navigationStyle": "custom",
+				"app-plus": {
+				    "softinputMode": "adjustResize"
+				}
+			}
+		},
+		{
+			"path": "pages/index/ArticleDetailnew",
+			"style": {
 				"navigationStyle": "custom"
 			}
 		},
@@ -264,7 +276,10 @@
 		{
 			"path": "pages/index/ArticleComment",
 			"style": {
-				"navigationBarTitleText": "评论详情"
+				"navigationBarTitleText": "评论详情",
+				"app-plus": {
+				    "softinputMode": "adjustResize"
+				}
 			}
 		},
 		{

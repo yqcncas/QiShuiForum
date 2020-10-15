@@ -11,17 +11,18 @@
 					<view class="ArticleMain-info-item-first-left">
 						<view class="ArticleMain-info-item-first-left-top u-skeleton-rect">
 							<image src="../../static/image/huo.png" mode="aspectFill" v-if="item.isCreamFlag" style="width: 32rpx; height: 32rpx;"></image>
-							{{item.title}}
+							<text style="flex: 1;display: -webkit-box; -webkit-box-orient: vertical;-webkit-line-clamp: 2; overflow: hidden;">{{item.title}}</text>
 						</view>
 						<view class="ArticleMain-info-item-onlyImg"   v-if="item.recommendType == 2">
-							<image :src="item.pics[0]" mode="aspectFill" style="width: 100%; height: 144rpx;"></image>
+							<!-- <image :src="item.pics[0]" mode="aspectFill" style="width: 100%; height: 144rpx;"></image> -->
+							<image :src="item.pics[0]" mode="aspectFill" style="width: 100%; height: 192rpx;"></image>
 						</view>
 						<view class="ArticleMain-info-item-moreImg"   v-if="item.recommendType == 3">
 							<image :src="itemImg" style="" mode="aspectFill" v-for="(itemImg, i) in item.pics" :key = "i"  v-if = "i < 3"></image>
 						</view>
-						<view class="ArticleMain-info-item-first-left-bottom" :style="{paddingTop: item.pics.length <= 0 ? '36rpx' : '58rpx'}">
-							<view class="ArticleMain-info-item-first-left-bottom-read u-skeleton-rect">{{item.browseNum}}阅读量</view>
-							<view class="ArticleMain-info-item-first-left-bottom-timer u-skeleton-rect">{{item.createTime}}</view>
+						<view class="ArticleMain-info-item-first-left-bottom" :style="{paddingTop: item.pics.length <= 0 ? '36rpx' : '40rpx'}">
+							<view class="ArticleMain-info-item-first-left-bottom-read u-skeleton-rect" style="white-space: nowrap; word-break: break-all;">{{item.browseNum}}阅读量</view>
+							<view class="ArticleMain-info-item-first-left-bottom-timer u-skeleton-rect" style="white-space: nowrap; word-break: break-all;">{{item.createTime}}</view>
 						</view>
 						
 					</view>
@@ -40,7 +41,7 @@
 					<view class="hotAdvertType-box">
 						<view class="ArticleDetail-footer-main-item-advertising-top">
 							<view class="ArticleDetail-footer-main-item-advertising-top-left">{{item.title}}</view>
-							<view class="ArticleDetail-footer-main-item-advertising-top-right">广告</view>
+							<view class="ArticleDetail-footer-main-item-advertising-top-right" style="margin-right: 16rpx; height: 30rpx;line-height: 30rpx;text-align: center;transform: translateY(5rpx);word-break : break-all;white-space: nowrap;">{{item.type == 0 ? '广告' : item.type == 1 ? '公益' :  item.type == 2 ? '公告' : '活动'}}</view>
 						</view>
 						<view class="ArticleDetail-footer-main-item-advertising-center">
 									
@@ -207,6 +208,7 @@
 							-webkit-line-clamp: 2;    //控制行数
 							overflow: hidden;
 							display: flex;
+							
 							image{
 								width: 32rpx;
 								height: 32rpx;
@@ -301,20 +303,28 @@
 					// justify-content: space-between;
 					.hotAdvertType-box{
 						flex: 1;
+						height: 166rpx;
+						overflow: hidden;
 					}
 					.hotAdvertTypeOnly{
 						width: 250rpx;						height: 166rpx;
 					}
 					.ArticleDetail-footer-main-item-advertising-top{
 						display: flex;
-						align-items: center;
+						// align-items: center;
+						align-items: flex-start;
 						.ArticleDetail-footer-main-item-advertising-top-left{
 							font-family: PingFangSC-Medium;
 							font-size: 14px;
 							color: #141414;
 							letter-spacing: -0.34px;
+							display: -webkit-box;    
+							-webkit-box-orient: vertical;    
+							-webkit-line-clamp: 2;    //控制行数
+							overflow: hidden;
 						}
 						.ArticleDetail-footer-main-item-advertising-top-right{
+							
 							font-family: PingFangSC-Medium;
 							font-size: 8px;
 							color: #FF7B30;
@@ -324,6 +334,7 @@
 							padding: 0 10rpx;
 							box-sizing: border-box;
 							margin-left: 16rpx;
+							transform: translateY(8rpx);
 						}
 					}
 					.ArticleDetail-footer-main-item-advertising-center{

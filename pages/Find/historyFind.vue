@@ -17,12 +17,16 @@
 				<view class="find-main-item-bottom-right" @click.stop="joinUs(item)" :class="{noImg: item.isActiveing != 0}">{{item.isActiveing == 0 ? '立即参加' : item.isActiveing == 1 ? '已过期' : '暂未开始'}}</view>
 			</view>
 		</view>
+		<u-empty text="暂无活动" mode="data" v-if = "isEmpty" style = "position: relative; transform: translateY(250%);"></u-empty>
 	</view>
 </template>
 
 <script>
 	export default {
 		onLoad () {
+			if (uni.getStorageSync('adcode')) {
+				this.adcode = uni.getStorageSync('adcode')
+			}
 			this.initFindList() 
 		},
 		data () {
@@ -30,7 +34,9 @@
 				pageNum: 0,
 				pageSize: 10,
 				hasFlag: true,
-				findList: []
+				findList: [],
+				adcode: '',
+				isEmpty: false
 			}
 		},
 		methods: {
@@ -44,9 +50,14 @@
 				var date1 = this.$dayjs().unix()
 				if (!this.hasFlag) return
 				this.pageNum = ++this.pageNum
-				let res = await this.$fetch(this.$api.get_activity_list, {pageNum: this.pageNum, pageSize: this.pageSize, type: 0}, 'POST', 'FORM')
-				console.log(res)
+				let res = await this.$fetch(this.$api.get_activity_list, {adcode: this.adcode, pageNum: this.pageNum, pageSize: this.pageSize, type: 0}, 'POST', 'FORM')
+				
 				this.findList = [...this.findList, ...res.rows]
+				if (this.findList.length) {
+					this.isEmpty = false
+				} else {
+					this.isEmpty = true
+				}
 				this.findList.forEach(item => {
 					var date2 = this.$dayjs(item.startTime).unix()
 					var date3 = this.$dayjs(item.endTime).unix()
@@ -60,7 +71,7 @@
 					}
 					
 				})
-				console.log(this.findList)
+				
 				
 				this.hasFlag = this.pageNum * this.pageSize < res.total
 			},
@@ -88,6 +99,7 @@
 		display: none;
 	}
 	.find-main{
+		
 		padding-bottom: 30rpx;
 			.find-main-item{
 				// padding-top: 10rpx;
@@ -101,7 +113,7 @@
 					box-sizing: border-box;
 					.find-main-item-header-top{
 						font-family: PingFangSC-Medium;
-						font-size: 14px;
+						font-size: 16px;
 						color: #141414;
 						letter-spacing: -0.34px;
 						text-align: justify;
@@ -109,10 +121,12 @@
 					}
 					.find-main-item-header-bottom{
 						font-family: PingFangSC-Regular;
-						font-size: 10px;
+						font-size: 14px;
 						color: #686868;
 						letter-spacing: -0.24px;
 						text-align: justify;
+						padding-top: 6rpx;
+						padding-bottom: 20rpx;
 					}
 				}
 				.find-main-item-center{
@@ -139,13 +153,13 @@
 						align-items: center;
 						.find-main-item-bottom-left-hot{
 							font-family: PingFangSC-Medium;
-							font-size: 10px;
+							font-size: 14px;
 							color: #FE1818;
 							letter-spacing: -0.29px;
 						}
 						.find-main-item-bottom-left-num{
 							font-family: PingFangSC-Medium;
-							font-size: 10px;
+							font-size: 14px;
 							color: #232323;
 							letter-spacing: -0.29px;
 							text-align: justify;
@@ -160,7 +174,7 @@
 						line-height: 62rpx;
 						text-align: center;
 						font-family: PingFangSC-Medium;
-						font-size: 10px;
+						font-size: 14px;
 						color: #FFFFFF;
 						letter-spacing: -0.29px;
 						background-image: linear-gradient(136deg, #FF8D3F 0%, #E86D29 100%);

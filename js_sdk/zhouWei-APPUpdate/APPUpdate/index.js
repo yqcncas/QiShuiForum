@@ -18,7 +18,7 @@ const platform = uni.getSystemInfoSync().platform;
 // 主颜色
 const $mainColor = "FF5B78";
 // 弹窗图标url
-const $iconUrl = "/static/icon/ic_ar.png";
+const $iconUrl = "../static/icon/ic_ar.png";
 
 // 获取当前应用的版本号
 export const getCurrentNo = function(callback) {
@@ -54,10 +54,18 @@ const getServerNo = function(version,isPrompt = false, callback) {
 	// 可以用自己项目的请求方法
 	fetch(api.get_new_version, {type: type},'GET', "FORM").then(res => {
 		console.log(res)
-		if (res.msg == null)  return uni.showToast({
-				title: "暂无新版本",
-				icon: "none"
-		});
+		
+		let routes = getCurrentPages(); // 获取当前打开过的页面路由数组
+		let curRoute = routes[routes.length - 1].route
+		// console.log(curRoute == 'pages/index/index')
+		if (res.msg == null && curRoute == 'pages/index/index' ) {
+			return ''
+		} else {
+			uni.showToast({
+					title: "暂无新版本",
+					icon: "none"
+			});
+		}
 		
 		let msg = JSON.parse(res.msg)
 			msg.upDateFlag = false

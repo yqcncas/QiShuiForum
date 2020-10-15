@@ -32,6 +32,7 @@
 	import wmPoster from "@/components/wm-poster/wm-poster.vue"
 	export default {
 		onLoad() {
+			if (uni.getStorageSync('adcode')) {				this.adcode = uni.getStorageSync('adcode')			}
 			this.getQrcode()
 			this.initFindHeaderImg()
 			this.initBytype()
@@ -42,6 +43,7 @@
 		},
 		data () {
 			return {
+				adcode: '',
 				showShareBoxFlag: false,
 				signValue: {},
 				yesterday: {},
@@ -56,7 +58,7 @@
 		},
 		methods: {
 			async getQrcode(){
-				let res = await this.$fetch(this.$api.get_user_qrcode, {}, "GET", 'FORM')
+				let res = await this.$fetch(this.$api.get_user_qrcode, {adcode: this.adcode}, "GET", 'FORM')
 				this.qrCode = baseURL + res.data.path
 				this.canvasPic = res.data.pic ? res.data.pic : '../../static/qslogo.png'
 				this.title = res.data.title ? res.data.title : '汽水网'
@@ -137,7 +139,7 @@
 			
 			},
 			async initFindHeaderImg () {
-				let res = await this.$fetch(this.$api.getadvertlist, {type: 3}, "POST", 'FORM')
+				let res = await this.$fetch(this.$api.getadvertlist, {adcode: this.adcode,type: 3}, "POST", 'FORM')
 				console.log(res)
 				if (!res.data.length) {
 					this.signTitle.titlePic = ''

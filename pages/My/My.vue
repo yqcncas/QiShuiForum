@@ -1,7 +1,20 @@
 <template>
 	<view class="my">
 		<scroll-view scroll-y="true"  style="height: 100vh;">
-			
+			<u-navbar :is-back="false" title="我的" :background="background" title-color = "black" title-size = "34">
+				<!-- <view class="slot-wrap"> -->
+						<view class="navbar-right" slot="right" >
+							<view class="message-box right-item" @click.stop="saoyisao">
+								<image src="../../static/image/ych/my/29.png" mode=""></image>
+							</view>
+							<view class="dot-box right-item" @click.stop="goToMessage">
+								<!-- <u-icon name="calendar-fill" size="38"></u-icon> -->
+								<image :src="redShow ? '../../static/image/ld1.png' : '../../static/image/ld.png'" mode=""></image>
+								<!-- <u-badge size="mini" :is-dot="true" :offset="[2, 6]"></u-badge> -->
+							</view>
+						</view>
+				<!-- </view> -->
+			</u-navbar>
 		
 <!-- 		<view class="my-header" @click="goToMyHomePage">
 			<view class="my-header-left">
@@ -71,9 +84,13 @@
 					<view class="new-my-header-box-level">Lv.{{usreInfo.level}}</view>
 				</view>
 				<view class="new-my-header-box-info" @click="goToMyInfo(usreInfo)">
-					<image src="../../static/image/ych/my/1.png" mode="aspectFill" v-if="usreInfo.sex == 0"></image>
-					<image src="../../static/image/ych/my/2.png" mode="aspectFill" v-if="usreInfo.sex == 1"></image>
-					<view class="new-my-header-box-info-name">{{usreInfo.userName ? usreInfo.userName: '未登录'}}</view>
+					<view class="new-my-header-box-info-wrapper">
+						<image src="../../static/image/ych/my/1.png" mode="aspectFill" v-if="usreInfo.sex == 0"></image>
+						<image src="../../static/image/ych/my/2.png" mode="aspectFill" v-if="usreInfo.sex == 1"></image>
+						<view class="new-my-header-box-info-name">{{usreInfo.userName ? usreInfo.userName: '未登录'}}</view>
+					</view>
+					
+					<view class="new-my-header-box-info-label" v-for="(item, index) in usreInfo.userLabel">{{item}}</view>
 				</view>
 				<view class="new-my-header-box-sign" @click="goToMyInfo(usreInfo)">{{usreInfo.gxSign ? usreInfo.gxSign : '还没有个性签名，快去编辑吧！' }}</view>
 				<view class="new-my-header-box-status" @click="goToMyHomePage">
@@ -206,18 +223,38 @@
 					
 		</view>
 		</scroll-view>
+		<view class="readCircle"></view>
 	</view>
 </template>
 
 <script>
 	export default {
+		onLoad() {
+			
+		},
 		onShow() {
+			// var webView = this.$mp.page.$getAppWebview();
+			
+			// // 修改buttons    
+			// // index: 按钮索引, style {WebviewTitleNViewButtonStyles }    
+			//     webView.setTitleNViewButtonStyle(1, {    
+			//          text: '\ue60d',    
+			// });
+			if (uni.getStorageSync('newMessageFlag')) {
+				this.redShow = true
+			} else {
+				this.redShow = false
+			}
 			this.initMyInfo()
 			this.$fetch(this.$api.get_new_version, {type: 1}, "GET", "FORM")
 		},
 		data () {
 			return {
-				usreInfo: {}
+				usreInfo: {},
+				background: {
+					backgroundColor: '#fff',
+				},
+				redShow: false
 			}
 		},
 		onNavigationBarButtonTap (e) {
@@ -230,7 +267,7 @@
 				uni.scanCode({
 				    onlyFromCamera: true,
 				    success:  async (res) => {
-			
+						console.log(res)
 						let msg = await this.$fetch(this.$api.write_off_goods, {code: res.result}, "POST", 'FORM')
 						console.log(msg)
 				    }
@@ -239,6 +276,27 @@
 			
 		},
 		methods: {
+			goToMessage () {
+				uni.navigateTo({
+					url: '../Message/Message'
+				})
+			},
+			saoyisao () {
+				uni.scanCode({
+				    onlyFromCamera: true,
+				    success:  async (res) => {
+						
+						let msg = await this.$fetch(this.$api.write_off_goods, {code: res.result}, "POST", 'FORM')
+						console.log(msg)
+						if (msg.code == 0) {
+							uni.showToast({
+								icon: 'success',
+								title: msg.msg
+							})
+						}
+				    }
+				});
+			},
 			// 个人信息
 			async initMyInfo () {
 				let res = await this.$fetch(this.$api.getCurrentUser, {}, 'GET', 'FORM')
@@ -253,13 +311,20 @@
 				
 				res.data.user.followNum = res.data.followNum
 				
+				
 				this.usreInfo = res.data.user
+				if (this.usreInfo.userLabel.length) {
+					this.usreInfo.userLabel = this.usreInfo.userLabel.split(',')
+				}
 				console.log(this.usreInfo)
 				uni.setStorageSync('userId', this.usreInfo.userId)
 				uni.setStorageSync('userAvatar', this.usreInfo.avatar)
 				uni.setStorageSync('userName', this.usreInfo.userName)
 				uni.setStorageSync('userLevel', this.usreInfo.level)
 				uni.setStorageSync('plateName', this.usreInfo.plateName)
+				if (res.data.token) {
+					uni.setStorageSync('token', res.data.token)
+				}
 			},
 			
 			
@@ -381,6 +446,26 @@
 	}
 	.my{
 		padding-bottom: 30rpx;
+		.slot-wrap {
+				display: flex;
+				align-items: center;
+				flex: 1;
+		}
+		.navbar-right {
+				margin-right: 24rpx;
+				display: flex;
+		}
+		.right-item {
+			margin: 0 12rpx;
+			position: relative;
+			color: #ffffff;
+			display: flex;
+			image{
+				width: 42rpx;
+				height: 42rpx;
+			}
+		}
+	
 		.my-header{
 			width: 100%;
 			height: 180rpx;
@@ -667,6 +752,7 @@
 					image{
 						width: 210rpx;
 						height: 210rpx;
+						border-radius: 50%;
 					}
 					.new-my-header-box-level{
 						position: absolute;
@@ -687,19 +773,42 @@
 					}
 				}
 				.new-my-header-box-info{
+					width: 100%;
 					display: flex;
 					align-items: center;
+					
 					padding-top: 20rpx;
 					box-sizing: border-box;
-					transform: translateX(-16rpx);
-					image{
-						width: 32rpx;
-						height: 32rpx;
-						margin-right:12rpx;
-						box-sizing: border-box;
+					// transform: translateX(-16rpx);
+				
+					.new-my-header-box-info-wrapper{
+						width: 58%;
+						
+						display: flex;
+						justify-content: flex-end;
+						align-items: center;
+						image{
+							width: 32rpx;
+							height: 32rpx;
+							margin-right:12rpx;
+							box-sizing: border-box;
+						}
+						.new-my-header-box-info-name{
+							font-weight: bold;
+						}
 					}
-					.new-my-header-box-info-name{
-						font-weight: bold;
+					.new-my-header-box-info-label{
+						padding: 1px 5px;
+						background-image: linear-gradient(180deg, #F99788 0%, #F05E50 100%);
+						border-radius: 1px;
+						box-sizing: border-box;
+						font-family: PingFangSC-Medium;
+						font-size: 8px;
+						color: #FFFFFF;
+						letter-spacing: -0.19px;
+						text-align: center;
+						margin-left: 10rpx;
+						box-sizing: border-box;
 					}
 					
 				}
@@ -786,6 +895,14 @@
 					}
 				}
 			}
+		}
+		.readCircle{
+			// width: 20rpx;
+			// height: 20rpx;
+			// border-radius: 50%;
+			// background-color: #f40;
+			// position: absolute;
+			// top: 0;
 		}
 	}
 </style>

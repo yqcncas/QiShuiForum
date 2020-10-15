@@ -92,10 +92,10 @@
 												
 					dcRichAlert.logIn({username: imUserName,password: imUserName}, result => {console.log(result)});
 					
-					
+					uni.setStorageSync('loginSuccess', true)
 					setTimeout(() => {
 						uni.switchTab({
-							url: '../My/My'
+							url: '../index/index'
 						})
 					}, 500)
 					

@@ -49,6 +49,7 @@
 						</view>
 					</view>
 				</view>
+				<u-empty text="暂无数据" mode="data" v-if = "nodata" style = "position: relative; left: 50%; transform: translate(-50%, 100%);"></u-empty>
 			</view>
 		</view>
 	</view>
@@ -58,17 +59,34 @@
 
 	export default {
 		onLoad(){
+			if (uni.getStorageSync('adcode')) {
+				this.adcode = uni.getStorageSync('adcode')
+			}
 			this.initMyInfo()
 			this.initMarketList()
 		},
+		onShow() {
+			
+		},
 		data() {
 			return {
+				nodata: false,
+				adcode: '',
 				pageNum: 0,
 				pageSize: 10,
 				hasFlag: true,
 				marketList: [],
 				myJf: 0
 			}
+		},
+		onTabItemTap() {
+			if (uni.getStorageSync('adcode')) {
+				this.adcode = uni.getStorageSync('adcode')
+			}
+			this.pageNum = 0
+			this.hasFlag = true
+			this.marketList = []
+			this.initMarketList()
 		},
 		methods: {
 			// 去积分商城
@@ -99,9 +117,14 @@
 			async initMarketList () {
 				if (!this.hasFlag) return
 				this.pageNum = ++this.pageNum
-				let res = await this.$fetch(this.$api.goods_list, {boutiqueFlag: 1, goodsStatus: 1, pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
+				let res = await this.$fetch(this.$api.goods_list, {adcode: this.adcode,boutiqueFlag: 1, goodsStatus: 1, pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
 				console.log(res)
 				this.marketList = [...this.marketList, ...res.rows]
+				if (this.marketList.length) {
+					this.nodata = false
+				} else {
+					this.nodata = true
+				}
 				this.hasFlag = this.pageNum * this.pageSize < res.total
 			},
 			async initMyInfo () {
@@ -231,7 +254,7 @@
 					align-items: center;
 					.market-list-top-right-text{
 						font-family: PingFangSC-Medium;
-						font-size: 10px;
+						font-size: 12px;
 						color: #545454;
 						letter-spacing: -0.29px;
 						text-align: justify;

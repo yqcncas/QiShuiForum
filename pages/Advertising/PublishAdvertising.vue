@@ -89,13 +89,11 @@
 			// 倍数
 			async initBytype () {
 				let res = await this.$fetch(this.$api.get_property_by_type, {type: 1}, "POST", 'FORM')
-				console.log(res)
 				this.magnification = res.data.buy_top_amount_by_day
 			},
 			// 七牛
 			async initQNToken () {
 				let res = await this.$fetch(this.$api.getQiniuToken, {}, 'POST', 'FORM')
-				console.log(res)
 				this.QNtoken = {
 					token: res.msg
 				}	
@@ -124,10 +122,26 @@
 					title: '请上传至少一张图片'
 				})
 				
+				let imgArr = ''
+				let contentMain = ''
+				let content = [
+					{
+						content: this.content,
+						pic: []
+					}
+				]
+				this.pics.forEach(item => {
 				
-				uni.navigateTo({
-					url: '../Pay/Pay?price=' + this.payPrice + '&content=' + this.content + '&day=' + this.day + '&title=' + this.title + '&type=' + 2 + '&pics=' + JSON.stringify(this.pics)
+					content[0].pic.push(item)
+					imgArr += `<img src = "${item}"></img>`
 				})
+				
+				contentMain = `<p style = "padding-bottom: 20rpx">${this.content}</p>${imgArr}`
+				console.log(contentMain)
+				uni.navigateTo({
+					url: '../Pay/Pay?price=' + this.payPrice + '&content=' + JSON.stringify(content) + '&day=' + this.day + '&title=' + this.title + '&type=' + 2 + '&pics=' + JSON.stringify(this.pics) + '&richText=' + contentMain
+				})
+				
 			},
 			// 支付方式
 			handleCircle (index) {
@@ -137,13 +151,13 @@
 			onUploaded (lists) {
 				this.pics = []
 				lists.forEach(item => {
-					console.log(item)
+			
 					this.pics.push(this.$api.baseLocation + item.response.hash)
 				})
 			},
 			// 删除图片
 			onRemove (e) {
-				console.log(e)
+				
 				this.pics.splice(e, 1)
 			},
 			changPrice () {

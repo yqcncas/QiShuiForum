@@ -2,9 +2,12 @@
 export default {
 	// dev:'http://192.168.8.8:8096/',
 	// pro: 'http://192.168.8.8:8096/',
-	dev:'http://106.54.226.179:8096/',
-	pro: 'http://106.54.226.179:8096/',
 	
+	// dev:'http://81.68.217.34:8096/',
+	// pro: 'http://81.68.217.34:8096/',
+	
+	dev:'https://admin.qswvip.com/',
+	pro: 'https://admin.qswvip.com/',
 	
 	//　上传头像地址
 	baseLocation: 'https://img.bajiaostar.com/', 

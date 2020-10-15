@@ -23,7 +23,7 @@
 						<view class="find-main-item-header-bottom">活动时间：{{item.createTime}}-{{item.endTime}}</view>
 					</view>
 					<view class="find-main-item-center">
-						<image :src="item.titlePic" mode="aspectFill"></image>
+						<image :src="item.titlePic ? item.titlePic : '../../static/qslogo.png'" mode="aspectFill"></image>
 					</view>
 					<view class="find-main-item-bottom">
 						<view class="find-main-item-bottom-left">
@@ -45,18 +45,34 @@
 		mixins: [MescrollMixin],
 		onLoad() {
 			this.initFindHeaderImg()
+			// this.initFindList()
+		},
+		onShow() {
+			console.log(uni.getStorageSync('adcode'))
+			if (uni.getStorageSync('adcode')) {
+				this.adcode = uni.getStorageSync('adcode')
+			}
+		},
+		onTabItemTap() {
+			this.pageNum = 0
+			this.pageSize = 10
+			this.hasFlag = true
+			this.findList = []
 			this.initFindList()
 		},
 		data() {
 			return {
-				findHeader: {},
+				findHeader: {
+					titlePic: ''
+				},
 				pageNum: 0,
 				pageSize: 10,
 				hasFlag: true,
 				findList: [],
 				upOption: {
 					use: false
-				}
+				},
+				adcode: ''
 			}
 		},
 		methods: {
@@ -80,7 +96,8 @@
 			async initFindList () {
 				if (!this.hasFlag) return
 				this.pageNum = ++this.pageNum
-				let res = await this.$fetch(this.$api.get_activity_list, {pageNum: this.pageNum, pageSize: this.pageSize, type: 1}, 'POST', 'FORM')
+				console.log(this.adcode)
+				let res = await this.$fetch(this.$api.get_activity_list, {adcode: this.adcode,pageNum: this.pageNum, pageSize: this.pageSize, type: 1}, 'POST', 'FORM')
 				console.log(res)
 				this.findList = [...this.findList, ...res.rows]
 				let obj = {};
@@ -89,7 +106,7 @@
 				    obj[next.id] ? "" : obj[next.id] = true && cur.push(next);
 				    return cur;
 				},[]) //设置cur默认类型为数组，并且初始值为空的数组
-
+				console.log(this.findList)
 				this.hasFlag = this.pageNum * this.pageSize < res.total
 			},
 			// 全部活动
@@ -100,9 +117,15 @@
 			},
 			// 头部图
 			async initFindHeaderImg () {
-				let res = await this.$fetch(this.$api.getadvertlist, {type: 5}, "POST", 'FORM')
+				let res = await this.$fetch(this.$api.getadvertlist, {adcode: this.adcode, type: 5}, "POST", 'FORM')
 				console.log(res)
 				this.findHeader = res.data[0]
+				console.log(this.findHeader)
+				if(this.findHeader == undefined) {
+					this.findHeader = {
+						titlePic: ''
+					}
+				}
 			},
 			//　去富文本
 			goToRichPage () {

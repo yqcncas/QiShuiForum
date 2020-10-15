@@ -9,6 +9,7 @@
 			<view class="img-sao" @click="saoyisao">
 				<image src="../../static/image/ych/my/29.png" mode=""></image>
 			</view>
+			<view style="flex: 1;text-align: right;" @click="numberHx">数字核销</view>
 		</view>
 		
 		<view class="my-order">
@@ -31,7 +32,13 @@
 			
 		</view>
 		<uniLoadMore bgColor="rgba(255, 255, 255)" :status="hasFlag ? 'loading' : 'noMore'"></uniLoadMore>
-		
+		<u-popup v-model="numberHxFlag" mode="center" border-radius="14" width="80%" height="400rpx" :mask-close-able = "false" :closeable = "true">
+				<view class="hx-number-box">
+					<view class="hx-number-box-title">请输入您的数字核销码</view>
+					<u-input v-model="heNumber" :type="type" :border="border" placeholder = "请输入数字核销码" style = "width: 100%;" />
+					<u-button type="primary" :custom-style="customStyle" :ripple="true" ripple-bg-color="#909399" @click = "hexiao">确认核销</u-button>
+				</view>
+		</u-popup>
 	</view>
 </template>
 
@@ -45,7 +52,16 @@
 				hasFlag: true,
 				pageNum: 0,
 				pageSize: 10,
-				WalletList: []
+				WalletList: [],
+				numberHxFlag: false,
+				type: 'number',
+				border: true,
+				customStyle: {
+					width: '70%',
+					marginTop: '20px', // 注意驼峰命名，并且值必须用引号包括，因为这是对象
+						
+				},
+				heNumber: ''
 			}
 		},
 		methods: {
@@ -63,6 +79,17 @@
 				  //       console.log('条码内容：' + res.result);
 						let msg = await this.$fetch(this.$api.write_off_goods, {code: res.result}, "POST", 'FORM')
 						console.log(msg)
+						if (msg.code == 0) {
+							uni.showToast({
+								icon: 'success',
+								title: msg.msg
+							})
+							this.hasFlag = true,
+							this.pageNum =  0,
+							this.pageSize = 10,
+							this.initWalletList = []
+							this.initWalletList()
+						}
 				    }
 				});
 			},
@@ -73,6 +100,23 @@
 				console.log(res)
 				this.WalletList = [...this.WalletList, ...res.rows]
 				this.hasFlag = this.pageNum * this.pageSize < res.total
+			},
+			// 数字核销
+			numberHx () {
+				this.numberHxFlag = true
+			},
+			// 数字核销
+			async hexiao () {
+				let msg = await this.$fetch(this.$api.write_off_goods, {code: this.heNumber}, "POST", 'FORM')
+				console.log(msg)
+				if (msg.code == 0) {
+					this.initWalletList()
+					uni.showToast({
+						icon: 'success',
+						title: '核销成功'
+					})
+				}
+				this.numberHxFlag = false
 			}
 		},
 		onReachBottom() {
@@ -117,10 +161,12 @@
 				color: #060606;
 				letter-spacing: 0.07px;
 				padding-left: 246rpx;
-				padding-right: 222rpx;
+				// padding-right: 222rpx;
+				padding-right: 100rpx;
 				box-sizing: border-box;
 			}
 			.img-sao{
+				
 				display: flex;
 				align-items: center;
 				position: relative;
@@ -164,16 +210,20 @@
 						justify-content: space-between;
 						align-items: center;
 						.my-order-item-right-top-left{
+							flex: 4;
 							font-family: PingFangSC-Medium;
 							font-size: 16px;
 							color: #545454;
 							letter-spacing: -0.10px;
 						}
 						.my-order-item-right-top-right{
+							flex: 1;
+							text-align: right;
 							font-family: PingFangSC-Medium;
 							font-size: 14px;
 							color: #3B3B3B;
 							letter-spacing: -0.34px;
+							
 							&.active{
 								font-family: PingFangSC-Medium;
 								font-size: 14px;
@@ -222,6 +272,21 @@
 			}
 			
 		}
-		
+		.hx-number-box{
+			padding: 20rpx;
+			padding-top: 30rpx;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			.hx-number-box-title{
+				font-size: 16px;
+				padding-bottom: 50rpx;
+				box-sizing: border-box;
+				font-weight: bold;
+				text-align: center;
+			}
+		}
 	}
 </style>
+

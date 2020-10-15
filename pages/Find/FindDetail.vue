@@ -24,7 +24,7 @@
 	import jyfParser from "@/components/jyf-parser/jyf-parser";
 	export default {
 		onLoad(options) {
-			console.log(options)
+		
 			this.id = options.id
 			this.initFindDeatil()
 			
@@ -33,7 +33,7 @@
 			jyfParser
 		},
 		onNavigationBarButtonTap () {
-			console.log('分享按钮')
+			
 			this.showShareBoxFlag = true
 		},
 		data () {
@@ -47,7 +47,7 @@
 		methods: {
 			//更改分享显示
 			changeShowBoxFLag (newV) {
-				console.log(newV)
+		
 				this.showShareBoxFlag = newV
 			},
 			// 微信分享
@@ -92,8 +92,7 @@
 			async goToApply () {
 				if (this.isActiveing == 0) {
 					let res = await this.$fetch(this.$api.activity_apply, {id: this.id}, 'POST', 'FORM')
-					console.log(res)
-					console.log(this.detailInfo.otherUrl)
+			
 					uni.navigateTo({
 						url: '../WebViewPage/WebViewPage?goUrl=' + this.detailInfo.otherUrl
 					})
@@ -110,19 +109,18 @@
 			},
 			async initFindDeatil () {
 				let res = await this.$fetch(this.$api.activity_detail, {id: this.id}, 'POST', 'FORM')
-				console.log(res)
+				
 				this.detailInfo = res.data
 				
 				var date1 = this.$dayjs().unix()
 				var date2 = this.$dayjs(this.detailInfo.startTime).unix()
 				var date3 = this.$dayjs(this.detailInfo.endTime).unix()
-				console.log(date1, date2, date3)
+				
 					
 				// console.log(date1.diff(date2)) // 20214000000 默认单位是毫秒
 			
 				// this.isActiveing = date1.diff(date2)
-				console.log(date1 - date2)
-				console.log(date3 - date1)
+		
 				// console.log(date3 - data1)
 				if (date1 - date2 >= 0 && date3 - date1 >= 0) {
 					this.isActiveing = 0

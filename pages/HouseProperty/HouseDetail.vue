@@ -2,7 +2,7 @@
 	<view class="HouseDetail">
 		<view class="HouseDetail-header">
 			<!-- <image :src="HouseDetailHeader.titlePic" mode="aspectFill"></image> -->
-			<u-image width="100%" height="378rpx" :src="HouseDetailHeader.titlePic" :fade="true" duration="450">
+			<u-image width="100%" height="378rpx" :src="HouseDetailHeader.contentPic" :fade="true" duration="450">
 				<u-loading slot="loading"></u-loading>
 			</u-image>
 		</view>
@@ -20,6 +20,7 @@
 <script>
 	export default {
 		onLoad(options) {
+			if (uni.getStorageSync('adcode')) {				this.adcode = uni.getStorageSync('adcode')			}
 			this.type = options.type
 			this.id = options.id
 			this.initHouseDetail()
@@ -27,6 +28,7 @@
 		},
 		data () {
 			return {
+				adcode: '',
 				type: 0, // 0车 1房
 				id: 0,
 				pageNum: 0,
@@ -58,7 +60,7 @@
 			async initHouserBottom () {
 				if (!this.hasFlag) return
 				this.pageNum = ++this.pageNum
-				let res = await this.$fetch(this.$api.hot_special, {id: this.id, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
+				let res = await this.$fetch(this.$api.hot_special, {adcode: this.adcode, id: this.id, pageNum: this.pageNum, pageSize: this.pageSize}, 'POST', 'FORM')
 				console.log(res)
 				res.rows.forEach(item => {
 					item.pics = item.titlePic.split(',')

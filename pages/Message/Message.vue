@@ -63,13 +63,15 @@
 </template>
 
 <script>
-	// const dcRichAlertIos = uni.requireNativePlugin('ZWM-BJXJobView'); // ios
+	// 聊天  导入插件 用作删除和获取消息列表用
 	let dcRichAlert
 	if (uni.getSystemInfoSync().platform == 'android') {
 		dcRichAlert = uni.requireNativePlugin('ZWM-BJXMapView');
 	} else {
 		dcRichAlert = uni.requireNativePlugin('ZWM-BJXJobView');
 	}
+	
+	// 导入聊天插件 用作点击进入聊天
 	import chat from '../../chat.js'
 	
 	export default {
@@ -97,12 +99,7 @@
 			clearInterval(this.timer)
 			this.timer = null
 		},
-		onReady() {
-			// dcRichAlert.addNewMessageReceiver({}, result => {
-			// 	console.log(result)
-			// 	this.getMessageList()
-			// })
-		},
+
 		onShow() {
 			// this.getMessageList()
 			if (uni.getStorageInfoSync('newMessageFlag')) {
@@ -131,7 +128,7 @@
 					url: './Comment?type=' + index
 				})
 			},
-			// 点击删除
+			// 点击删除 
 			clickDel(index, index1) {
 				console.log(index, index1)
 				dcRichAlert.removeConversationList({username: this.MessageList[index].username}, result => {
@@ -157,6 +154,8 @@
 					if(index != idx) this.MessageList[idx].show = false;
 				})
 			},
+			
+			// 获取消息列表
 			getMessageList () {
 				
 					dcRichAlert.getMyConversationList({}, result => { 
@@ -181,17 +180,7 @@
 						} else {
 							this.MessageList = result.result
 							this.MessageList.forEach((item, index) => {
-								// if (item.targetInfo != undefined) {
-								// 	item.avatar = item.targetInfo.avatar
-								// 	item.show = false
-								// 	item.username = item.targetInfo.username
-								// 	item.nickname = item.targetInfo.nickname
-								// } else {
-								// 	item.avatar = ''
-								// 	item.show = false
-								// 	item.username = item.targetInfo.username
-								// 	item.nickname = item.targetInfo.nickname
-								// }
+	
 								item.avatar = item.targetInfo.avatar
 								item.show = false
 								item.username = item.targetId
@@ -204,6 +193,8 @@
 					})
 				
 			},
+			
+			// 进入聊天
 			chatMsg (username, nickname, index) {
 				console.log(index)
 				this.MessageList[index].getUnReadMsgCnt = 0

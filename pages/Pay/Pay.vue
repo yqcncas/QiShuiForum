@@ -60,6 +60,7 @@
 			
 			this.price= options.price
 			this.type = options.type
+			this.richText = options.richText
 			if (this.type == 1) {
 				// this.startTime = options.startTime
 				// this.endTime = options.endTime
@@ -94,7 +95,8 @@
 				tfstartTime: '',
 				tfendTime: '',
 				payContent: '是否确认支付',
-				mianzeBox: false
+				mianzeBox: false,
+				richText: ''
 			}
 		},
 		methods: {
@@ -126,7 +128,8 @@
 							} else if (this.type == 1) {
 								res = await this.$fetch(this.$api.buy_top, {articleId : this.id, payType: this.currentIndex, day: this.day}, 'POST', 'FORM')
 							} else if (this.type == 2) {
-								res = await this.$fetch(this.$api.buy_advert, {payType: this.currentIndex, content: this.content, day: this.day, pics: this.pics, title: this.title}, 'POST', 'FORM')
+								let adcode = uni.getStorageSync('adcode')
+								res = await this.$fetch(this.$api.buy_advert, {adcode: adcode, payType: this.currentIndex, content: this.content, day: this.day, pics: this.pics, title: this.title, richText: this.richText}, 'POST', 'FORM')
 							} else if (this.type == 3) {
 								res = await this.$fetch(this.$api.buy_refueling_bag, {id: this.id, num: this.num, payType: this.currentIndex,}, 'POST', 'FORM')
 							}

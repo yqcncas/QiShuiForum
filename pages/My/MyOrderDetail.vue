@@ -26,6 +26,7 @@
 			
 			<view class="qrcode" v-if="qrCode">
 				<!-- {{qrCode}} -->
+				<p style = "font-weight: bold;">数字核销码: {{orderDetail.writeOffQrCode}}</p>
 				<image :src="qrCode" mode="aspectFill"></image>
 			</view>
 		</view>
@@ -154,13 +155,13 @@
 			border-bottom: 6rpx solid #f4f4f4;
 			.MyOrderDetail-center-top{
 				font-family: PingFangSC-Regular;
-				font-size: 10px;
+				font-size: 14px;
 				color: #292929;
 				letter-spacing: 0.04px;
 			}
 			.MyOrderDetail-center-bottom{
 				font-family: PingFangSC-Regular;
-				font-size: 10px;
+				font-size: 14px;
 				color: #292929;
 				letter-spacing: 0.04px;
 				padding-top: 14rpx;
@@ -170,7 +171,7 @@
 		.MyOrderDetail-bottom{
 			.MyOrderDetail-bottom-title{
 				font-family: PingFangSC-Medium;
-				font-size: 10px;
+				font-size: 14px;
 				color: #292929;
 				letter-spacing: 0.04px;
 				padding-left: 30rpx;

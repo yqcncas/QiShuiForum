@@ -6,7 +6,7 @@
 				<image src="../../static/image/ych/back.png" mode="aspectFill" class="back"></image>
 			</view>
 			
-			<view class="ArticleDetail-title-center">正文</view>
+			<view class="ArticleDetail-title-center"></view>
 			<view class="like-img-box" v-if="ArtDetail.createTime" @click="collectionArt(ArtDetail)">
 				<image src="../../static/image/ych/index/19.png" mode="aspectFill" class="like" v-if="showFollow && !ArtDetail.params.collection" ></image>
 				<image src="../../static/image/ych/index/20.png" mode="aspectFill" class="like" v-if="showFollow && ArtDetail.params.collection"></image>
@@ -58,7 +58,7 @@
 				
 			</view> -->
 			
-		<jyf-parser :html="ArtDetail.richText" ref="article"></jyf-parser>
+		<jyf-parser :html="ArtDetail.richText" ref="article" style="padding-left: 30rpx; padding-right: 30rpx;"></jyf-parser>
 		</view>
 		<view class="ArticleDetail-footer">
 			<view class="ArticleDetail-footer-top" :class="{stick: stickFlag}">
@@ -94,7 +94,7 @@
 							<view class="chat-dianzan" @click.stop = "updatePrise(item.id, item)">
 								<image :class="{startAnimation: item.shaked}" :src="item.status == 1 ? '../../static/image/ych/index/27.png' : '../../static/image/ych/index/28.png'" mode="aspectFill"></image>
 								<!-- <image src="" mode="aspectFill"></image> -->
-								<view class="chat-dianzan-text">点赞</view>
+								<view class="chat-dianzan-text">点赞  {{item.praiseNum}}</view>
 							</view>
 							<view class="chat-img" @click.stop="handleInputFocus(item, index)">
 								<image src="../../static/image/ych/index/23.png" mode=""></image>
@@ -107,7 +107,7 @@
 					
 					</view>
 					
-					<view class="ArticleDetail-footer-main-item-advertising" v-if="index == 5 && guangGaoInfo != undefined" @click.stop="goToRichText">
+					<view class="ArticleDetail-footer-main-item-advertising" v-if="index == 4 && guangGaoInfo != undefined" @click.stop="goToRichText">
 						<view class="ArticleDetail-footer-main-item-advertising-top">
 							<view class="ArticleDetail-footer-main-item-advertising-top-left">{{guangGaoInfo.advert.title}}</view>
 							<view class="ArticleDetail-footer-main-item-advertising-top-right">广告</view>
@@ -167,9 +167,10 @@
 		    jyfParser
 		},
 		onLoad(options) {
-			// this.$scope.$getAppWebview().setStyle({
-			//   softinputNavBar: 'none'
-			// })
+			this.$scope.$getAppWebview().setStyle({
+			  softinputNavBar: 'none'
+			})
+			if (uni.getStorageSync('adcode')) {				this.adcode = uni.getStorageSync('adcode')			}
 			this.ArtId = options.id
 			this.userId = options.userId
 			if (options.TopArtType) {
@@ -195,6 +196,7 @@
 		},
 		data () {
 			return {
+				adcode: '',
 				tabIndex: 0,
 				footTop: 0,
 				stickFlag: false,
@@ -268,9 +270,11 @@
 				if (item.status) {
 					item.status = 0
 					item.shaked = false
+					this.$set(item, 'praiseNum', item.praiseNum - 1)
 				} else {
 					item.status = 1
 					item.shaked = true
+					this.$set(item, 'praiseNum', item.praiseNum + 1)
 				}
 				uni.showToast({
 					icon: 'none',
@@ -344,14 +348,16 @@
 			},
 			// 广告
 			async initAdvertising () {
-				let res = await this.$fetch(this.$api.get_now_evaluate_advert, {}, "GET", 'FORM')
+				let res = await this.$fetch(this.$api.get_now_evaluate_advert, {adcode: this.adcode}, "GET", 'FORM')
 
 				let index = this.$u.random(0, res.data.length -1)
 				this.guangGaoInfo = res.data[index]
 				console.log(this.guangGaoInfo)
-				this.guangGaoInfo.advert.newContent = this.guangGaoInfo.advert.content
-				this.guangGaoInfo.advert.content = this.filterHTMLTag(this.guangGaoInfo.advert.content)
+				// this.guangGaoInfo.advert.newContent = this.guangGaoInfo.advert.content
+				// this.guangGaoInfo.advert.content = this.filterHTMLTag(this.guangGaoInfo.advert.content)
+				// this.guangGaoInfo.advert.content = JSON.parse(this.guangGaoInfo.advert.content)[0].cotet
 				this.guangGaoInfo.advert.pics = JSON.parse(this.guangGaoInfo.advert.pics)
+				console.log(this.guangGaoInfo.advert.pics)
 				this.updateguangG()
 				
 			},
@@ -368,9 +374,13 @@
 			},
 			// 广告点击
 			async goToRichText () {
+				console.log(this.guangGaoInfo)
 				let res = await this.$fetch(this.$api.upd_advert_hits, {id: this.guangGaoInfo.advert.id}, 'POST', 'FORM')
+				// uni.navigateTo({
+				// 	url: '../RichText/RichText?RichMain=' + this.guangGaoInfo.advert.newContent + '&title=' + this.guangGaoInfo.advert.title + '&pics=' + JSON.stringify(this.guangGaoInfo.advert.pics)
+				// })
 				uni.navigateTo({
-					url: '../RichText/RichText?RichMain=' + this.guangGaoInfo.advert.newContent + '&title=' + this.guangGaoInfo.advert.title + '&pics=' + JSON.stringify(this.guangGaoInfo.advert.pics)
+					url: './ArticleDetailnew?id=' + this.guangGaoInfo.advert.articleId + '&userId=' + this.guangGaoInfo.advert.userId
 				})
 			},
 			// 底部切换
@@ -453,15 +463,17 @@
 				let userId = uni.getStorageSync('userId')
 				let res = await this.$fetch(this.$api.artivle_detail_by_id, {id: this.ArtId, pageNum: this.pageNum, pageSize: 10, type: this.tabIndex, userId: userId}, "POST", 'FORM')
 				console.log(res)
+				
 				res.data.content = JSON.parse(res.data.content)
 				this.ArtDetail = res.data
 				if (this.ArtDetail.userLabel) {
 					this.ArtDetail.userLabel = this.ArtDetail.userLabel.split(',')
 				}
-				console.log(this.ArtDetail)
+				console.log('*********************')
+				console.log(this.ArtDetail.richText)
 				this.evaListTotal = this.ArtDetail.params.evaluatesList.total
 				// console.log(this.ArtDetail.params.evaluatesList.total)
-			
+				console.log(res.data.params.evaluatesList)
 				this.ArtDetailComment = [...this.ArtDetailComment, ...res.data.params.evaluatesList.rows]
 				console.log(this.ArtDetailComment)
 				
@@ -551,7 +563,13 @@
 						if (this.tabIndex == 0) {
 							let nowDayTimer = this.$dayjs().format('YYYY-MM-DD HH:mm:ss')
 							console.log(nowDayTimer)
-							console.log(this.ArtDetailComment[0])
+							console.log(this.ArtDetailComment.length)
+							// if (this.ArtDetailComment[0] == undefined) {
+							// 	this.ArtDetailComment = [{floor: 0}]
+							// }
+							if (!this.ArtDetailComment.length) {
+								// this.ArtDetailComment.push({floor: 0})
+							}
 							this.ArtDetailComment.unshift({
 								id: res.data,
 								articleId: this.ArtId,
@@ -564,7 +582,7 @@
 								plateName: uni.getStorageSync('plateName'),
 								params: [],
 								createTime: nowDayTimer,
-								floor: this.ArtDetailComment[0].floor + 1,
+								floor: this.ArtDetailComment.length ? this.ArtDetailComment[0].floor + 1 : 1,
 								status: 0,
 								shaked: false
 							})
@@ -669,7 +687,7 @@
 			font-weight: bold;
 			padding-left: 32rpx;
 			padding-right: 32rpx;
-
+			padding-top: 10rpx;
 			display: -webkit-box;    
 			-webkit-box-orient: vertical;    
 			-webkit-line-clamp: 2;    //控制行数
@@ -1027,6 +1045,9 @@
 							letter-spacing: -0.34px;
 						}
 						.ArticleDetail-footer-main-item-advertising-top-right{
+							// width: 130rpx;
+							flex: 1;
+							text-align: center;
 							font-family: PingFangSC-Medium;
 							font-size: 8px;
 							color: #FF7B30;
@@ -1036,6 +1057,9 @@
 							padding: 0 10rpx;
 							box-sizing: border-box;
 							margin-left: 16rpx;
+							margin-right: 16rpx;
+							word-break : break-all;
+							white-space: nowrap;
 						}
 					}
 					.ArticleDetail-footer-main-item-advertising-center{

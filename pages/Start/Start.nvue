@@ -22,8 +22,13 @@
 				screenWidth: 0,
 				screenHeight: 0,
 				countDown: 5,
-				starImg: ''
+				starImg: '',
+				timer: null
 			}
+		},
+		onHide() {
+			clearInterval(this.timer)
+			this.timer = null
 		},
 		methods: {
 			// 获取系统信息
@@ -38,22 +43,23 @@
 			},
 			// 倒计时
 			handleCountDown () {
-				let timer = setInterval(() => {
+				this.timer = setInterval(() => {
 					this.countDown--
 					if (this.countDown <= 0) {
-						this.countDown = " "
-						clearInterval(timer)
-						
+						this.countDown = 0
+						clearInterval(this.timer)
+						this.timer = null
 						this.goToIndex()
 					}
 				}, 1000)
 			},
 			// 跳转
 			goToIndex () {
-				plus.navigator.setFullscreen(false); 
 				uni.switchTab({
 					url: '../index/index'
 				})
+				plus.navigator.setFullscreen(false); 
+				
 			}
 		}
 	}

@@ -64,6 +64,7 @@
 	export default {
 		mixins: [MescrollMixin],
 		onLoad(options) {
+			
 			this.type = options.type
 			this.title = options.title
 			if (uni.getStorageSync('userId')) {
@@ -157,7 +158,7 @@
 			},
 			async initBanner () {
 				if (this.type != 'gc') {
-					let res = await this.$fetch(this.$api.getrotationchart, {plateTypeId: this.type}, 'POST', 'FORM')
+					let res = await this.$fetch(this.$api.getrotationchart, {adcode: this.adcode, plateTypeId: this.type}, 'POST', 'FORM')
 					console.log(res)
 					this.bannerList = res.data
 				}
@@ -167,7 +168,7 @@
 				this.pageNum = ++this.pageNum
 				let res
 				if (this.type != 'gc') {
-					res = await this.$fetch(this.$api.artivle_list, {adcode:this.adcode, isCreamFlag: this.isCreamFlag, labelId: this.labelId,type: this.type, pageNum: this.pageNum, pageSize: this.pageSize, userId: this.userId}, 'POST', 'FORM')
+					res = await this.$fetch(this.$api.artivle_list, {adcode:this.adcode, isCreamFlag: this.isCreamFlag, twoPlateType: this.labelId,type: this.type, pageNum: this.pageNum, pageSize: this.pageSize, userId: this.userId}, 'POST', 'FORM')
 				} else {
 					res = await this.$fetch(this.$api.artivle_list, {adcode:this.adcode, isCreamFlag: this.isCreamFlag, pageNum: this.pageNum, pageSize: this.pageSize, userId: this.userId}, 'POST', 'FORM')
 				}
@@ -181,11 +182,11 @@
 				this.artList = [...this.artList, ...res.rows]
 				
 				let obj = {};
-				// 要去重的数组
+	
 				this.artList = this.artList.reduce((cur,next) => {
 				    obj[next.id] ? "" : obj[next.id] = true && cur.push(next);
 				    return cur;
-				},[]) //设置cur默认类型为数组，并且初始值为空的数组
+				},[]) 
 				
 				
 				this.hasFlag = this.pageNum * this.pageSize < res.total
@@ -321,6 +322,7 @@
 			// padding-top: var(--status-bar-height);
 			padding-left: 40rpx;
 			padding-right: 34rpx;
+			padding-top: 15rpx;
 			box-sizing: border-box;
 			position: fixed;
 			top:var(--status-bar-height);
@@ -376,16 +378,20 @@
 				box-sizing: border-box;
 				.index-banner-wrapper{
 					width: 100%;
-					height: 336rpx;
+					// height: 336rpx;
+					height: 252rpx;
 					.index-swiper{
 						width: 100%;
-						height: 336rpx;
+						// height: 336rpx;
+						height: 252rpx;
 						.index-swiper-item{
 							width: 100%;
-							height: 336rpx;
+							// height: 336rpx;
+							height: 252rpx;
 							.swiper-item{
 								width: 100%;
-								height: 336rpx;
+								// height: 336rpx;
+								height: 252rpx;
 								image{
 									width: 100%;
 									height: 100%;

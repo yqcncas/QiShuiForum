@@ -53,8 +53,8 @@
 					
 				</view>
 				<view class="tiezi-item-image-box" v-if="item.isVideo == 1">
-					<video :src="item.content[0].pic[0]" controls style="flex: 1;"></video>
-					
+					<video :src="item.content[0].pic[0]" controls style="flex: 1;" v-show="!showShareBoxFlag"></video>
+					<view class="blackBg" v-show="showShareBoxFlag" style="width: 100%; height: 430rpx; background-color: #000000;background-image: url('http://3n4w.oss-cn-shenzhen.aliyuncs.com/public/marker/aicard/wx/component/play.png');	background-repeat: no-repeat;	background-position: center;background-size: 60rpx;"></view>
 				</view>
 				<view class="share-box">
 					<view class="share-left" @click.stop="handleShareFlag(item.id)">

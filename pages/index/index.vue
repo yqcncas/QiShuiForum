@@ -1,7 +1,7 @@
 <template>
 	<view class="index">
 		<Status></Status>
-		
+		<mescroll-body ref="mescrollRef"  @down="downCallback" :up="upOption" :down = "downOption">
 		<!-- 头 -->
 		<!-- <mescroll-body ref="mescrollRef"  @down="downCallback" :up="upOption"> -->
 		<view class="index-header">
@@ -27,19 +27,24 @@
 				</view>
 			</view>
 		</view>
-		<mescroll-body ref="mescrollRef"  @down="downCallback" :up="upOption" :down = "downOption">
+		
+		<!-- <mescroll-body ref="mescrollRef"  @down="downCallback" :up="upOption" :down = "downOption"> -->
 		<!-- 轮播 -->
 	<!-- 	<swiper style="height: calc(100vh);" :current="navIndex" @change="swiperChange">
 			<swiper-item  v-for="(swiperItem, i) in headerNav" :key = "i"> -->
 				<scroll-view scroll-y="true" style="height: calc(100vh)" @scrolltolower="lower">
 					
 						<view class="index-banner" v-if="bannerList.length">
-							<view class="index-banner-wrapper">
-								<swiper  :autoplay="true" :interval="5000" :duration="1000" class="index-swiper" circular>
-									<swiper-item class="index-swiper-item" v-for="(item, index) in bannerList" :key = "index"> 
-										<view class="swiper-item" >
+							<view class="index-banner-wrapper" :style="{height: navIndex == 0 ? '420rpx' : '252rpx'}">
+								<swiper  :autoplay="true" :interval="5000" :duration="1000" class="index-swiper" circular :style="{height: navIndex == 0 ? '420rpx' : '252rpx'}">
+									<swiper-item class="index-swiper-item" v-for="(item, index) in bannerList" :key = "index" :style="{height: navIndex == 0 ? '420rpx' : '252rpx'}"> 
+										<view class="swiper-item" :style="{height: navIndex == 0 ? '420rpx' : '252rpx'}">
 											<!-- <image lazy-load :src="item.titlePic" mode="" @click = "goToArt(item)"></image> -->
-											<u-image width="100%" height="336rpx" :src="item.titlePic" @click = "goToArt(item)" :lazy-load="true">
+											<u-image width="100%" height="420rpx" :src="item.titlePic" @click = "goToArt(item)" :lazy-load="true" v-if = "navIndex == 0">
+												<u-loading slot="loading"></u-loading>
+											</u-image>
+											
+											<u-image width="100%" height="252rpx" :src="item.titlePic" @click = "goToArt(item)" :lazy-load="true" v-if = "navIndex != 0">
 												<u-loading slot="loading"></u-loading>
 											</u-image>
 											<view class="banner-text-title-box"></view>
@@ -64,12 +69,12 @@
 									<view class="index-main-nav-top-item-text">{{item.plateName}}</view>
 								</view>
 							</view>
-							<view class="index-main-nav-bottom" v-if="indexMainNavTop.length">
+					<!-- 		<view class="index-main-nav-bottom" v-if="indexMainNavTop.length">
 								<view class="index-main-nav-top-item" v-for="(item, index) in indexMainNavBottom" :key = "index" @click="goToBottomPage(item.id, item.plateName)">
 									<image :src="item.platePic" mode="aspectFill"></image>
 									<view class="index-main-nav-top-item-text">{{item.plateName}}</view>
 								</view>
-							</view>
+							</view> -->
 						</view>
 						<!-- 灰线 -->
 						<view class="line-7"></view>
@@ -124,11 +129,16 @@
 		
 		</mescroll-body>
 		 <simple-address ref="simpleAddress" :pickerValueDefault="cityPickerValueDefault" @onConfirm="onConfirm" themeColor='#007AFF'></simple-address>
+		 <u-no-network></u-no-network>
 	</view>
 		<!-- </mescroll-body> -->
 </template>
 
 <script>
+	// #ifdef APP-PLUS
+	import APPUpdate from "@/js_sdk/zhouWei-APPUpdate/APPUpdate";
+	// #endif
+	
 	import simpleAddress from '@/components/simple-address/simple-address.vue';
 	import ArticleMain from '../../components/ArticleMain/ArticleMain.vue'
 	import uniFab from '@/components/uni-fab/uni-fab.vue';
@@ -137,9 +147,13 @@
 	export default {
 		mixins: [MescrollMixin],
 		onLoad() {
-			if (uni.getStorageSync('city')) {
-				this.city = uni.getStorageSync('city')
-				uni.removeStorageSync("city")
+			// #ifdef APP-PLUS
+			 APPUpdate()
+			   // #endif
+			
+			if (uni.getStorageSync('cityName')) {
+				this.city = uni.getStorageSync('cityName')
+				uni.removeStorageSync("cityName")
 			}
 			if (uni.getStorageSync('adcode')) {
 				this.areaCode = uni.getStorageSync('adcode')
@@ -159,8 +173,11 @@
 			}
 			// 置顶帖
 			this.huatiList()
+			
+			// this.initIndexAllInfo()
 		},
 		onShow() {
+			
 			if (uni.getStorageSync("TabConfigFlag")) {
 				uni.removeStorageSync("TabConfigFlag")
 				if (uni.getStorageSync("token")) {
@@ -177,6 +194,14 @@
 				this.ArticleList = []
 				this.initArtivleList(this.navIndex, this.headerNav[this.navIndex].id, '', 0)
 			
+			}
+			
+			// 登录成功进行操作
+	
+			if (uni.getStorageSync('loginSuccess')) {
+		
+				uni.removeStorageSync('loginSuccess')
+				this.initIndexAllInfo()
 			}
 		},
 		// onReachBottom () {
@@ -280,7 +305,7 @@
 					use: false
 				},
 				downOption: {
-					native: true
+					native: false
 				},
 				canPush: true,
 				showFab: true,
@@ -296,12 +321,85 @@
 				uniFab
 		},
 		methods: {
+			// 首页偶尔加不出来
+			initIndexAllInfo () {
+				this.headerNav = [{plateName: '推荐',childId: 'child99', id: 'tuijian'}],
+				this.fancyArrId= [], // 头部导航ID
+				this.tochildView= '',
+				this.currentTabIndexId = 0,
+				this.navIndex = 0, // 导航index
+				this.pageNum = 0,
+				this.pageSize = 10,
+				this.hasFlag = true,
+				this.activeId = '', // 底部切换记录id
+				this.typeInIndex = [],
+				this.ArticleList =[],
+				this.indexMainNavTop = [], // 中部导航顶部
+				this.indexMainNavBottom = [{platePic: '../../static/image/ych/index/8.png' , plateName: '商城'}, {platePic: '../../static/image/ych/index/9.png' , plateName: '广场'}], // 中部导航底部
+				this.canPush = true
+				this.talkArr = [],
+				this.tabIndex = 0, // 底部Tab
+				this.bannerList = [], // 轮播图
+				this.hotTieZiIndex = 0,
+				this.hotTieZiList = [] ,// 热门贴
+				this.isCreamFlag = 0, // 是否为精华
+				
+				this.initBanner()
+				// 热帖
+				this.hotTieZi()
+				
+				// 对版块进行处理
+				if (uni.getStorageSync("token")) {
+					this.initMyInfo()
+				} else {
+					this.initTabConfig()
+				}
+				// 置顶帖
+				this.huatiList()
+			},
 			downCallback () {
-				this.pageNum = 0
-				this.pageSize = 10
-				this.hasFlag = true
-				this.ArticleList = []
-				this.initArtivleList(this.navIndex, this.headerNav[this.navIndex].id, '', 0)
+				// this.pageNum = 0
+				// this.pageSize = 10
+				// this.hasFlag = true
+				// this.ArticleList = []
+				// this.hotTieZiIndex = 0,
+				// this.hotTieZiList = [] ,// 热门贴
+				// this.hotTieZi()
+				// this.initArtivleList(this.navIndex, this.headerNav[this.navIndex].id, '', 0)
+				this.headerNav = [{plateName: '推荐',childId: 'child99', id: 'tuijian'}],
+				this.fancyArrId= [], // 头部导航ID
+				this.tochildView= '',
+				this.currentTabIndexId = 0,
+				this.navIndex = 0, // 导航index
+				this.pageNum = 0,
+				this.pageSize = 10,
+				this.hasFlag = true,
+				this.activeId = '', // 底部切换记录id
+				this.typeInIndex = [],
+				this.ArticleList =[],
+				this.indexMainNavTop = [], // 中部导航顶部
+				this.indexMainNavBottom = [{platePic: '../../static/image/ych/index/8.png' , plateName: '商城'}, {platePic: '../../static/image/ych/index/9.png' , plateName: '广场'}], // 中部导航底部
+				this.canPush = true
+				this.talkArr = [],
+				this.tabIndex = 0, // 底部Tab
+				this.bannerList = [], // 轮播图
+				this.hotTieZiIndex = 0,
+				this.hotTieZiList = [] ,// 热门贴
+				this.isCreamFlag = 0, // 是否为精华
+				
+				this.initBanner()
+				// 热帖
+				this.hotTieZi()
+				
+				// 对版块进行处理
+				if (uni.getStorageSync("token")) {
+					this.initMyInfo()
+				} else {
+					this.initTabConfig()
+				}
+				// 置顶帖
+				this.huatiList()
+				
 				setTimeout(() => {
 					this.mescroll.endDownScroll()
 				}, 700)
@@ -309,51 +407,85 @@
 			},
 			// 获取当前位置
 			initMyCity () {
-				console.log('执行')
+			
 				uni.getLocation({
 					type: 'gcj02',
 					geocode: true,
 					success: (res) => {
 						console.log(res)
-						// let location = res.longitude + ',' + res.latitude
+						let city = res.address.district
+						if (res.address.district.includes('市')) {
+							city = res.address.district.replace('市', '')
+						} else if (res.address.district.includes('区')) {
+							city = res.address.district.replace('区', '')
+						} else if (res.address.district.includes('县')) {
+							city = res.address.district.replace('县', '')
+						}
+						
 						uni.request({
-						   url: 'https://restapi.amap.com/v3/geocode/regeo?output=JSON&location=' + res.longitude + ',' + res.latitude +
-						   	'&key=a88aa9fb1f935caab43d092a6c3a2449&radius=1000&extensions=all',
-							method: "GET",
-						    success: (response) => {
-						        console.log(response);
-								this.adcode = response.data.regeocode.addressComponent.adcode
-								this.city = res.address.district
-										uni.setStorageSync('city', res.address.city)
-										uni.setStorageSync('cityCode', res.address.cityCode)
-										uni.request({
-										    url: `https://tianqiapi.com/api?version=v6&appid=58839827&appsecret=mfXwgT8Q`, //仅为示例，并非真实接口地址。
-											data:{
-												cityid: res.address.cityCode
-											},
-										    success: (res) => {
-										        console.log(res);
-												this.weather = {
-													area: res.data.city,
-													wea: res.data.wea,
-													tem2: res.data.tem2,
-													tem1: res.data.tem1,
-													tip: res.data.air_tips,
-													weaImg: res.data.wea_img
-												}
-												this.$set(this.weather, 'area', res.data.city)
-												this.$set(this.weather, 'wea', res.data.wea)
-												this.$set(this.weather, 'tem2', res.data.tem2)
-												this.$set(this.weather, 'tem1', res.data.tem1)
-												this.$set(this.weather, 'tip', res.data.air_tips)
-												this.$set(this.weather, 'weaImg', res.data.wea_img)
-										    }
-										});
-									},
-									fail: (err) => {
-										console.log(err)
-									}
-								});
+							url: `https://tianqiapi.com/api?version=v6&appid=58839827&appsecret=mfXwgT8Q`, //仅为示例，并非真实接口地址。
+							data:{
+								city: city
+							},
+							success: (res) => {
+								console.log(res);
+								this.weather = {
+									area: res.data.city,
+									wea: res.data.wea,
+									tem2: res.data.tem2,
+									tem1: res.data.tem1,
+									tip: res.data.air_tips,
+									weaImg: res.data.wea_img
+								}
+								this.$set(this.weather, 'area', res.data.city)
+								this.$set(this.weather, 'wea', res.data.wea)
+								this.$set(this.weather, 'tem2', res.data.tem2)
+								this.$set(this.weather, 'tem1', res.data.tem1)
+								this.$set(this.weather, 'tip', res.data.air_tips)
+								this.$set(this.weather, 'weaImg', res.data.wea_img)
+							}
+						});
+						
+						// let location = res.longitude + ',' + res.latitude
+						// uni.request({
+						//    url: 'https://restapi.amap.com/v3/geocode/regeo?output=JSON&location=' + res.longitude + ',' + res.latitude +
+						//    	'&key=a88aa9fb1f935caab43d092a6c3a2449&radius=1000&extensions=all',
+						// 	method: "GET",
+						//     success: (response) => {
+						//         console.log(response);
+						// 		this.adcode = response.data.regeocode.addressComponent.adcode
+						// 		this.city = res.address.district
+						// 				// uni.setStorageSync('city', res.address.city)
+						// 				let city = uni.getStorageSync('city')
+						// 				uni.setStorageSync('cityCode', res.address.cityCode)
+						// 				uni.request({
+						// 				    url: `https://tianqiapi.com/api?version=v6&appid=58839827&appsecret=mfXwgT8Q`, //仅为示例，并非真实接口地址。
+						// 					data:{
+						// 						city: city
+						// 					},
+						// 				    success: (res) => {
+						// 				        console.log(res);
+						// 						this.weather = {
+						// 							area: res.data.city,
+						// 							wea: res.data.wea,
+						// 							tem2: res.data.tem2,
+						// 							tem1: res.data.tem1,
+						// 							tip: res.data.air_tips,
+						// 							weaImg: res.data.wea_img
+						// 						}
+						// 						this.$set(this.weather, 'area', res.data.city)
+						// 						this.$set(this.weather, 'wea', res.data.wea)
+						// 						this.$set(this.weather, 'tem2', res.data.tem2)
+						// 						this.$set(this.weather, 'tem1', res.data.tem1)
+						// 						this.$set(this.weather, 'tip', res.data.air_tips)
+						// 						this.$set(this.weather, 'weaImg', res.data.wea_img)
+						// 				    }
+						// 				});
+						// 			},
+						// 			fail: (err) => {
+						// 				console.log(err)
+						// 			}
+						// 		});
 						    }
 						});
 						
@@ -365,7 +497,7 @@
 				
 			},
 			
-			initCityWeather() {
+			initCityWeather(city) {
 				if (uni.getStorageSync('cityCode')) {
 					// let location = uni.getStorageSync('location')
 					let cityCode = uni.getStorageSync('cityCode')
@@ -373,8 +505,7 @@
 					uni.request({
 					    url: `https://tianqiapi.com/api?version=v6&appid=58839827&appsecret=mfXwgT8Q`, //仅为示例，并非真实接口地址。
 						data:{
-							cityid: cityCode,
-							point: 'gaode'
+							city: city
 						},
 						method:"GET",
 					    success: (res) => {
@@ -400,7 +531,7 @@
 			
 			// 获取banner
 			async initBanner () {
-				let res = await this.$fetch(this.$api.getadvertlist, {type: 1}, 'POST', 'FORM')
+				let res = await this.$fetch(this.$api.getadvertlist, {adcode: this.areaCode, type: 1}, 'POST', 'FORM')
 				// console.log(res)
 				this.bannerList = res.data
 			},
@@ -429,12 +560,12 @@
 			async initLunBo (id) {
 				let res
 				if (id == 'tuijian') {
-					res = await this.$fetch(this.$api.getadvertlist, {type: 1}, 'POST', 'FORM')
+					res = await this.$fetch(this.$api.getadvertlist, {adcode: this.areaCode, type: 1}, 'POST', 'FORM')
 					this.bannerList = res.data
 				} else if (id == 'guangchang') {
 					this.bannerList = []
 				} else {
-					res = await this.$fetch(this.$api.getrotationchart, {plateTypeId: id}, 'POST', 'FORM')
+					res = await this.$fetch(this.$api.getrotationchart, {adcode: this.areaCode, plateTypeId: id}, 'POST', 'FORM')
 					res.data.forEach(item => {
 						item.titlePic = item.picPath
 					})
@@ -456,9 +587,12 @@
 						url: './ArticleDetail?id=' + item.id + '&userId=' + item.userId
 					})
 				} else {
-					uni.setStorageSync('RichMainText', item.content)
+					// uni.setStorageSync('RichMainText', item.content)
+					// uni.navigateTo({
+					// 	url: '../RichText/RichText?RichMain=' + '' + '&title=' + item.title + '&bannerId=' + item.articleId
+					// })
 					uni.navigateTo({
-						url: '../RichText/RichText?RichMain=' + '' + '&title=' + item.title + '&bannerId=' + item.id
+						url: './ArticleDetail?id=' + item.articleId + '&userId=' + item.userId
 					})
 				}
 			},
@@ -481,30 +615,36 @@
 					// let res = await this.$fetch(this.$api.artivle_list, {adcode: this.areaCode,recommendSwitch: 1, typeIn: this.typeInIndex, pageNum: this.pageNum, pageSize: 10,userId: this.userId}, 'POST', 'FORM')
 					
 					let res = await this.$fetch(this.$api.artivle_list, {adcode: this.areaCode,recommendSwitch: 1, pageNum: this.pageNum, pageSize: 10,userId: this.userId}, 'POST', 'FORM')
+					// console.log(res) 
+					this.hasFlag = this.pageNum * 10 < res.total
 					res.rows.forEach((item, index) => {
 						item.content = JSON.parse(item.content)
 						item.pics = JSON.parse(item.pics)
 						item.isGg = false
 					})
+					
 					DemoArr = res.rows
 					
 					DemoArr.forEach((item,index) => {
-						if (index == 1 && this.hotTieZiIndex <= this.hotTieZiList.length -1) {
-					
-							DemoArr.splice(1, 0, this.hotTieZiList[this.hotTieZiIndex])
+						console.log(index, this.hotTieZiIndex, this.hotTieZiList.length)
+						if (index == 0 && this.hotTieZiIndex <= this.hotTieZiList.length -1) {
+							console.log('1111')
+							DemoArr.splice(0, 0, this.hotTieZiList[this.hotTieZiIndex])
 							// console.log(res.rows)
 							this.hotTieZiIndex += 1
-						} else if (index == 5 && this.hotTieZiIndex <= this.hotTieZiList.length -1) {
-							DemoArr.splice(5, 0, this.hotTieZiList[this.hotTieZiIndex])
+						} else if (index == 4 && this.hotTieZiIndex <= this.hotTieZiList.length -1) {
+							DemoArr.splice(4, 0, this.hotTieZiList[this.hotTieZiIndex])
 							this.hotTieZiIndex += 1
-						} else if (index == 9 && this.hotTieZiIndex <= this.hotTieZiList.length -1) {
-							DemoArr.splice(9, 0, this.hotTieZiList[this.hotTieZiIndex])
+						} else if (index == 8 && this.hotTieZiIndex <= this.hotTieZiList.length -1) {
+							DemoArr.splice(8, 0, this.hotTieZiList[this.hotTieZiIndex])
 							this.hotTieZiIndex += 1
 						}
 					})
 					
+					// console.log(this.hotTieZiList)
 					
 					this.ArticleList = [...this.ArticleList, ...DemoArr]
+					console.log(this.ArticleList )
 					let obj = {};
 					// 要去重的数组
 					this.ArticleList = this.ArticleList.reduce((cur,next) => {
@@ -515,10 +655,11 @@
 	
 					
 					
-					this.hasFlag = this.pageNum * 10 < res.total
+					
 				} else if (id == 'guangchang') {
 					let res = await this.$fetch(this.$api.artivle_list, {adcode: this.areaCode, pageNum: this.pageNum, pageSize: 10, userId: this.userId}, 'POST', 'FORM')
-					
+					// console.log(res)
+					this.hasFlag = this.pageNum * 10 < res.total
 					res.rows.forEach((item, index) => {
 						item.content = JSON.parse(item.content)
 						item.pics = JSON.parse(item.pics)
@@ -530,14 +671,14 @@
 					    obj[next.id] ? "" : obj[next.id] = true && cur.push(next);
 					    return cur;
 					},[]) //设置cur默认类型为数组，并且初始值为空的数组
-					this.hasFlag = this.pageNum * 10 < res.total
 					
 					
 					
 				} else {
 					
 					let res = await this.$fetch(this.$api.artivle_list, {adcode: this.areaCode, isCreamFlag:this.isCreamFlag, type: id, pageNum: this.pageNum, pageSize: 10, userId: this.userId}, 'POST', 'FORM')
-				
+					console.log(res)
+					this.hasFlag = this.pageNum * 10 < res.total
 					res.rows.forEach(item => {
 						item.content = JSON.parse(item.content)
 						item.pics = JSON.parse(item.pics)
@@ -549,7 +690,6 @@
 					    obj[next.id] ? "" : obj[next.id] = true && cur.push(next);
 					    return cur;
 					},[]) //设置cur默认类型为数组，并且初始值为空的数组
-					this.hasFlag = this.pageNum * 10 < res.total
 				}
 			},
 			// 个人信息 获取版块用
@@ -559,6 +699,10 @@
 				this.fancyArrId = res.data.user.recommendPlate.split(',')
 				// console.log(fancyArrId)
 				uni.setStorageSync('userId', res.data.userId)
+				
+				if (res.data.token) {
+					uni.setStorageSync('token', res.data.token)
+				}
 				this.userId = res.data.userId
 				this.initTabConfig()
 			},
@@ -578,7 +722,7 @@
 				
 				
 				
-				console.log(res.data.slice(4, 6))
+				// console.log(res.data.slice(4, 6))
 				
 				// let obj = {};
 				// // 要去重的数组
@@ -587,7 +731,7 @@
 				//     return cur;
 				// },[]) //设置cur默认类型为数组，并且初始值为空的数组
 				
-				console.log(this.tabInfo)
+				// console.log(this.tabInfo)
 				
 				
 				// console.log(res.data.slice(5, 7))
@@ -604,7 +748,9 @@
 						}) 
 					}
 				})
+				console.log(this.headerNav)
 				this.headerNav = [...new Set(this.headerNav)]
+				
 				// console.log(this.headerNav.slice(1, this.headerNav.length))
 				let tuijian = this.headerNav.slice(1, this.headerNav.length)
 				// 获取文章
@@ -619,15 +765,25 @@
 				this.headerNav.forEach(item => {
 					item.childId = 'child' + item.id
 				})
+				let obj = {};
+				// 要去重的数组
+				this.headerNav = this.headerNav.reduce((cur,next) => {
+				    obj[next.plateName] ? "" : obj[next.plateName] = true && cur.push(next);
+				    return cur;
+				},[]) //设置cur默认类型为数组，并且初始值为空的数组
 				
 			},
 			// 文章点击
 			ArticleMainClick (id, userId, item) {
 				// console.log(index)
 				if (item.isGg) {
-					uni.setStorageSync('RichMainText', item.content)
+					// uni.setStorageSync('RichMainText', item.content)
+					// uni.navigateTo({
+					// 	// url: '../RichText/RichText?RichMain=' + item.content + '&title=' + item.title
+					// 	url: '../RichText/RichText?id=' + item.articleId + '&userId=' + item.userId
+					// })
 					uni.navigateTo({
-						url: '../RichText/RichText?RichMain=' + item.content + '&title=' + item.title
+						url: './ArticleDetail?id=' + item.articleId + '&userId=' + item.userId
 					})
 				} else {
 					uni.navigateTo({
@@ -639,10 +795,14 @@
 			// 热门帖子广告
 			async hotTieZi () {
 				// this.hotTieZiIndex
-				let res = await this.$fetch(this.$api.getadvertlist, {type: 2}, 'POST', 'FORM')
+				let res = await this.$fetch(this.$api.getadvertlist, {adcode: this.areaCode, type: 2}, 'POST', 'FORM')
 				console.log(res)
 				res.data.forEach(item => {
-					item.newcontent = this.filterHTMLTag(item.content)
+					if (item.content) {
+						item.newcontent = this.filterHTMLTag(item.content)
+					} else {
+						item.newcontent = ''
+					}
 					item.isGg = true
 					// 
 					// console.log(JSON.parse(item.pics))
@@ -674,13 +834,23 @@
 			},
 			// 选择城市点击确定
 			onConfirm(e) {
-				// if (e.labelArr[1] !=  '绍兴市') return uni.showToast({
-				// 	icon: 'none',
-				// 	title: '当前仅开通绍兴市'
-				// })
+				if (e.labelArr[1] !=  '绍兴市') return uni.showToast({
+					icon: 'none',
+					title: '当前仅开通绍兴市'
+				})
 				this.pickerText = e;
 				console.log(this.pickerText)
 				this.city = this.pickerText.labelArr[2]
+				let city = ''
+				console.log(this.city.includes('区'))
+				if (this.city.includes('市')) {
+					city = this.city.replace('市', '')
+				} else if (this.city.includes('区')) {
+					city = this.city.replace('区', '')
+				} else if (this.city.includes('县')) {
+					city = this.city.replace('县', '')
+				}
+					
 				this.areaCode = this.pickerText.areaCode
 				uni.setStorageSync('adcode', this.areaCode)
 				let cityName = this.pickerText.labelArr[0] + this.pickerText.labelArr[1] + this.pickerText.labelArr[2]
@@ -692,7 +862,8 @@
 				        console.log(response);
 						// console.log(response.data.geocodes)
 						uni.setStorageSync('cityCode', response.data.geocodes[0].citycode)
-						this.initCityWeather()
+						console.log(city)
+						this.initCityWeather(city)
 						// this.pageNum = 0
 						// this.pageSize = 10
 						// this.hasFlag = true
@@ -1029,20 +1200,24 @@
 			
 			.index-banner-wrapper{
 				width: 100%;
-				height: 336rpx;
+				// height: 336rpx;
+				height: 420rpx;
 				// overflow:hidden;
 				// width:100%;
 				// height:0;
 				// padding-bottom: calc(750rpx / 336rpx);
 				.index-swiper{
 					width: 100%;
-					height: 336rpx;
+					// height: 336rpx;
+					height: 420rpx;
 					.index-swiper-item{
 						width: 100%;
-						height: 336rpx;
+						// height: 336rpx;
+						height: 420rpx;
 						.swiper-item{
 							width: 100%;
-							height: 336rpx;
+							// height: 336rpx;
+							height: 420rpx;
 							position: relative;
 							image{
 								width: 100%;

@@ -9,6 +9,9 @@
 	import HotMain from '../../components/HotMain/HotMain.vue'
 	export default {
 		onLoad() {
+			if (uni.getStorageSync('adcode')) {
+				this.adcode = uni.getStorageSync('adcode')
+			}
 			this.initHotHouse()
 		},
 		comments:{
@@ -16,6 +19,7 @@
 		},
 		data () {
 			return {
+				adcode: '',
 				pageNum: 0,
 				pageSize: 10,
 				hasFlag: true,
@@ -32,7 +36,7 @@
 			async initHotHouse () {
 				if (!this.hasFlag) return
 				this.pageNum = ++this.pageNum
-				let res = await this.$fetch(this.$api.hot_plate, {pageNum: this.pageNum, pageSize: this.pageSize, type: 12}, "POST", 'FORM')
+				let res = await this.$fetch(this.$api.hot_plate, {adcode: this.adcode ,pageNum: this.pageNum, pageSize: this.pageSize, type: 12}, "POST", 'FORM')
 				
 				this.HotMainArr = [...this.HotMainArr, ...res.rows]
 				console.log(this.HotMainArr)

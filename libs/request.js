@@ -30,6 +30,7 @@ export default (url, data, method = 'POST', contentType = 'json', headers = {}) 
 	
 	// 登录则传入cid -- token
 	let token = uni.getStorageSync('token')
+	// console.log(token)
 	if (token) {
 		headers.token = token
 	}
@@ -57,12 +58,13 @@ export default (url, data, method = 'POST', contentType = 'json', headers = {}) 
 						uni.switchTab({
 							url: '/pages/index/index'
 						})
-					}, 500)
+					}, 300)
 				} 
 				
 				if (parseInt(res.statusCode) === 200) {
 					
 					if(res.data.code == 401){
+						uni.removeStorageSync('token')
 						uni.showToast({
 							icon: 'none',
 							title: res.data.msg
@@ -71,7 +73,7 @@ export default (url, data, method = 'POST', contentType = 'json', headers = {}) 
 							uni.navigateTo({
 								url:'/pages/Login/Login'
 							})
-						}, 1500)
+						}, 300)
 						
 					}else if (res.data.code == 500) {
 						if (url == 't/user/im_register') {

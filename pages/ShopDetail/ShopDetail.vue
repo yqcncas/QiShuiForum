@@ -1,7 +1,10 @@
 <template>
 	<view class="ShopDetail">
 		<view class="ShopDetail-header">
-			<image :src="shopDetailInfo.goodsPic" mode="aspectFill"></image>
+			<!-- <image :src="shopDetailInfo.goodsPic" mode="aspectFill"></image> -->
+			<u-image :src="shopDetailInfo.goodsPic" width="100%" height="378rpx" :lazy-load="true" mode="aspectFill" @click = "privatarPic(shopDetailInfo.goodsPic)">
+				<u-loading slot="loading"></u-loading>
+			</u-image>
 		</view>
 		<view class="ShopDetail-center">
 			<view class="ShopDetail-center-top">
@@ -32,7 +35,7 @@
 				</view>
 			</scroll-view>
 		</view>
-		<view class="buy-button" @click="goToPayPage(shopDetailInfo.id, shopDetailInfo.price)">立即抢购</view>
+		<view class="buy-button" :class="{isGray: shopDetailInfo.remainder == 0}" @click="goToPayPage(shopDetailInfo.id, shopDetailInfo.price)">{{shopDetailInfo.remainder == 0 ? '已售完' : '立即抢购'}}</view>
 	</view>
 </template>
 
@@ -65,6 +68,13 @@
 		    }
 	    },
 		methods: {
+			privatarPic (pic) {
+				let picArr = [pic]
+			   uni.previewImage({
+				    current: pic,
+					urls: picArr
+				});
+			}, 
 			// 收藏
 			async changeCollection (index) {
 				this.collection = index
@@ -129,6 +139,10 @@
 				this.countdown = null;
 			},
 			goToPayPage (id, price) {
+				if (this.shopDetailInfo.remainder == 0) return uni.showToast({
+					icon: 'none',
+					title: '该物品已售完'
+				})
 				uni.navigateTo({
 					url: '../Pay/Pay?id=' + id + '&price=' + price + '&type=' + 0
 				})
@@ -244,6 +258,10 @@
 			left: 50%;
 			transform: translateX(-50%);
 			bottom: 20rpx;
+			&.isGray{
+				background-image: none;
+				background-color: #c8c9cc;
+			}
 		}
 	}
 </style>

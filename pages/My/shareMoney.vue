@@ -40,6 +40,7 @@
 			this.getQrcode()
 		},
 		onShow() {
+			 if (uni.getStorageSync('adcode')) {				this.adcode = uni.getStorageSync('adcode')			}
 			this.initMyInfo()
 			this.initFindHeaderImg()
 			this.initParticulars()
@@ -47,6 +48,7 @@
 		},
 		data () {
 			return {
+				adcode: '',
 				usreInfo: {},
 				signTitle: [],
 				pageNum: 0,
@@ -67,7 +69,7 @@
 				})
 			},
 			async getQrcode(){
-				let res = await this.$fetch(this.$api.get_user_qrcode, {}, "GET", 'FORM')
+				let res = await this.$fetch(this.$api.get_user_qrcode, {adcode: this.adcode}, "GET", 'FORM')
 				this.qrCode = baseURL + res.data.path
 			},
 			// 个人信息
@@ -81,7 +83,7 @@
 				this.usreInfo = res.data.user
 			},
 			async initFindHeaderImg () {
-				let res = await this.$fetch(this.$api.getadvertlist, {type: 6}, "POST", 'FORM')
+				let res = await this.$fetch(this.$api.getadvertlist, {adcode: this.adcode, type: 6}, "POST", 'FORM')
 				console.log(res)
 				this.signTitle = res.data[0]
 			},

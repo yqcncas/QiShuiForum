@@ -137,6 +137,7 @@
 					uni.setStorageSync('token', res.data.token)
 					uni.setStorageSync('userId', res.data.userId)
 					uni.setStorageSync('loginUserAccount', this.phone)
+					uni.setStorageSync('loginSuccess', true)
 					let msg = await this.$fetch(this.$api.upd_user, {cid: this.cid}, "post", 'form')
 					// console.log(msg)
 					let result = await this.$fetch(this.$api.im_register, {token: res.data.token}, "POST", 'FORM')
@@ -148,11 +149,11 @@
 					
 					dcRichAlert.logIn({username: imUserName,password: imUserName}, result => {console.log(result)});
 					// dcRichAlert.logIn({username: 'bbbb',password: 'bbbb'}, result => {console.log(result)});
-					
+					uni.getStorageSync('loginSuccess')
 					
 					setTimeout(() => {
 						uni.switchTab({
-							url: '../My/My'
+							url: '../index/index'
 						})
 					}, 500)
 					
@@ -174,7 +175,7 @@
 						})
 						uni.setStorageSync('token', res.data.token)
 						uni.setStorageSync('userId', res.data.userId)
-		
+						uni.setStorageSync('loginSuccess', true)
 						let msg = await this.$fetch(this.$api.upd_user, {cid: this.cid}, "post", 'form')
 						
 						let result = await this.$fetch(this.$api.im_register, {token: res.data.token}, "POST", 'FORM')
@@ -185,11 +186,13 @@
 													
 						dcRichAlert.logIn({username: imUserName,password: imUserName}, result => {console.log(result)});
 						
+						
 						setTimeout(() => {
+		
 							uni.switchTab({
-								url: '../My/My'
+								url: '../index/index'
 							})
-						}, 500)
+						}, 300)
 					}
 					
 				  }
