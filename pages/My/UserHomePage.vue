@@ -43,7 +43,7 @@
 						<image src="../../static/image/ych/index/delete.png" mode="aspectFill"></image>
 					</view>
 				</view>
-				<view class="tiezi-item-center">{{item.content[0].content}}</view>
+				<view class="tiezi-item-center">{{item.content[0].content ? item.content[0].content : item.title}}</view>
 				<view class="tiezi-item-image-box" v-if="item.isVideo == 0">
 					
 					<image :src="picItem" mode="aspectFill" v-for="(picItem, i) in item.content[0].pic" :key = "i" @click.stop = "showBigImg(picItem, item.content[0].pic)"></image>
@@ -173,7 +173,7 @@
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
-				    href: "https://qsw-h5.bajiaostar.xyz/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
+				    href: "http://h5-download.qswvip.com/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
 				    			
 				    title: "汽水论坛分享",
 				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
@@ -193,7 +193,7 @@
 				    provider: "weixin",
 				    scene: "WXSenceTimeline",
 				    type: 0,
-					href: "https://qsw-h5.bajiaostar.xyz/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
+					href: "http://h5-download.qswvip.com/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
 								
 					title: "汽水论坛分享",
 					summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
@@ -325,8 +325,8 @@
 				width: 100%;
 				display: flex;
 				// justify-content: center;
-				padding-left: 328rpx;
-				
+				// padding-left: 328rpx;
+				justify-content: center;
 				align-items: center;
 				// padding-top: 18rpx;
 				padding-bottom: 14rpx;

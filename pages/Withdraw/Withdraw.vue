@@ -71,6 +71,14 @@
 						title: '超出可提取上限'
 					})
 				}
+				
+				if (Math.floor(this.withdrawMoney) < 10) {
+					return uni.showToast({
+						icon: 'none',
+						title: '最低提现额度为10元'
+					})
+				}
+				
 				if (!this.$u.test.chinese(this.userName)) {
 					return uni.showToast({
 						icon: 'none',

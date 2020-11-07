@@ -36,7 +36,11 @@
 		},
 		methods: {
 			async initMyInfo () {
-				let res = await this.$fetch(this.$api.getCurrentUser, {}, 'GET', 'FORM')
+				let adcode = ''
+				if (uni.getStorageSync('adcode')) {
+					adcode = uni.getStorageSync('adcode')
+				}
+				let res = await this.$fetch(this.$api.getCurrentUser, {adcode: adcode}, 'GET', 'FORM')
 				let usreInfo = res.data.user
 				this.commentFlag = usreInfo.evaluateFlag
 				this.newFansFlag = usreInfo.followFlag

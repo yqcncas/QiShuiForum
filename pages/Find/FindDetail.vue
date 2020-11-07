@@ -1,5 +1,6 @@
 <template>
 	<view class="FindDetail">
+		<scroll-view scroll-y="true" style="height: 100vh;">
 		<view class="FindDetail-header">
 			<view class="FindDetail-header-top">{{detailInfo.name}}</view>
 			<view class="FindDetail-header-bottom">活动时间：{{detailInfo.createTime}}-{{detailInfo.endTime}}</view>
@@ -8,14 +9,15 @@
 			<image :src="detailInfo.titlePic" mode="aspectFill" ></image>
 		</view>
 		<view class="FindDetail-center">
-			<scroll-view scroll-y="true" style="height: 700rpx;">
+			<!-- <scroll-view scroll-y="true" style="height: 700rpx;"> -->
 				<view class="FindDetail-center-text">
-					<jyf-parser :html="detailInfo.content" ref="article"></jyf-parser>
+					<jyf-parser :html="detailInfo.content" selectable ref="article"></jyf-parser>
 				</view>
 				
-			</scroll-view>
+			<!-- </scroll-view> -->
 		</view>
 		<view class="join-button" @click="goToApply" :class="{noImg: isActiveing != 0}">{{isActiveing == 0 ? '立即参加' : isActiveing == 1 ? '已过期' : '暂未开始'}}</view>
+		</scroll-view>
 		<shareBox :showShareBoxFlag = "showShareBoxFlag" @changeShowBoxFLag = "changeShowBoxFLag" @shareWx = "shareWx"  @shareFre = "shareFre"></shareBox>
 	</view>
 </template>
@@ -57,7 +59,7 @@
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
-				    href: "https://qsw-h5.bajiaostar.xyz/#/?code=" + uni.getStorageSync('userId'),
+				    href: "http://h5-download.qswvip.com/#/?code=" + uni.getStorageSync('userId'),
 				    title: "汽水论坛分享",
 				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
 					imageUrl: '../../static/qslogo.png',
@@ -76,7 +78,7 @@
 				    provider: "weixin",
 				    scene: "WXSenceTimeline",
 				    type: 0,
-					href: "https://qsw-h5.bajiaostar.xyz/#/?code=" + uni.getStorageSync('userId'),
+					href: "http://h5-download.qswvip.com/#/?code=" + uni.getStorageSync('userId'),
 					title: "汽水论坛分享",
 					summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
 				    imageUrl: '../../static/qslogo.png',
@@ -173,6 +175,7 @@
 			}
 		}
 		.FindDetail-center{
+			padding-bottom: 140rpx;
 			.FindDetail-center-text{
 				font-family: PingFangSC-Regular;
 				font-size: 14px;
@@ -195,6 +198,10 @@
 			margin: 0 auto;
 			margin-top: 30rpx;
 			box-sizing: border-box;
+			position: fixed;
+			bottom: 30rpx;
+			left: 50%;
+			transform: translateX(-50%);
 			&.noImg{
 				background-image: none;
 				background-color: #c8c9cc;

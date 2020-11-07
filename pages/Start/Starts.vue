@@ -24,7 +24,7 @@
 			return {
 				screenWidth: 0,
 				screenHeight: 0,
-				countDown: 5,
+				countDown: 4,
 				starImg: '../../static/background.png',
 				timer: null
 			}
@@ -32,6 +32,13 @@
 		onHide() {
 			clearInterval(this.timer)
 			this.timer = null
+		},
+		onShow() {
+			if (this.timer == null) {
+				this.handleCountDown()
+			}
+			// this.countDown = 4
+			// this.handleCountDown()
 		},
 		// watch:{
 		// 	countDown (newV) {

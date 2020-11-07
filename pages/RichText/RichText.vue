@@ -22,7 +22,7 @@
 				</view>
 			</view>
 		</view>	
-		<jyf-parser :html="html" ref="article"></jyf-parser>
+		<jyf-parser :html="html" ref="article" selectable></jyf-parser>
 		<view class="ArticleDetail-footer-main-item-advertising-center" v-if="!isRichText">
 			<image :src="gGPic" mode="aspectFill" v-for="(gGPic, i) in pics" :key = "i" @click = "bigImg(gGPic, pics)"></image>
 							
@@ -74,7 +74,10 @@
 			if (options.bannerId) {
 				this.id = options.bannerId
 				this.initRichBannerText()
-				
+			}
+			if (options.RichMainId) {
+				this.RichMainId = options.RichMainId
+				this.initRichTextDetail()
 			}
 			
 			
@@ -94,7 +97,8 @@
 				  createTime: '',
 				  followUserFlag: '',
 				  userId: ''
-			  }
+			  },
+			  RichMainId: 0
 		    }
 	    },
 		computed:{
@@ -188,6 +192,12 @@
 					}
 				}
 				
+			},
+			async initRichTextDetail () {
+				let res = await this.$fetch(this.$api.hot_special_detail, {id: this.RichMainId}, 'POST', "FORM")
+				console.log(res)
+				this.title = res.data.title
+				this.html = res.data.content
 			}
 		}
 	}
@@ -207,6 +217,9 @@
 				margin-right: 0;
 			}
 		}
+	}
+	.rich-text{
+		padding: 0 30rpx;
 	}
 	.ArticleDetail-center{
 		padding-top: 10rpx;

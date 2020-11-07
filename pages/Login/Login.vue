@@ -15,7 +15,7 @@
 		</view>
 		<view class="login-xieyi">
 			<u-radio-group v-model="xieyiFlag">
-				<u-radio shape="circle" name = "xieyi" @change="radioChange" >登录即同意<span class = "xieyiMain" @click.stop = "goToRichText(17)">《用户协议》</span>和<span class = "xieyiMain"  @click.stop = "goToRichText(18)">《隐私政策》</span></u-radio>
+				<u-radio shape="circle" name = "xieyi" @change="radioChange"  >登录即同意<span class = "xieyiMain" @click.stop = "goToRichText(17)">《用户协议》</span>和<span class = "xieyiMain"  @click.stop = "goToRichText(18)">《隐私政策》</span></u-radio>
 			</u-radio-group>
 		</view>
 		<view class="else-login">
@@ -63,7 +63,7 @@
 				timer: null,
 				openId: '',
 				phonePlatform: '',
-				xieyiFlag: 'xieyi',
+				xieyiFlag: '',
 				clickCount: 0
 			}
 		},
@@ -122,7 +122,7 @@
 						title: '请输入密码'
 					})
 				}
-				if (this.xieyiFlag != 'xieyi') return uni.showToast({icon: 'none',title: '请仔细阅读用户协议'})
+				if (this.xieyiFlag != 'xieyi') return uni.showToast({icon: 'none',title: '请先勾选已阅读用户协议和隐私政策'})
 						
 						
 					

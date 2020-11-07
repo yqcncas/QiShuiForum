@@ -37,7 +37,7 @@
 			<view class="Publish-addBox" v-for="(item, index) in submitArr.length" :key = "index">
 			
 			<view class="Publish-center-main" >
-				<textarea v-model="submitArr[index].content" placeholder="输入内容" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;"/>
+				<textarea v-model="submitArr[index].content" maxlength="-1" placeholder="输入内容" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;"/>
 				<view class="delete-box" @click.stop="deleteFn(index)" v-if="index > 0">删除</view>
 			</view>
 			<view class="add-main">

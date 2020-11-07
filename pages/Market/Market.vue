@@ -120,6 +120,12 @@
 				let res = await this.$fetch(this.$api.goods_list, {adcode: this.adcode,boutiqueFlag: 1, goodsStatus: 1, pageNum: this.pageNum, pageSize: this.pageSize}, "POST", 'FORM')
 				console.log(res)
 				this.marketList = [...this.marketList, ...res.rows]
+				let obj = {};
+				// 要去重的数组
+				this.marketList = this.marketList.reduce((cur,next) => {
+				    obj[next.id] ? "" : obj[next.id] = true && cur.push(next);
+				    return cur;
+				},[]) //设置cur默认类型为数组，并且初始值为空的数组
 				if (this.marketList.length) {
 					this.nodata = false
 				} else {
@@ -128,9 +134,16 @@
 				this.hasFlag = this.pageNum * this.pageSize < res.total
 			},
 			async initMyInfo () {
-				let res = await this.$fetch(this.$api.getCurrentUser, {}, 'GET', 'FORM')
-				console.log(res)
-				this.myJf = res.data.integral
+				if (uni.getStorageSync('token')) {
+					let adcode = ''
+					if (uni.getStorageSync('adcode')) {
+						adcode = uni.getStorageSync('adcode')
+					}
+					let res = await this.$fetch(this.$api.getCurrentUser, {adcode: adcode}, 'GET', 'FORM')
+					console.log(res)
+					this.myJf = res.data.integral
+				}
+				
 			},
 		},
 		onReachBottom() {

@@ -44,14 +44,6 @@
 				</view>
 			</view>
 		</view>
-		<view class="setting-item" @click="goToRichText">
-			<view class="setting-item-left">关于我们</view>
-			<view class="setting-item-right">
-				<view class="setting-item-right-box">
-					<image src="../../static/image/ych/right.png" mode="aspectFill"></image>
-				</view>
-			</view>
-		</view>
 		<view class="setting-item" @click="update">
 			<view class="setting-item-left">检查更新</view>
 			<view class="setting-item-right">
@@ -60,6 +52,33 @@
 				</view> -->
 			</view>
 		</view>
+		
+		<view class="setting-item" @click="goToRichText(16)">
+			<view class="setting-item-left">关于我们</view>
+			<view class="setting-item-right">
+				<view class="setting-item-right-box">
+					<image src="../../static/image/ych/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+		</view>
+		<view class="setting-item" @click="goToRichText(17)">
+			<view class="setting-item-left">用户协议</view>
+			<view class="setting-item-right">
+				<view class="setting-item-right-box">
+					<image src="../../static/image/ych/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+		</view>
+		
+		<view class="setting-item" @click="goToRichText(18)">
+			<view class="setting-item-left">隐私政策</view>
+			<view class="setting-item-right">
+				<view class="setting-item-right-box">
+					<image src="../../static/image/ych/right.png" mode="aspectFill"></image>
+				</view>
+			</view>
+		</view>
+		
 		
 		<view class="exit-button" @click="exit">退出当前帐号</view>
 	</view>
@@ -149,9 +168,9 @@
 				});  
 			},
 			// 去富文本
-			goToRichText () {
+			goToRichText (id) {
 				uni.navigateTo({
-					url: '../RichText/RichText?id=' + 16
+					url: '../RichText/RichText?id=' + id
 				})
 			},
 			// 清除缓存

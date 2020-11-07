@@ -13,24 +13,24 @@
 				<view class="SettledEnterprise-item-left">商家名称*</view>
 				<input type="text" :disabled="!candeletable" v-model="shopName" placeholder="请填写商家名称" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;" />
 			</view>
-			<view class="SettledEnterprise-item">
+		<!-- 	<view class="SettledEnterprise-item">
 				<view class="SettledEnterprise-item-left">身份证号*</view>
 				<input type="text" :disabled="!candeletable" v-model="idCard" placeholder="请填写身份证号" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;" />
-			</view>
+			</view> -->
 			<view class="SettledEnterprise-item">
 				<view class="SettledEnterprise-item-left">联系地址*</view>
 				<input type="text" :disabled="!candeletable" v-model="address" placeholder="请填写联系地址" placeholder-style="font-family: PingFangSC-Regular;font-size: 14px;color: #A3A3A3;" />
 			</view>
 		</view>
-		<view class="id-card">
+<!-- 		<view class="id-card">
 			<view class="id-card-top">身份证正反面*</view>
 			<view class="id-imgbox">
-				<!-- <image src="../../static/image/ych/Advertising/1.png" mode="aspectFill"></image> -->
+				
 				<u-upload :action="action" :deletable = "candeletable" :file-list="fileList" @on-uploaded="onUploaded" :form-data = "QNtoken" max-count="2"  @on-remove="onRemove"></u-upload>
 			</view>
-		</view>
+		</view> -->
 		<view class="zhizhao">
-			<view class="zhizhao-top">营业执照*</view>
+			<view class="zhizhao-top">营业执照</view>
 			<view class="zhizhao-imgbox">
 				<!-- <image src="../../static/image/ych/Advertising/1.png" mode="aspectFill"></image> -->
 				<u-upload :action="action" :deletable = "candeletable" :file-list="fileLists" @on-uploaded="onUploadeds" :form-data = "QNtoken" max-count="1"  @on-remove="onRemoves"></u-upload>
@@ -38,7 +38,7 @@
 		</view>
 		<view class="result">
 			<view class="result-top" v-if="isShow">审核状态：<span>{{status[isShowIndex]}}</span></view>
-			<view class="result-bottom" v-if="cause != ''">原因：信息有误</view>
+			<view class="result-bottom" v-if="cause != '通过'">原因：信息有误</view>
 		</view>
 		<view class="submit-form" @click="submitForm">提交</view>
 	</view>
@@ -64,7 +64,7 @@
 				imgList: [],
 				fileLists: [],
 				idImg: [],
-				cause: '',
+				cause: '通过',
 				isShow: false,
 				isShowIndex: 0,
 				status: ['正在审核', '审核通过', '审核驳回'],
@@ -84,7 +84,7 @@
 				
 				let res = await this.$fetch(this.$api.get_apply_merchant, {}, "post", 'form')
 				console.log(res)
-				if (res.data.idCard) {
+				if (res.data.name) {
 					this.userName = res.data.name
 					
 					let fileLists = JSON.parse(res.data.businessLicense)
@@ -148,30 +148,30 @@
 						title: '请检查手机号输入是否正确'
 					})
 				}
-				if (!this.$u.test.idCard(this.idCard)) {
-					return uni.showToast({
-						icon: 'none',
-						title: '请检查身份证号输入是否正确'
-					})
-				}
+				// if (!this.$u.test.idCard(this.idCard)) {
+				// 	return uni.showToast({
+				// 		icon: 'none',
+				// 		title: '请检查身份证号输入是否正确'
+				// 	})
+				// }
 				if (this.userName.trim() == '' || this.shopName.trim() == '' || this.address.trim() == '') {
 					return uni.showToast({
 						icon: 'none',
 						title: '请检查信息是否填写完整'
 					})
 				}
-				if (this.imgList.length != 2) {
-					return uni.showToast({
-						icon: 'none',
-						title: '请检查身份证正反面是否上传'
-					})
-				}
-				if (this.idImg.length != 1) {
-					return uni.showToast({
-						icon: 'none',
-						title: '请检查营业执照是否上传'
-					})
-				}
+				// if (this.imgList.length != 2) {
+				// 	return uni.showToast({
+				// 		icon: 'none',
+				// 		title: '请检查身份证正反面是否上传'
+				// 	})
+				// }
+				// if (this.idImg.length != 1) {
+				// 	return uni.showToast({
+				// 		icon: 'none',
+				// 		title: '请检查营业执照是否上传'
+				// 	})
+				// }
 				if (this.isShowIndex === 1) return uni.showToast({
 					icon: 'none',
 					title: "您已审核通过,请勿重复提交"

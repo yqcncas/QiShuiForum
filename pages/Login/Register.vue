@@ -4,7 +4,7 @@
 		<view class="Register-item">
 			<view class="Register-item-left">用户名*</view>
 			<view class="Register-item-right">
-				<input type="text" v-model = "userName" placeholder="请输入姓名" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #C3C3C3;letter-spacing: 0.06px;" />
+				<input type="text" maxlength="20" v-model = "userName" placeholder="请输入姓名" placeholder-style="font-family: PingFangSC-Regular;font-size: 16px;color: #C3C3C3;letter-spacing: 0.06px;" />
 			</view>
 		</view>
 		<view class="Register-item">

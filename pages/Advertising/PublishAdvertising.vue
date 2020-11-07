@@ -101,6 +101,7 @@
 			// 显示弹框
 			handleShowPayFlag () {
 				// this.showPayPopFlag = true
+	
 				if (this.day <= 0 || this.day == '') return uni.showToast({
 					icon: 'none',
 					title: '请输入天数'
@@ -117,9 +118,15 @@
 					icon: 'none',
 					title: '请填写内容描述'
 				})
-				if (this.pics.length <= 0) return uni.showToast({
+				// if (this.pics.length <= 0) return uni.showToast({
+				// 	icon: 'none',
+				// 	title: '请上传至少一张图片'
+				// })
+				
+				
+				if (this.pics.length < 3) return uni.showToast({
 					icon: 'none',
-					title: '请上传至少一张图片'
+					title: '请至少上传三张图片'
 				})
 				
 				let imgArr = ''
@@ -168,7 +175,7 @@
 					})
 					this.day = 1
 				}
-				this.payPrice = this.day * this.magnification
+				this.payPrice = Number(this.day * this.magnification).toFixed(2)
 			}
 		}
 	}

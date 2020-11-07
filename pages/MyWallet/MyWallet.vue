@@ -59,7 +59,11 @@
 			},
 			// 个人信息
 			async initMyInfo () {
-				let res = await this.$fetch(this.$api.getCurrentUser, {}, 'GET', 'FORM')
+				let adcode = ''
+				if (uni.getStorageSync('adcode')) {
+					adcode = uni.getStorageSync('adcode')
+				}
+				let res = await this.$fetch(this.$api.getCurrentUser, {adcode: adcode}, 'GET', 'FORM')
 				console.log(res)
 				res.data.user.amount = res.data.amount
 				res.data.user.integral = res.data.integral

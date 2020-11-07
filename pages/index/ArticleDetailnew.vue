@@ -58,7 +58,7 @@
 				
 			</view> -->
 			
-		<jyf-parser :html="ArtDetail.richText" ref="article" style="padding-left: 30rpx; padding-right: 30rpx;"></jyf-parser>
+		<jyf-parser :html="ArtDetail.richText" selectable ref="article" style="padding-left: 30rpx; padding-right: 30rpx;"></jyf-parser>
 		</view>
 		<view class="ArticleDetail-footer">
 			<view class="ArticleDetail-footer-top" :class="{stick: stickFlag}">
@@ -309,7 +309,7 @@
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
-				    href: "https://qsw-h5.bajiaostar.xyz/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
+				    href: "http://h5-download.qswvip.com/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
 			
 				    title: this.ArtDetail.title,
 				    summary: content,
@@ -330,7 +330,7 @@
 				    provider: "weixin",
 				    scene: "WXSenceTimeline",
 				    type: 0,
-					href: "https://qsw-h5.bajiaostar.xyz/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
+					href: "http://h5-download.qswvip.com/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
 								
 					title: this.ArtDetail.title,
 					summary: this.ArtDetail.title,

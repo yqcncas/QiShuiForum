@@ -41,13 +41,11 @@
 		methods: {
 			ArticleMainClick (index, userId, item) {
 				console.log(index)
-				console.log(item)
-				// uni.navigateTo({
-				// 	url: '../index/ArticleDetail'
-				// })
+				console.log(item.id)
+				
 				uni.setStorageSync('RichMainText', item.content)
 				uni.navigateTo({
-					url: '../RichText/RichText?RichMain=' + item.content + '&title=' + item.title
+					url: '../RichText/RichText?title=' + item.title + '&RichMainId=' + item.id 
 				})
 			},
 			// 头部数据

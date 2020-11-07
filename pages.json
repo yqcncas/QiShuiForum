@@ -14,7 +14,7 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "",
-				"enablePullDownRefresh": true,
+				
 				"app-plus":{
 					"titleNView": false,
 					"scrollIndicator":"none"
@@ -30,7 +30,7 @@
 		{
 			"path": "pages/Find/Find",
 			"style": {
-				"navigationBarTitleText": "发现"
+				"navigationBarTitleText": "活动"
 			}
 		},
 		{
@@ -499,7 +499,7 @@
 	        "pagePath": "pages/Find/Find",
 	        "iconPath": "static/image/tabbar/3.png",
 	        "selectedIconPath": "static/image/tabbar/3-active.png",
-	        "text": "发现"
+	        "text": "活动"
 	    }, {
 	        "pagePath": "pages/Market/Market",
 	        "iconPath": "static/image/tabbar/4.png",

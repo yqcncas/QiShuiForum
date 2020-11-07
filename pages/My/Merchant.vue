@@ -27,6 +27,10 @@
 						<view class="my-order-item-right-bottom-left">有效期至：{{item.endTime}}</view>
 						<!-- <view class="my-order-item-right-bottom-right">核销</view> -->
 					</view>
+					<view class="my-order-item-right-bottom">
+						<view class="my-order-item-right-bottom-left">核销时间：{{item.useTime}}</view>
+						<!-- <view class="my-order-item-right-bottom-right">核销</view> -->
+					</view>
 				</view>
 			</view>
 			

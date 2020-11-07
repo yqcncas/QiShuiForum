@@ -44,7 +44,7 @@
 					
 					<view class="line-3"></view>
 					<view class="HouseProperty-center-zhiding"  @click="gotoTopArt">我要置顶</view>
-					<view class="line-7" v-if="type != 1 "></view>
+					<view class="line-3" ></view>
 					<!-- <Stick v-if="type != 1 " :StickList = "topArtList" @handleStick = "handleStick"></Stick> -->
 					<Stick  :StickList = "topArtList" @handleStick = "handleStick"></Stick>
 					<view class="line-3" ></view>
@@ -168,8 +168,13 @@
 				this.pageNum = ++this.pageNum
 				let res
 				if (this.type != 'gc') {
+					if (this.type == 3 || this.type == 4) {
+						this.isCreamFlag = ''
+						console.log('111')
+					}
 					res = await this.$fetch(this.$api.artivle_list, {adcode:this.adcode, isCreamFlag: this.isCreamFlag, twoPlateType: this.labelId,type: this.type, pageNum: this.pageNum, pageSize: this.pageSize, userId: this.userId}, 'POST', 'FORM')
 				} else {
+					
 					res = await this.$fetch(this.$api.artivle_list, {adcode:this.adcode, isCreamFlag: this.isCreamFlag, pageNum: this.pageNum, pageSize: this.pageSize, userId: this.userId}, 'POST', 'FORM')
 				}
 				console.log(res)

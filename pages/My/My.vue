@@ -90,7 +90,11 @@
 						<view class="new-my-header-box-info-name">{{usreInfo.userName ? usreInfo.userName: '未登录'}}</view>
 					</view>
 					
+					<!-- <view class="new-my-header-box-info-label" v-for="(item, index) in usreInfo.userLabel">{{item}}</view> -->
+				</view>
+				<view class="new-my-header-box-info-label-box">
 					<view class="new-my-header-box-info-label" v-for="(item, index) in usreInfo.userLabel">{{item}}</view>
+					<view class="new-my-header-box-info-label" v-if="usreInfo.plateName">{{usreInfo.plateName}}板块版主</view>
 				</view>
 				<view class="new-my-header-box-sign" @click="goToMyInfo(usreInfo)">{{usreInfo.gxSign ? usreInfo.gxSign : '还没有个性签名，快去编辑吧！' }}</view>
 				<view class="new-my-header-box-status" @click="goToMyHomePage">
@@ -299,7 +303,11 @@
 			},
 			// 个人信息
 			async initMyInfo () {
-				let res = await this.$fetch(this.$api.getCurrentUser, {}, 'GET', 'FORM')
+				let adcode = ''
+				if (uni.getStorageSync('adcode')) {
+					adcode = uni.getStorageSync('adcode')
+				}
+				let res = await this.$fetch(this.$api.getCurrentUser, {adcode: adcode}, 'GET', 'FORM')
 				console.log(res)
 				res.data.user.amount = res.data.amount
 				res.data.user.integral = res.data.integral
@@ -310,7 +318,7 @@
 				res.data.user.articleNum = res.data.articleNum
 				
 				res.data.user.followNum = res.data.followNum
-				
+				res.data.user.plateName = res.data.plateName
 				
 				this.usreInfo = res.data.user
 				if (this.usreInfo.userLabel.length) {
@@ -414,9 +422,18 @@
 			},
 			// 去我的广告
 			goToMyAdvertising () {
-				uni.navigateTo({
-					url: './Advertising'
-				})
+				console.log(this.usreInfo.merchantFlag)
+				if (this.usreInfo.merchantFlag == 1) {
+					uni.navigateTo({
+						url: './Advertising'
+					})
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: '请先进行商家入驻,通过审核即可投放'
+					})
+				}
+				
 			},
 			goToComment () {
 				uni.navigateTo({
@@ -648,7 +665,8 @@
 			}
 		}
 		.my-main{
-			padding-top: 26rpx;
+			// padding-top: 26rpx;
+			padding-top: 60rpx;
 			// padding-left: 64rpx;
 			// padding-right: 64rpx;
 			box-sizing: border-box;
@@ -776,13 +794,13 @@
 					width: 100%;
 					display: flex;
 					align-items: center;
-					
+					justify-content: center;
 					padding-top: 20rpx;
 					box-sizing: border-box;
-					// transform: translateX(-16rpx);
+					transform: translateX(-22rpx);
 				
 					.new-my-header-box-info-wrapper{
-						width: 58%;
+						// width: 58%;
 						
 						display: flex;
 						justify-content: flex-end;
@@ -811,6 +829,25 @@
 						box-sizing: border-box;
 					}
 					
+				}
+				.new-my-header-box-info-label-box{
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					.new-my-header-box-info-label{
+						padding: 1px 5px;
+						background-image: linear-gradient(180deg, #F99788 0%, #F05E50 100%);
+						border-radius: 1px;
+						box-sizing: border-box;
+						font-family: PingFangSC-Medium;
+						font-size: 8px;
+						color: #FFFFFF;
+						letter-spacing: -0.19px;
+						text-align: center;
+						// margin-left: 10rpx;
+						margin-right: 10rpx;
+						box-sizing: border-box;
+					}
 				}
 				.new-my-header-box-sign{
 					font-family: PingFangSC-Regular;

@@ -70,11 +70,17 @@
 			},
 			async getQrcode(){
 				let res = await this.$fetch(this.$api.get_user_qrcode, {adcode: this.adcode}, "GET", 'FORM')
+				console.log(res)
 				this.qrCode = baseURL + res.data.path
+				console.log(this.qrCode)
 			},
 			// 个人信息
 			async initMyInfo () {
-				let res = await this.$fetch(this.$api.getCurrentUser, {}, 'GET', 'FORM')
+				let adcode = ''
+				if (uni.getStorageSync('adcode')) {
+					adcode = uni.getStorageSync('adcode')
+				}
+				let res = await this.$fetch(this.$api.getCurrentUser, {adcode: adcode}, 'GET', 'FORM')
 				console.log(res)
 				res.data.user.amount = res.data.amount
 				res.data.user.integral = res.data.integral
@@ -115,7 +121,7 @@
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
-				    href: "https://qsw-h5.bajiaostar.xyz/#/?code=" + uni.getStorageSync('userId'),
+				    href: "http://h5-download.qswvip.com/#/?code=" + uni.getStorageSync('userId'),
 				    title: "汽水论坛分享",
 				    summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
 					imageUrl: "../../static/qslogo.png",
@@ -134,7 +140,7 @@
 				    provider: "weixin",
 				    scene: "WXSenceTimeline",
 				    type: 0,
-					href: "https://qsw-h5.bajiaostar.xyz/#/?code=" + uni.getStorageSync('userId'),
+					href: "http://h5-download.qswvip.com/#/?code=" + uni.getStorageSync('userId'),
 					title: "汽水论坛分享",
 					summary: "我正在使用汽水论坛，赶紧跟我一起来体验！",
 					imageUrl: '../../static/qslogo.png',

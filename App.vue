@@ -12,7 +12,7 @@
 	export default {
 		data () {
 			return {
-				provider: []
+				provider: [],
 			}
 		},
 		onLaunch: function(){
@@ -93,9 +93,20 @@
 			//处理点击消息的业务逻辑代码  
 			let platform =  uni.getSystemInfoSync().platform
 			if(platform == 'android'){
-				uni.switchTab({
-					url:'./pages/index/index'
-				})
+				if (uni.getStorageSync('pushGoRichId')) {
+					console.log('1111')
+					let id = uni.getStorageSync('pushGoRichId')
+					let userId = uni.getStorageSync('pushGoRichUserId')
+					console.log(id, userId)
+					uni.navigateTo({
+						url: '/pages/index/ArticleDetail?id=' + id + '&userId=' + userId
+					})
+				} else {
+					uni.switchTab({
+						url:'./pages/index/index'
+					})
+				}
+				
 			}else{
 				var payload;
 				if (msg.type == "click") { //APP离线点击包含click属性，这时payload是JSON对象  
@@ -104,9 +115,23 @@
 					payload = JSON.parse(msg.payload);  
 				} 
 				if(payload != null || payload != undefined){
-					uni.switchTab({
-						url:'./pages/index/index'
-					})
+					console.log(payload.transText.slice(0, payload.transText.indexOf('_')))
+					if (payload.transText.slice(0, payload.transText.indexOf('_')) != -1) {
+						// let id = uni.getStorageSync('pushGoRichId')
+						// let userId = uni.getStorageSync('pushGoRichUserId')
+						let id = payload.transText.slice(0, payload.transText.indexOf('_'))
+						let userId = payload.transText.slice(payload.transText.indexOf('_') + 1, payload.transText.length)
+						uni.setStorageSync('pushGoRichId', id)
+						uni.setStorageSync('pushGoRichUserId', userId)
+						console.log(id, userId)
+						uni.navigateTo({
+							url: '/pages/index/ArticleDetail?id=' + id + '&userId=' + userId
+						})
+					} else {
+						uni.switchTab({
+							url:'./pages/index/index'
+						})
+					}
 				}
 			}
 			},false)
@@ -120,16 +145,65 @@
 			if(platform == 'android'){
 				// plus.nativeUI.confirm('安卓')
 				var payload = JSON.parse(msg.payload)
+				console.log(payload)
+				// if (payload.titleText.indexOf('_') != -1) {
+				// 	let payloadText = payload.titleText.slice(payload.titleText.indexOf('_') + 1, payload.titleText.length+1)
+				// 	if (payloadText.indexOf('_') != -1)  {
+				// 		let id = payloadText.slice(0, payloadText.indexOf('_'))
+				// 		let userId = payloadText.slice(payloadText.indexOf('_') + 1, payloadText.length)
+				// 		uni.setStorageSync('pushGoRichId', id)
+				// 		uni.setStorageSync('pushGoRichUserId', userId)
+				// 	}
+				// }
+				if (payload.transText.indexOf('_') != -1) {
+					let id = payload.transText.slice(0, payload.transText.indexOf('_'))
+					let userId = payload.transText.slice(payload.transText.indexOf('_') + 1, payload.transText.length)
+					uni.setStorageSync('pushGoRichId', id)
+					uni.setStorageSync('pushGoRichUserId', userId)
+				}
+				
+				
 				var messageTitle = payload.title;  
 				var messageContent = payload.titleText; 
+				
+				
+				// if (messageContent.indexOf('_') != -1) {
+				// 	messageContent = messageContent.slice(0, messageContent.indexOf('_'))
+				// }
+				
 				plus.push.createMessage(messageContent,msg.payload,{title:messageTitle})
 			}else{
 				//ios处理
 				// plus.nativeUI.confirm('ios')
 				var payload = msg.payload;
+				console.log(payload)
 				if(msg.aps == null && msg.type == "receive"){
 					var messageTitle = payload.title;  
 					var messageContent = payload.titleText;  
+					
+					// if (messageContent.indexOf('_') != -1) {
+					// 	let payloadText = messageContent.slice(messageContent.indexOf('_') + 1, messageContent.length+1)
+					// 	if (payloadText.indexOf('_') != -1)  {
+					// 		let id = payloadText.slice(0, payloadText.indexOf('_'))
+					// 		let userId = payloadText.slice(payloadText.indexOf('_') + 1, payloadText.length)
+					// 		uni.setStorageSync('pushGoRichId', id)
+					// 		uni.setStorageSync('pushGoRichUserId', userId)
+					// 	}
+						
+					// }
+					
+					// if (messageContent.indexOf('_') != -1) {
+					// 	messageContent = messageContent.slice(0, messageContent.indexOf('_'))
+					// }
+					console.log(payload)
+					if (payload.transText.indexOf('_') != -1) {
+						let id = payload.transText.slice(0, payload.transText.indexOf('_'))
+						let userId = payload.transText.slice(payload.transText.indexOf('_') + 1, payload.transText.length)
+						uni.setStorageSync('pushGoRichId', id)
+						uni.setStorageSync('pushGoRichUserId', userId)
+					}
+					
+					
 					//创建本地消息,发送的本地消息也会被receive方法接收到，但没有type属性，且aps是null  
 					plus.push.createMessage(messageContent, JSON.stringify(payload), {title: messageTitle});
 				}
@@ -143,8 +217,10 @@
 		onShow: function() {
 			console.log('App Show')
 		},
-		onHide: function() {
+		onUnload: function() {
 			console.log('App Hide')
+			uni.removeStorageSync('pushGoRichId')
+			uni.removeStorageSync('pushGoRichUserId')
 		},
 		methods: {
 			openPush() {

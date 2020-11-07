@@ -1,6 +1,8 @@
 <template>
 	<view class="ArticleDetail">
 		<Status></Status>
+		<scroll-view :scroll-top = "pageScrollTop" scroll-with-animation  scroll-y="true" class="scroll-Y" style="height: 100vh;"> 
+		
 		<view class="ArticleDetail-title">
 			<view class="back-img" @click="goBack">
 				<image src="../../static/image/ych/back.png" mode="aspectFill" class="back"></image>
@@ -22,9 +24,10 @@
 						<view class="userInfo-top">
 							<view class="userInfo-top-name">{{userInfo.userName}}</view>
 							<view class="userInfo-top-level">Lv.{{userInfo.level}}</view>
-							<view class="userInfo-top-bozhu" v-if="userInfo.plateName">{{userInfo.plateName}}板块版主</view>
+							<!-- <view class="userInfo-top-bozhu" v-if="userInfo.plateName">{{userInfo.plateName}}板块版主</view> -->
 							<view class="userInfo-top-pla"  v-for="(pla, i) in ArtDetail.userLabel" :key = "i">{{pla}}</view>
 						</view>
+						<view class="userInfo-top-bozhu" v-if="userInfo.plateName">{{userInfo.plateName}}板块版主</view>
 						<view class="userInfo-bottom">{{ArtDetail.createTime}}</view>
 					</view>
 				</view>
@@ -58,9 +61,9 @@
 				
 			</view> -->
 			
-		<jyf-parser :html="ArtDetail.richText" ref="article" style="padding-left: 30rpx; padding-right: 30rpx;"></jyf-parser>
+		<jyf-parser :html="ArtDetail.richText" ref="article" selectable style="padding-left: 30rpx; padding-right: 30rpx;"></jyf-parser>
 		</view>
-		<view class="ArticleDetail-footer">
+		<view class="ArticleDetail-footer" >
 			<view class="ArticleDetail-footer-top" :class="{stick: stickFlag}">
 				<view class="ArticleDetail-footer-top-item" :class="{active:tabIndex == 0}" @click="handleTabIndex(0)">最新回复</view>
 				<view class="ArticleDetail-footer-top-item" :class="{active:tabIndex == 1}" @click="handleTabIndex(1)">热门评论</view>
@@ -107,14 +110,13 @@
 					
 					</view>
 					
-					<view class="ArticleDetail-footer-main-item-advertising" v-if="index == 4 && guangGaoInfo != undefined" @click.stop="goToRichText">
+					<view class="ArticleDetail-footer-main-item-advertising" v-if="index == 4 && showGg" @click.stop="goToRichText">
 						<view class="ArticleDetail-footer-main-item-advertising-top">
 							<view class="ArticleDetail-footer-main-item-advertising-top-left">{{guangGaoInfo.advert.title}}</view>
 							<view class="ArticleDetail-footer-main-item-advertising-top-right">广告</view>
 						</view>
 						<view class="ArticleDetail-footer-main-item-advertising-center">
-							<image :src="gGPic" mode="aspectFill" v-for="(gGPic, i) in guangGaoInfo.advert.pics" :key = "i" ></image>
-					
+							<image :src="gGPic" mode="aspectFill" v-for="(gGPic, i) in guangGaoInfo.advert.pics" :key = "i" :class="{isOnlyPic: guangGaoInfo.advert.pics.length == 1}"></image>
 						</view>
 						<view class="ArticleDetail-footer-main-item-advertising-footer">{{guangGaoInfo.advert.content}}</view>
 						
@@ -122,6 +124,7 @@
 					
 				
 				</view>
+				<u-empty text="暂无回复" mode="message" v-if = "showEmpty" style = "padding-top: 20rpx;"></u-empty>
 			</view>
 		
 			
@@ -135,14 +138,17 @@
 			</view>
 			<!-- {{ArtDetail.params.evaluatesList}} -->
 				<view class="ArticleDetail-submit-right-chat" v-if="!SendButtonFlag">
-					<image src="../../static/image/ych/index/23.png" mode="aspectFill"></image>
-					<view class="ArticleDetail-submit-right-chat-number" v-if="evaListTotal">{{evaListTotal}}</view>
+					<image src="../../static/image/ych/index/23.png" mode="aspectFill" @click.stop="pageScroll"></image>
+					<view class="ArticleDetail-submit-right-chat-number" v-if="evaListTotal">
+						<span>{{evaListTotal}}</span>
+					</view>
 				</view>
 				<view class="ArticleDetail-submit-right-share"  v-if="!SendButtonFlag">
 					<image src="../../static/image/ych/my/23.png" mode="" @click.stop="handleShareFlag"></image>
 				</view>
 				<view class="sendButton" @touchend.prevent.stop="sendMsgFn"  v-if="SendButtonFlag" :style="{color: sendMsg.trim() == '' ? '#c8c9cc' : '#ff9900' }">发送</view>
 		</view>
+	    </scroll-view>
 		<u-popup v-model="showMore" mode="bottom" border-radius="14" height="200rpx">
 			<view class="showMoreBox">
 				<view class="showMoreBox-item" @click="jubao">
@@ -170,7 +176,8 @@
 			this.$scope.$getAppWebview().setStyle({
 			  softinputNavBar: 'none'
 			})
-			if (uni.getStorageSync('adcode')) {				this.adcode = uni.getStorageSync('adcode')			}
+			if (uni.getStorageSync('adcode')) {				this.adcode = uni.getStorageSync('adcode')
+				console.log(this.adcode)			}
 			this.ArtId = options.id
 			this.userId = options.userId
 			if (options.TopArtType) {
@@ -186,6 +193,12 @@
 			if (uni.getStorageSync('userAvatar')) {
 				this.myAvatar = uni.getStorageSync('userAvatar')
 			}
+			if (uni.getStorageSync('pushGoRichId')) {
+				uni.removeStorageSync('pushGoRichId')
+				uni.removeStorageSync('pushGoRichUserId')
+			}
+			
+			
 			// 获取发帖人
 			this.initUserInfo()
 			//　获取评价
@@ -206,6 +219,7 @@
 				ArtDetail: {},
 				userInfo: {},
 				ArtDetailComment: [],
+				showEmpty: false,
 				hasFlag: true,
 				pageNum: 0,
 				pageSize: 10,
@@ -224,9 +238,9 @@
 				showShareBoxFlag: false,
 				evaListTotal: 0,
 				handleId: '',
-				showMore: false
-				
-				
+				showMore: false,
+				showGg: false,
+				pageScrollTop: 0
 			}
 		},
 		onReady() {
@@ -237,6 +251,11 @@
 			  this.footTop = data.top
 			  
 			}).exec();
+			
+			// console.log('************')
+			// const query = uni.createSelectorQuery().in(this);
+			// console.log(query)
+			
 		},
 		onPageScroll (e) {
 			// console.log(e)
@@ -250,6 +269,15 @@
 			this.initArtDetail()
 		},
 		methods: {
+			pageScroll () {
+				const query = uni.createSelectorQuery().in(this);
+				query.select('.ArticleDetail-footer').boundingClientRect(data => {
+				console.log(data)
+				  console.log("得到布局位置信息" + JSON.stringify(data));
+				  console.log("节点离页面顶部的距离为" + data.top);
+				  this.pageScrollTop = (data.top - 60) 
+				}).exec();
+			},
 			handleShowMore (id, index) {
 				this.showMore = !this.showMore
 				this.handleId = id
@@ -265,7 +293,6 @@
 			// 点赞
 			async updatePrise (id, item) {
 				let res = await this.$fetch(this.$api.upd_praise_status, {id: id}, 'POST', 'FORM')
-				console.log(res)
 				
 				if (item.status) {
 					item.status = 0
@@ -300,7 +327,7 @@
 			},
 			//更改分享显示
 			changeShowBoxFLag (newV) {
-				console.log(newV)
+	
 				this.showShareBoxFlag = newV
 			},
 			// 微信分享
@@ -311,7 +338,7 @@
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
-				    href: "https://qsw-h5.bajiaostar.xyz/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
+				    href: "http://h5-download.qswvip.com/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
 			
 				    title: this.ArtDetail.title,
 				    summary: content,
@@ -332,7 +359,7 @@
 				    provider: "weixin",
 				    scene: "WXSenceTimeline",
 				    type: 0,
-					href: "https://qsw-h5.bajiaostar.xyz/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
+					href: "http://h5-download.qswvip.com/#/pages/RichText/RichText?code=" + uni.getStorageSync('userId') + '&userId=' + this.userId + '&ArtId=' + this.ArtId,
 								
 					title: this.ArtDetail.title,
 					summary: this.ArtDetail.title,
@@ -352,18 +379,24 @@
 
 				let index = this.$u.random(0, res.data.length -1)
 				this.guangGaoInfo = res.data[index]
+				console.log(res.data)
 				console.log(this.guangGaoInfo)
 				// this.guangGaoInfo.advert.newContent = this.guangGaoInfo.advert.content
 				// this.guangGaoInfo.advert.content = this.filterHTMLTag(this.guangGaoInfo.advert.content)
 				// this.guangGaoInfo.advert.content = JSON.parse(this.guangGaoInfo.advert.content)[0].cotet
 				this.guangGaoInfo.advert.pics = JSON.parse(this.guangGaoInfo.advert.pics)
-				console.log(this.guangGaoInfo.advert.pics)
+				this.guangGaoInfo.advert.content = JSON.parse(this.guangGaoInfo.advert.content)[0].content
+				if (JSON.stringify(this.guangGaoInfo) != '{}') {
+					this.showGg = true
+				} else {
+					this.showGg = false
+				}
 				this.updateguangG()
 				
 			},
 			async updateguangG () {
 				let res = await this.$fetch(this.$api.upd_evaluate_advert_display_num, {id: this.guangGaoInfo.advert.id}, 'POST', 'FORM')
-				console.log(res)
+				
 			},
 			filterHTMLTag (msg) {
 			    var msg = msg.replace(/<\/?[^>]*>/g, ''); //去除HTML Tag
@@ -419,7 +452,7 @@
 			// 关注
 			async followUser (item) {
 				let res = await this.$fetch(this.$api.follow, {toUserId: this.userId}, 'POST', 'FORM')
-				console.log(res)
+			
 				uni.showToast({
 					icon: 'none',
 					title: res.msg
@@ -442,7 +475,7 @@
 			// 收藏
 			async collectionArt (item) {
 				let res = await this.$fetch(this.$api.collection, {relationId: item.id, type: 1}, "POST", 'FORM')
-				console.log(res)
+				
 				uni.showToast({
 					icon: 'none',
 					title: res.msg
@@ -462,21 +495,25 @@
 				this.pageNum = ++this.pageNum
 				let userId = uni.getStorageSync('userId')
 				let res = await this.$fetch(this.$api.artivle_detail_by_id, {id: this.ArtId, pageNum: this.pageNum, pageSize: 10, type: this.tabIndex, userId: userId}, "POST", 'FORM')
-				console.log(res)
+			
 				
 				res.data.content = JSON.parse(res.data.content)
 				this.ArtDetail = res.data
 				if (this.ArtDetail.userLabel) {
 					this.ArtDetail.userLabel = this.ArtDetail.userLabel.split(',')
 				}
-				console.log('*********************')
-				console.log(this.ArtDetail.richText)
+
+				// console.log(this.ArtDetail.richText)
 				this.evaListTotal = this.ArtDetail.params.evaluatesList.total
 				// console.log(this.ArtDetail.params.evaluatesList.total)
-				console.log(res.data.params.evaluatesList)
+				// console.log(res.data.params.evaluatesList)
 				this.ArtDetailComment = [...this.ArtDetailComment, ...res.data.params.evaluatesList.rows]
-				console.log(this.ArtDetailComment)
-				
+		
+				if (this.ArtDetailComment.length) {
+					this.showEmpty = false
+				} else {
+					this.showEmpty = true
+				}
 				this.ArtDetailComment.forEach(async (item) => {
 					if (item.replyCount > 0) {
 						let msg = await this.$fetch(this.$api.reply_list, {evaluatesId: item.id, pageNum: 1, pageSize: 2}, 'POST', 'FORM')
@@ -492,7 +529,7 @@
 			// 发帖人数据
 			async initUserInfo () {
 				let res = await this.$fetch(this.$api.get_user_by_id, {userId: this.userId}, "POST", "FORM")
-				console.log(res)
+			
 				this.userInfo = res.data
 			},
 			// 点击评论图片
@@ -535,7 +572,7 @@
 				} else {
 					res = await this.$fetch(this.$api.evaluate, {articleId: this.ArtId, content: this.sendMsg, pushUserId: ''}, 'POST', 'FORM')
 				}
-				console.log(res)
+				
 				uni.hideLoading()
 				uni.showToast({
 					icon: 'none',
@@ -613,8 +650,18 @@
 </script>
 
 <style lang="less">
+	/deep/.note-video-clip{
+		width: 100% !important;
+	}
+	/deep/iframe{
+		width: 100% !important;
+	}
+	/deep/view{
+		// display: b;
+	}
 	.ArticleDetail{
 		width: 100%;
+		overflow: hidden;
 		.showMoreBox{
 			width: 100%;
 			height: 100%;
@@ -649,6 +696,9 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+			position: fixed;
+			z-index: 999;
+			background-color: #fff;
 			.back-img{
 				position: relative;
 				&::after{
@@ -687,7 +737,8 @@
 			font-weight: bold;
 			padding-left: 32rpx;
 			padding-right: 32rpx;
-			padding-top: 10rpx;
+			// padding-top: 10rpx;
+			padding-top: 131rpx;
 			display: -webkit-box;    
 			-webkit-box-orient: vertical;    
 			-webkit-line-clamp: 2;    //控制行数
@@ -716,10 +767,22 @@
 					.userInfo{
 						padding-left: 32rpx;
 						box-sizing: border-box;
+						.userInfo-top-bozhu{
+							display: inline-block;
+							padding: 0 10rpx;
+							margin-right: 10rpx;
+							box-sizing: border-box;
+							background-image: linear-gradient(180deg, #F99788 0%, #F05E50 100%);
+							border-radius: 1px;
+							font-family: PingFangSC-Medium;
+							font-size: 8px;
+							color: #FFFFFF;
+							letter-spacing: -0.19px;
+						}
 						.userInfo-top{
 							display: flex;
 							align-items: center;
-							padding-bottom: 8rpx;
+							padding-bottom: 4rpx;
 							box-sizing: border-box;
 							.userInfo-top-name{
 								font-family: PingFangSC-Medium;
@@ -741,6 +804,7 @@
 							}
 							.userInfo-top-bozhu{
 								padding: 0 10rpx;
+								margin-right: 10rpx;
 								box-sizing: border-box;
 								background-image: linear-gradient(180deg, #F99788 0%, #F05E50 100%);
 								border-radius: 1px;
@@ -1046,7 +1110,7 @@
 						}
 						.ArticleDetail-footer-main-item-advertising-top-right{
 							// width: 130rpx;
-							flex: 1;
+							// flex: 1;
 							text-align: center;
 							font-family: PingFangSC-Medium;
 							font-size: 8px;
@@ -1063,6 +1127,7 @@
 						}
 					}
 					.ArticleDetail-footer-main-item-advertising-center{
+						width: 100%;
 						display: flex;
 						flex-wrap: wrap;
 						image{
@@ -1074,11 +1139,19 @@
 							&:nth-child(3n){
 								margin-right: 0;
 							}
+							&.isOnlyPic{
+								// width: 100%;
+								
+							}
 						}
 					}
 					.ArticleDetail-footer-main-item-advertising-footer{
 						margin-top: 18rpx;
 						box-sizing: border-box;
+						display: -webkit-box;    
+						-webkit-box-orient: vertical;    
+						-webkit-line-clamp: 2;    //控制行数
+						overflow: hidden;
 					}
 				}
 			
@@ -1169,8 +1242,11 @@
 				.ArticleDetail-submit-right-chat-number{
 					// width: 26rpx;
 					// height: 18rpx;
+					// width: 30rpx;
+					// height: 30rpx;
+					// text-align: center;
 					position: absolute;
-					right: -4rpx;
+					right: -8rpx;
 					top: -20rpx;
 					font-family: PingFangSC-Regular;
 					font-size: 12px;
@@ -1178,8 +1254,21 @@
 					letter-spacing: -0.17px;
 					background: #FF1414;
 					border-radius: 4px;
-					padding: 0 2rpx;
+					// padding: 10rpx;
 					box-sizing: border-box;
+					border-radius: 50%;
+					height: 36rpx; 
+				    width: 36rpx;   
+					display: inline-block;   
+					background: #f30303;
+					vertical-align: top;
+					span{
+						display: block;    
+						color: #FFFFFF;   
+						height: 36rpx; 
+						line-height: 36rpx;   
+						text-align: center;
+					}
 				}
 			}
 			.ArticleDetail-submit-right-share{

@@ -1,7 +1,7 @@
 <template>
 	<view class="ArticleComment">
 		<view class="ArticleComment-header">
-			<view class="ArticleComment-header-left">
+			<view class="ArticleComment-header-left" @click="goToMyHomePage(commentHeader.userId)">
 				<image :src="commentHeader.avatar ? commentHeader.avatar :'../../static/image/ych/avatar.png'" mode="aspectFill" class="avatar"></image>
 			</view>
 			

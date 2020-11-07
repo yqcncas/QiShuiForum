@@ -1,8 +1,12 @@
 <template>
 	<view class="ShopDetail">
+		<scroll-view scroll-y="true" style="height: 100vh">
 		<view class="ShopDetail-header">
 			<!-- <image :src="shopDetailInfo.goodsPic" mode="aspectFill"></image> -->
-			<u-image :src="shopDetailInfo.goodsPic" width="100%" height="378rpx" :lazy-load="true" mode="aspectFill" @click = "privatarPic(shopDetailInfo.goodsPic)">
+			<!-- <u-image :src="shopDetailInfo.goodsPic" width="100%" height="378rpx" :lazy-load="true" mode="aspectFill" @click = "privatarPic(shopDetailInfo.goodsPic)">
+				<u-loading slot="loading"></u-loading>
+			</u-image> -->
+			<u-image :src="shopDetailInfo.goodsPic" width="100%" height="596rpx" :lazy-load="true" mode="aspectFill" @click = "privatarPic(shopDetailInfo.goodsPic)">
 				<u-loading slot="loading"></u-loading>
 			</u-image>
 		</view>
@@ -29,13 +33,16 @@
 		</view>
 		<view class="ShopDetail-bottom">
 			<view class="ShopDetail-bottom-title">详情说明</view>
-			<scroll-view scroll-y="true" style="height: 670rpx">
+			<!-- <scroll-view scroll-y="true" style="height: 670rpx"> -->
 				<view class="rich-box" style="padding-bottom: 200rpx;">
-					<jyf-parser :html="shopDetailInfo.goodsContent" ref="article"></jyf-parser>
+					<jyf-parser selectable :html="shopDetailInfo.goodsContent" ref="article"></jyf-parser>
 				</view>
-			</scroll-view>
+			<!-- </scroll-view> -->
 		</view>
-		<view class="buy-button" :class="{isGray: shopDetailInfo.remainder == 0}" @click="goToPayPage(shopDetailInfo.id, shopDetailInfo.price)">{{shopDetailInfo.remainder == 0 ? '已售完' : '立即抢购'}}</view>
+		</scroll-view>
+		<view class="buy-button-box" style="width: 100%;background-color: #FFFFFF;">
+			<view class="buy-button" :class="{isGray: shopDetailInfo.remainder == 0}" @click="goToPayPage(shopDetailInfo.id, shopDetailInfo.price)">{{shopDetailInfo.remainder == 0 ? '已售完' : '立即抢购'}}</view>
+		</view>
 	</view>
 </template>
 
@@ -160,8 +167,12 @@
 	.ShopDetail{
 		.ShopDetail-header{
 			image{
+				// width: 100%;
+				// height: 378rpx;
+				// width: 334rpx;
 				width: 100%;
-				height: 378rpx;
+				// height: 298rpx;
+				height: 596rpx;
 			}
 		}
 		.ShopDetail-center{
@@ -243,25 +254,37 @@
 				letter-spacing: -0.39px;
 			}
 		}
-		.buy-button{
-			font-family: PingFangSC-Medium;
-			font-size: 21px;
-			color: #FFFFFF;
-			letter-spacing: 1.19px;
-			background-image: linear-gradient(136deg, #FF8D3F 0%, #E86D29 100%);
-			border-radius: 4px;
-			width: 604rpx;
-			height: 102rpx;
-			text-align: center;
-			line-height: 102rpx;
+		.buy-button-box{
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			position: fixed;
 			left: 50%;
 			transform: translateX(-50%);
-			bottom: 20rpx;
-			&.isGray{
-				background-image: none;
-				background-color: #c8c9cc;
+			bottom: 0rpx;
+			background-color: #fff;
+			.buy-button{
+				font-family: PingFangSC-Medium;
+				font-size: 21px;
+				color: #FFFFFF;
+				letter-spacing: 1.19px;
+				background-image: linear-gradient(136deg, #FF8D3F 0%, #E86D29 100%);
+				border-radius: 4px;
+				width: 604rpx;
+				height: 102rpx;
+				text-align: center;
+				line-height: 102rpx;
+				// position: fixed;
+				// left: 50%;
+				// transform: translateX(-50%);
+				// bottom: 20rpx;
+				&.isGray{
+					background-image: none;
+					background-color: #c8c9cc;
+				}
 			}
 		}
+		
 	}
 </style>

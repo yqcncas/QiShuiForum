@@ -1,7 +1,7 @@
 <template>
 	<view class="index">
 		<Status></Status>
-		<mescroll-body ref="mescrollRef"  @down="downCallback" :up="upOption" :down = "downOption">
+		<mescroll-body ref="mescrollRef"  @down="downCallback" :up="upOption" :down = "downOption" @up="upCallback">
 		<!-- 头 -->
 		<!-- <mescroll-body ref="mescrollRef"  @down="downCallback" :up="upOption"> -->
 		<view class="index-header">
@@ -32,7 +32,7 @@
 		<!-- 轮播 -->
 	<!-- 	<swiper style="height: calc(100vh);" :current="navIndex" @change="swiperChange">
 			<swiper-item  v-for="(swiperItem, i) in headerNav" :key = "i"> -->
-				<scroll-view scroll-y="true" style="height: calc(100vh)" @scrolltolower="lower">
+				<!-- <scroll-view scroll-y="true" style="height: calc(100vh)" @scrolltolower="lower"> -->
 					
 						<view class="index-banner" v-if="bannerList.length">
 							<view class="index-banner-wrapper" :style="{height: navIndex == 0 ? '420rpx' : '252rpx'}">
@@ -110,8 +110,13 @@
 						</view>
 						
 						<view class="show-box" v-if="navIndex != 0" :style="{paddingTop: bannerList == 0 ? '240rpx' : ''}">
+							<view class="line-7"></view>  
+							<view class="HouseProperty-center-zhiding" @click="goToTopArticles">我要置顶</view>
+							<view class="line-7"></view>
+							<Stick :StickList = "topArtList" @handleStick = "handleStick"></Stick>
 							<view class="line-7" ></view>
-							<Stick></Stick>
+							<!-- <Stick></Stick> -->
+							
 							<view class="line-3"></view>
 							<NavButton v-if="tabShow" :navleft="'最新发布'" :navright="'精华帖'" :navIndex = "tabIndex" @handleNavIndex = "handleNavTabIndex"></NavButton>
 							<view class="line-3"></view>
@@ -120,7 +125,7 @@
 					 <Fab @trigger = "trigger" ></Fab>
 					<ArticleMain @ArticleMainClick = "ArticleMainClick"  :ArticleList = "ArticleList" :hasFlag = "hasFlag"></ArticleMain>
 					
-				</scroll-view>
+				<!-- </scroll-view> -->
 		<!-- 	</swiper-item>
 		</swiper> -->
 		
@@ -255,8 +260,13 @@
 		onHide() {
 			
 		},
+		onReachBottom () {
+			console.log('1111')
+			this.lower()
+		},
 		data() {
 			return {
+				topArtList: [],
 				city: '',
 				// 选择城市
 				cityPickerValueDefault: [10, 5,0],
@@ -302,7 +312,11 @@
 					qing: '../../static/image/ych/weather/9.png'
 				},
 				upOption: {
-					use: false
+					use: false,
+					textLoading: '',
+					toTop: {
+						bottom: 200
+					}
 				},
 				downOption: {
 					native: false
@@ -321,6 +335,25 @@
 				uniFab
 		},
 		methods: {
+			goToTopArticles () {
+				uni.navigateTo({
+					url: '../TopArticles/TopArticles'
+				})
+			},
+			handleStick (id, userId) {
+				uni.navigateTo({
+					url: './ArticleDetail?id='+ id + '&userId=' + userId
+				})
+			},
+			async initTopArt(id) {
+				if (id == 'guangchang' || id == 'tuijian') {
+					this.topArtList = []
+				} else {
+					let res = await this.$fetch(this.$api.top_list, {type: id, adcode: this.areaCode}, "POST", 'FORM')
+					this.topArtList = res.data
+				}
+				
+			},
 			// 首页偶尔加不出来
 			initIndexAllInfo () {
 				this.headerNav = [{plateName: '推荐',childId: 'child99', id: 'tuijian'}],
@@ -366,29 +399,35 @@
 				// this.hotTieZiList = [] ,// 热门贴
 				// this.hotTieZi()
 				// this.initArtivleList(this.navIndex, this.headerNav[this.navIndex].id, '', 0)
-				this.headerNav = [{plateName: '推荐',childId: 'child99', id: 'tuijian'}],
-				this.fancyArrId= [], // 头部导航ID
-				this.tochildView= '',
-				this.currentTabIndexId = 0,
-				this.navIndex = 0, // 导航index
+				
+				
+				// this.headerNav = [{plateName: '推荐',childId: 'child99', id: 'tuijian'}],
+				// this.fancyArrId= [], // 头部导航ID
+				// this.tochildView= '',
+				// this.currentTabIndexId = 0,
+				// this.navIndex = 0, // 导航index
 				this.pageNum = 0,
 				this.pageSize = 10,
 				this.hasFlag = true,
-				this.activeId = '', // 底部切换记录id
-				this.typeInIndex = [],
-				this.ArticleList =[],
-				this.indexMainNavTop = [], // 中部导航顶部
-				this.indexMainNavBottom = [{platePic: '../../static/image/ych/index/8.png' , plateName: '商城'}, {platePic: '../../static/image/ych/index/9.png' , plateName: '广场'}], // 中部导航底部
-				this.canPush = true
-				this.talkArr = [],
-				this.tabIndex = 0, // 底部Tab
-				this.bannerList = [], // 轮播图
-				this.hotTieZiIndex = 0,
-				this.hotTieZiList = [] ,// 热门贴
-				this.isCreamFlag = 0, // 是否为精华
+				// this.activeId = '', // 底部切换记录id
+				// this.typeInIndex = [],
+				// this.ArticleList =[],
+				// this.indexMainNavTop = [], // 中部导航顶部
+				// this.indexMainNavBottom = [{platePic: '../../static/image/ych/index/8.png' , plateName: '商城'}, {platePic: '../../static/image/ych/index/9.png' , plateName: '广场'}], // 中部导航底部
+				// this.canPush = true
+				// this.talkArr = [],
+				// this.tabIndex = 0, // 底部Tab
+				// this.bannerList = [], // 轮播图
+				// this.hotTieZiIndex = 0,
+				// this.hotTieZiList = [] ,// 热门贴
+				// this.isCreamFlag = 0, // 是否为精华
 				
-				this.initBanner()
+				// this.initBanner()
 				// 热帖
+				// setTimeout(() => {
+				// 	this.mescroll.endDownScroll()
+				// }, 700)
+				this.mescroll.endDownScroll()
 				this.hotTieZi()
 				
 				// 对版块进行处理
@@ -399,10 +438,9 @@
 				}
 				// 置顶帖
 				this.huatiList()
+				this.initArtivleList(this.navIndex, this.headerNav[this.navIndex].id, '', 0)
 				
-				setTimeout(() => {
-					this.mescroll.endDownScroll()
-				}, 700)
+				
 				
 			},
 			// 获取当前位置
@@ -414,6 +452,7 @@
 					success: (res) => {
 						console.log(res)
 						let city = res.address.district
+						this.city = res.address.district
 						if (res.address.district.includes('市')) {
 							city = res.address.district.replace('市', '')
 						} else if (res.address.district.includes('区')) {
@@ -549,7 +588,7 @@
 				this.hotTieZiIndex = 0
 				this.initLunBo(this.headerNav[index].id)
 				this.initArtivleList(index, this.headerNav[index].id, '', 0)
-				
+				this.initTopArt(this.headerNav[index].id)
 				
 			},
 			swiperChange (e) {
@@ -598,8 +637,9 @@
 			},
 			// 文章              // 下标   id  推荐数组 type 1 首次进 0 点击
 			async initArtivleList (index, id, arr, type) {
-			
+				
 				if (!this.hasFlag) return
+		
 				this.pageNum = ++this.pageNum
 				this.activeId = id
 				
@@ -625,26 +665,38 @@
 					
 					DemoArr = res.rows
 					
+					// DemoArr.forEach((item,index) => {
+					// 	console.log(index, this.hotTieZiIndex, this.hotTieZiList.length)
+					// 	if (index == 0 && this.hotTieZiIndex <= this.hotTieZiList.length -1) {
+					// 		console.log('1111')
+					// 		DemoArr.splice(0, 0, this.hotTieZiList[this.hotTieZiIndex])
+					// 		// console.log(res.rows)
+					// 		this.hotTieZiIndex += 1
+					// 	} else if (index == 4 && this.hotTieZiIndex <= this.hotTieZiList.length -1) {
+					// 		DemoArr.splice(4, 0, this.hotTieZiList[this.hotTieZiIndex])
+					// 		this.hotTieZiIndex += 1
+					// 	} else if (index == 8 && this.hotTieZiIndex <= this.hotTieZiList.length -1) {
+					// 		DemoArr.splice(8, 0, this.hotTieZiList[this.hotTieZiIndex])
+					// 		this.hotTieZiIndex += 1
+					// 	}
+					// })
+					
 					DemoArr.forEach((item,index) => {
-						console.log(index, this.hotTieZiIndex, this.hotTieZiList.length)
-						if (index == 0 && this.hotTieZiIndex <= this.hotTieZiList.length -1) {
-							console.log('1111')
-							DemoArr.splice(0, 0, this.hotTieZiList[this.hotTieZiIndex])
-							// console.log(res.rows)
-							this.hotTieZiIndex += 1
-						} else if (index == 4 && this.hotTieZiIndex <= this.hotTieZiList.length -1) {
-							DemoArr.splice(4, 0, this.hotTieZiList[this.hotTieZiIndex])
-							this.hotTieZiIndex += 1
-						} else if (index == 8 && this.hotTieZiIndex <= this.hotTieZiList.length -1) {
-							DemoArr.splice(8, 0, this.hotTieZiList[this.hotTieZiIndex])
-							this.hotTieZiIndex += 1
+						if (this.hotTieZiList.length) {
+							this.hotTieZiList.forEach((it, i) => {
+								if (index == it.sort) {
+									DemoArr.splice(Number(this.hotTieZiList[i].sort) - 1, 0, this.hotTieZiList[i])
+								}
+							})
 						}
 					})
+					
+					
 					
 					// console.log(this.hotTieZiList)
 					
 					this.ArticleList = [...this.ArticleList, ...DemoArr]
-					console.log(this.ArticleList )
+					// console.log(this.ArticleList )
 					let obj = {};
 					// 要去重的数组
 					this.ArticleList = this.ArticleList.reduce((cur,next) => {
@@ -694,7 +746,11 @@
 			},
 			// 个人信息 获取版块用
 			async initMyInfo () {
-				let res = await this.$fetch(this.$api.getCurrentUser, {}, 'GET', 'FORM')
+				let adcode = ''
+				if (uni.getStorageSync('adcode')) {
+					adcode = uni.getStorageSync('adcode')
+				}
+				let res = await this.$fetch(this.$api.getCurrentUser, {adcode: adcode}, 'GET', 'FORM')
 				// console.log(res)
 				this.fancyArrId = res.data.user.recommendPlate.split(',')
 				// console.log(fancyArrId)
@@ -826,6 +882,7 @@
 			},
 			// 触底
 			lower () {
+				console.log('1112121')
 				this.initArtivleList(this.navIndex, this.headerNav[this.navIndex].id, '', 0)
 			},
 			// 选择城市
@@ -1380,6 +1437,17 @@
 					}
 				}
 			}
+		}
+		.HouseProperty-center-zhiding{
+			width: 100%;
+			height: 128rpx;
+			text-align: center;
+			line-height: 128rpx;
+			font-family: PingFangSC-Medium;
+			font-size: 16px;
+			color: #FF7B30;
+			letter-spacing: 0.91px;
+			font-weight: bold;
 		}
 		
 	}

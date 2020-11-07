@@ -40,9 +40,9 @@
 		</view>
 		<view class="pay-button" @click="payButton">确认支付</view>
 		
-		<u-popup v-model="mianzeBox" mode="center" border-radius="14" width = "70%" height = "50%">
+		<u-popup v-model="mianzeBox" mode="center" border-radius="14" width = "70%" height = "50%" v-if = "payContent">
 			<view class="mianzeBox-title">广告说明</view>
-			<jyf-parser :html="payContent" ref="article"></jyf-parser>
+			<jyf-parser :html="payContent" selectable ref="article"></jyf-parser>
 		</u-popup>
 	</view>
 </template>
@@ -94,7 +94,7 @@
 				num: 0,
 				tfstartTime: '',
 				tfendTime: '',
-				payContent: '是否确认支付',
+				payContent: '',
 				mianzeBox: false,
 				richText: ''
 			}

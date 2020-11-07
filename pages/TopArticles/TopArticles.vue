@@ -77,7 +77,7 @@
 		watch:{
 			buyDay(newV) {
 				console.log(newV)
-				this.payPrice = newV * this.magnification
+				this.payPrice = Number(newV * this.magnification).toFixed(2)
 			}
 		},
 		methods: {

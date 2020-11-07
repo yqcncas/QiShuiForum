@@ -41,14 +41,16 @@
 					<view class="hotAdvertType-box">
 						<view class="ArticleDetail-footer-main-item-advertising-top">
 							<view class="ArticleDetail-footer-main-item-advertising-top-left">{{item.title}}</view>
-							<view class="ArticleDetail-footer-main-item-advertising-top-right" style="margin-right: 16rpx; height: 30rpx;line-height: 30rpx;text-align: center;transform: translateY(5rpx);word-break : break-all;white-space: nowrap;">{{item.type == 0 ? '广告' : item.type == 1 ? '公益' :  item.type == 2 ? '公告' : '活动'}}</view>
+							<!-- <view class="ArticleDetail-footer-main-item-advertising-top-right" style="margin-right: 16rpx; height: 30rpx;line-height: 30rpx;text-align: center;transform: translateY(5rpx);word-break : break-all;white-space: nowrap;">{{item.labelType == 0 ? '广告' : item.labelType == 1 ? '公益' :  item.labelType == 2 ? '公告' : '活动'}}</view> -->
 						</view>
 						<view class="ArticleDetail-footer-main-item-advertising-center">
-									
-							<image :src="titlePic" v-if="item.hotAdvertType != 1" mode="aspectFill" v-for="(titlePic, i) in item.pics" :key = "i"  :class="item.pics.length > 1 ? 'ArticleDetail-footer-main-item-advertising-center-moreImg' : 'ArticleDetail-footer-main-item-advertising-center-Img'"></image>
-										
+							<image :src="titlePic" v-if="item.hotAdvertType != 1" mode="aspectFill" v-for="(titlePic, i) in item.pics" :key = "i"  :class="item.pics.length > 1 ? 'ArticleDetail-footer-main-item-advertising-center-moreImg' : 'ArticleDetail-footer-main-item-advertising-center-Img'"></image>	
 						</view>
-						<view class="ArticleDetail-footer-main-item-advertising-footer">{{item.newcontent}}</view>
+						<view class="ArticleDetail-footer-main-item-advertising-footer" v-if="item.newcontent">{{item.newcontent}}</view>
+						<view class="new-ArticleDetail-footer-main-item-advertising-footer" style="display: flex;justify-content: space-between;align-items: center;">
+							<view class="ArticleDetail-footer-main-item-advertising-footer" v-if="!item.newcontent" style="font-size: 12px;color: #686868;">{{item.article.browseNum}}阅读量</view>
+							<view class="nArticleDetail-footer-main-item-advertising-top-right" style="word-break : break-all;white-space: nowrap;margin-right: 20rpx;">{{item.labelType == 0 ? '广告' : item.labelType == 1 ? '公益' :  item.labelType == 2 ? '公告' : '活动'}}</view>
+						</view>
 					</view>
 						
 						
@@ -292,10 +294,8 @@
 			
 				.ArticleDetail-footer-main-item-advertising{
 					padding-top: 20rpx;
-					// padding-left: 36rpx;
-					// padding-left: 34rpx;
 					padding-bottom: 26rpx;
-					// border-top: 3rpx solid #f4f4f4;
+					// padding-bottom: 40rpx;
 					border-bottom: 1rpx solid #D8D8D8;
 					box-sizing: border-box;
 					display: flex;
@@ -303,8 +303,12 @@
 					// justify-content: space-between;
 					.hotAdvertType-box{
 						flex: 1;
-						height: 166rpx;
-						overflow: hidden;
+						height: 174rpx;
+						// height: 186rpx;
+						// overflow: hidden;
+						display: flex;
+						    flex-direction: column;
+						    justify-content: space-around;
 					}
 					.hotAdvertTypeOnly{
 						width: 250rpx;						height: 166rpx;
@@ -315,7 +319,7 @@
 						align-items: flex-start;
 						.ArticleDetail-footer-main-item-advertising-top-left{
 							font-family: PingFangSC-Medium;
-							font-size: 14px;
+							font-size: 17px;
 							color: #141414;
 							letter-spacing: -0.34px;
 							display: -webkit-box;    
@@ -381,6 +385,21 @@
 						-webkit-box-orient: vertical;    
 						-webkit-line-clamp: 2;    //控制行数
 						overflow: hidden;
+						
+					}
+					.new-ArticleDetail-footer-main-item-advertising-footer{
+						.nArticleDetail-footer-main-item-advertising-top-right{
+							font-family: PingFangSC-Medium;
+							font-size: 8px;
+							color: #FF7B30;
+							letter-spacing: -0.19px;
+							border: 1px solid #FF7B30;
+							border-radius: 1px;
+							padding: 0 10rpx;
+							box-sizing: border-box;
+							margin-left: 16rpx;
+							transform: translateY(8rpx);
+						}
 					}
 				}
 							

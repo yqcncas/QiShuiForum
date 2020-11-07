@@ -61,10 +61,15 @@ const getServerNo = function(version,isPrompt = false, callback) {
 		if (res.msg == null && curRoute == 'pages/index/index' ) {
 			return ''
 		} else {
-			uni.showToast({
-					title: "暂无新版本",
-					icon: "none"
-			});
+			if (curRoute == 'pages/index/index') {
+				
+			} else {
+				uni.showToast({
+						title: "暂无新版本",
+						icon: "none"
+				});
+			}
+			
 		}
 		
 		let msg = JSON.parse(res.msg)
@@ -72,8 +77,10 @@ const getServerNo = function(version,isPrompt = false, callback) {
 			// console.log(version.versionName.replace(/[.]/g, ''))
 			let versionName = version.versionName.replace(/[.]/g, '')
 			console.log(msg.appVersion, version.versionName)
+			console.log(msg.appVersion, versionName)
+			console.log(version)
 		// if (msg.appVersion > version.versionCode) {
-			if (msg.appVersion > versionName) {
+			if (msg.appVersion > version.versionCode) {
 			msg.upDateFlag = true
 			uni.showModal({
 			    title: '提示',
@@ -88,10 +95,19 @@ const getServerNo = function(version,isPrompt = false, callback) {
 			});
 			
 		} else {
-			uni.showToast({
-					title: "暂无新版本",
-					icon: "none"
-				});
+			let routes = getCurrentPages(); // 获取当前打开过的页面路由数组
+			let curRoute = routes[routes.length - 1].route //获取当前页面路由
+			let curParam = routes[routes.length - 1].options; //获取路由参数
+			console.log(curRoute == 'pages/index/index')
+			if (curRoute == 'pages/index/index') {
+				return ''
+			} else {
+				uni.showToast({
+						title: "暂无新版本",
+						icon: "none"
+					});
+			}
+			
 		}
 	})
 	
